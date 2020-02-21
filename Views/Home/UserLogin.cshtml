@@ -1,0 +1,536 @@
+﻿@model PO_PurchasingUI.Models.LoginModel
+@{
+                /**/
+
+                Layout = null;
+}
+
+<!DOCTYPE html>
+
+<html>
+<head>
+    <meta name="viewport" content="width=device-width" />
+    <META Http-Equiv="Cache-Control" Content="no-cache" />
+    <META Http-Equiv="Pragma" Content="no-cache" />
+    <META Http-Equiv="Expires" Content="0" />
+
+    <link rel="icon" type="image/x-icon" href="@Url.Content("~/assets/img/E-P.PNG")">
+    <title> - Procurement System</title>
+
+    <!-- Bootstrap and OneUI CSS framework -->
+    @Styles.Render("~/Content/LoginCss")
+
+    <!-- -------------- CSS - theme -------------- -->
+    <link href="~/assets/skin/default_skin/css/theme.css" rel="stylesheet" />
+
+
+    <!-- You can include a specific file from css/themes/ folder to alter the default color theme of the template. eg: -->
+    <!-- <link rel="stylesheet" id="css-theme" href="assets/css/themes/flat.min.css"> -->
+    <!-- END Stylesheets -->
+    <style type="text/css">
+        .bg-image {
+            z-index: -1;
+            -webkit-filter: blur(0px);
+            /* Set rules to fill background */
+            min-height: 100%;
+            min-width: 1024px;
+            /* Set up proportionate scaling */
+            width: 100%;
+            height: auto;
+            /* Set up positioning */
+            background-color: #013070;
+            -webkit-background-size: cover;
+            -moz-background-size: cover;
+            -o-background-size: cover;
+            background-size: cover;
+            position: fixed;
+            top: 0;
+            left: 0;
+        }
+
+        @@media screen and (max-width: 1024px) { /* Specific to this particular image */
+            img.bg {
+                left: 50%;
+                margin-left: -512px; /* 50% */
+            }
+        }
+
+        .LoginForm {
+            margin: 0 auto;
+            max-width: 22%;
+            box-shadow: 0px 20px 18px -16px #000;
+        }
+
+        @@media only screen and (max-width : 1400px) {
+            .LoginForm {
+                margin-top: 10%;
+                margin: 0 auto;
+                max-width: 40%;
+            }
+        }
+
+        @@media only screen and (max-width : 840px) {
+            .LoginForm {
+                margin-top: 10%;
+                margin: 0 auto;
+                max-width: 60%;
+            }
+        }
+
+        @@media only screen and (max-width : 530px) {
+            .LoginForm {
+                margin-top: 10%;
+                margin: 0 auto;
+                max-width: 100%;
+            }
+        }
+    </style>
+</head>
+<body class="utility-page sb-l-c sb-r-c" style="position: fixed;">
+    <div class="bg-image"></div>
+    <div id="canvas-wrapper">
+        <canvas id="demo-canvas"></canvas>
+        
+    </div>
+    <!-- Login Content -->
+    <div class="content overflow-hidden">
+
+        <div class="row">
+            <div class="col-lg-12">
+
+                <div class="LoginForm">
+
+                    @if (ViewBag.Validator == true)
+                    {
+                        <!-- Danger Alert -->
+                        <div class="alert alert-danger alert-dismissable">
+                            <button type="button" class="close" data-dismiss="alert" aria-hidden="true">&times;</button>
+                            <p>@ViewBag.ValidateError!</p>
+                        </div>
+                        <!-- END Danger Alert -->
+                    }
+
+                    <!------------------------------------------------------------------------- LOGIN FORM ------------------------------------------------------------------>
+
+                    <div class="push-30-t push-50  animated fadeIn" id="borderShadow" style="-webkit-box-shadow: 0px 0px 64px -24px; -moz-box-shadow: 0px 0px 64px -24px; box-shadow: 0px 0px 64px -24px; border-radius: 5px; background-color: #fff; ">
+
+
+                        <!-- Login Title -->
+                        <div class="text-center">
+                            <div class="img-responsive"><img src="~/assets/img/E-P.PNG" style="height:150px; margin-top:15px; margin-bottom:-45px" /></div>
+                        </div>
+                        <!-- END Login Title -->
+
+                        <div class="block-content block-content-full block-content-narrow">
+                            @if (ViewBag.VerificationForm == true)
+                            {
+                                using (Html.BeginForm("VerificationAuthentication", "Login", FormMethod.Post, new { @id = "VerifyForm", @class = "js-validation-login form-horizontal push-30-t push-50", role = "form" }))
+                                {
+
+                                    @Html.AntiForgeryToken()
+                                    <input type="hidden" name="ReturnUrl" id="ReturnUrl" value="@Request.QueryString["ReturnUrl"]" />
+                                    @Html.HiddenFor(login => login.UserName, new { @class = "form-control", autocomplete = "off" })
+                                    @Html.HiddenFor(login => login.UserID, new { @class = "form-control", autocomplete = "off" })
+
+                                    <div class="form-group ">
+                                        <div class="col-xs-12">
+                                            <p class="text-center">
+                                                Enter the Authentication code via Google Authenticator.
+                                            </p>
+                                        </div>
+                                    </div>
+
+                                    <div class="form-group">
+                                        <div class="col-xs-12">
+                                            <div class="form-material form-material-primary floating input-group">
+                                                <span class="input-group-addon">
+                                                    <a href="#" data-toggle="block-option" data-action="refresh_toggle" style="color:black" data-action-mode="demo">P -</a>
+                                                </span>
+                                                @Html.TextBoxFor(login => login.VerificationCode, new { @class = "form-control", @placeholder = "Enter the 6-digit code", onkeypress = "validate(event)", autocomplete = "off" })
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="form-group">
+                                        <div class="col-lg-12">
+                                            <button class="btn btn-block btn-default" id="VerificationButton" data-loading-text="<i class='fa fa-spinner fa-spin '></i> Loading..." type="submit">
+                                                <i class="si si-login pull-right"></i> Verify
+                                            </button>
+                                        </div>
+                                    </div>
+
+                                    <div class="form-group">
+                                        <div class="col-lg-12">
+                                            <a class="btn btn-block btn-danger" href="@Url.Action("UserLogin","Home")">
+                                                <i class="si si-arrow-left pull-right"></i> Back
+                                            </a>
+                                        </div>
+                                    </div>
+                                }
+                            }
+
+                            @if (ViewBag.Login == true)
+                            {
+                                using (Html.BeginForm("LoginAuthentication", "Login", FormMethod.Post, new { @id = "LoginForm", @class = "js-validation-login form-horizontal push-30-t push-50", role = "form" }))
+                                {
+
+                                    @Html.AntiForgeryToken()
+                                    <input type="hidden" name="ReturnUrl" id="ReturnUrl" value="@Request.QueryString["ReturnUrl"]" />
+                                    <div class="form-group">
+                                        <div class="col-xs-12">
+                                            <div class="form-material form-material-primary floating">
+                                                @Html.TextBoxFor(login => login.UserName, new { @class = "form-control", autocomplete = "off" })
+                                                <label for="UserName">Username</label>
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    <div class="form-group">
+                                        <div class="col-xs-12">
+                                            <div class="form-material input-group form-material-primary floating">
+                                                @Html.PasswordFor(login => login.Password, new { @class = "form-control" })
+                                                <label for="Password">Password</label>
+                                                <span toggle="#Password" class="fa fa-eye input-group-addon toggle-password"></span>
+                                            </div>
+                                        </div>
+                                        <div class="col-xs-12">
+                                            <label id="txLoginCapslock" style="display:none;" class="label label-danger">Capslock On</label>
+                                        </div>
+                                    </div>
+
+
+                                    <div class="form-group">
+                                        <div class="col-lg-12">
+                                            <button class="btn btn-block btn-default" id="LoginButton" data-loading-text="<i class='fa fa-spinner fa-spin '></i> Loading..." type="submit">
+                                                <i class="si si-login pull-right"></i> LOGIN
+                                            </button>
+                                        </div>
+                                    </div>
+                                }
+                            }
+
+                            <!------------------------------------------------------------------------- END LOGIN FORM ------------------------------------------------------------------>
+                            <!------------------------------------------------------------------------- END CHANGE PASSWORD FORM ------------------------------------------------------------------>
+
+                            @if (ViewBag.NewPassword == true)
+                            {
+                                using (Html.BeginForm("NewPasswordAuthentication", "Login", FormMethod.Post, new { @class = "js-validation-login form-horizontal push-30-t push-50", @id = "NewPasswordFrom" }))
+                                {
+                                    @Html.AntiForgeryToken()
+
+                                    @Html.HiddenFor(login => login.UserName, new { @class = "form-control", autocomplete = "off" })
+                                    @Html.HiddenFor(login => login.UserID, new { @class = "form-control", autocomplete = "off" })
+
+                                    <div class="form-group">
+                                        <div class="col-xs-12">
+                                            <div class="form-material form-material-primary floating">
+                                                @Html.PasswordFor(login => login.NewPassword, new { @class = "form-control" })
+                                                <label for="NewPassword">New Password</label>
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    <div class="form-group">
+                                        <div class="col-xs-12">
+                                            <div class="form-material form-material-primary floating">
+                                                @Html.PasswordFor(login => login.ConfirmationPassword, new { @class = "form-control" })
+                                                <label for="ConfirmationPassword">Confirm New Password</label>
+                                            </div>
+                                        </div>
+                                        <div class="col-xs-12">
+                                            <label id="txNewPasswordCapslock" style="display:none;" class="label label-danger">Capslock On</label>
+                                        </div>
+                                    </div>
+
+                                    <div class="form-group">
+                                        <div class="col-md-12">
+                                            <button class="btn btn-block btn-default" data-loading-text="<i class='fa fa-spinner fa-spin '></i> Loading..." type="submit">
+                                                <i class="si si-key pull-right"></i> CHANGE PASSWORD
+                                            </button>
+                                            <a class="btn btn-block btn-danger" href="@Url.Action("LogOut","Login")">
+                                                <i class="si si-arrow-left pull-right"></i> BACK
+                                            </a>
+                                        </div>
+                                    </div>
+                                }
+                            }
+                            <!------------------------------------------------------------------------- CHANGE PASSWORD FORM ------------------------------------------------------------------>
+                            <!-- Login Footer -->
+                            <div class="push-10-t text-center animated fadeInUp">
+                                <small class="text-muted font-w600" style="color:#000000; font-size:13px;">
+                                    <span>Powered by </span><img src="~/assets/img/ATILOGO_HORI.png" style="height:40px;" />
+                                </small>
+                            </div>
+                            <!-- END Login Footer -->
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+
+    </div>
+    <footer id="page-footer" class="content-mini content-mini-full font-s12 clearfix" style="position:absolute; bottom:0; width:100%">
+        <div style="float:right;">
+            <a href="@Url.Action("ServerConfiguration","Login")"><span class="font-w600">Server Configuration</span></a><br />
+            <span class="font-w600">Beta Version 2.0.5</span>
+        </div>
+    </footer>
+    <!-- END Login Content -->
+    @Scripts.Render("~/bundles/LoginJquery")
+    @Scripts.Render("~/bundles/JSLoginFormValidation")
+
+    <!-- -------------- CanvasBG JS -------------- -->
+    <script src="~/assets/js/plugins/canvasbg/canvasbg.js"></script>
+
+    <!-- -------------- Theme Scripts -------------- -->
+    <script src="~/assets/js/utility/utility.js"></script>
+    <script src="~/assets/js/demo/demo.js"></script>
+    <script src="~/assets/js/main.js"></script>
+    @if (ViewBag.VerificationError == "true")
+    {
+        <script>
+
+            window.onload = function () {
+                bootbox.alert({
+                    size: "small",
+                    title: "Invalid Verification Code",
+                    message: "Your verification code doesn't match.",
+                    callback: function () { /* your callback code */
+                        $("#VerificationCode").val("");
+                    }
+                })
+            };
+        </script>
+    }
+
+    @if (ViewBag.LoginError == "true")
+    {
+        <script>
+
+            window.onload = function () {
+                bootbox.alert({
+                    size: "small",
+                    title: "Invalid credentials",
+                    message: "Please check your username or password.",
+                    callback: function () { /* your callback code */
+                    }
+                })
+            };
+        </script>
+    }
+
+
+
+
+
+    <script>
+        var txLoginCapslock = document.getElementById("txLoginCapslock");
+        var txNewPasswordCapslock = document.getElementById("txNewPasswordCapslock");
+
+
+        document.onkeypress = function (e) {
+            e = (e) ? e : window.event;
+
+            var kc = (e.keyCode) ? e.keyCode : e.which; // get keycode
+            var isUp = (kc >= 65 && kc <= 90) ? true : false; // uppercase
+            var isLow = (kc >= 97 && kc <= 122) ? true : false; // lowercase
+            var isShift = (e.shiftKey) ? e.shiftKey : ((kc == 16) ? true : false); // shift is pressed -- works for IE8-
+
+            // uppercase w/out shift or lowercase with shift == caps lock
+            if ((isUp && !isShift) || (isLow && isShift)) {
+
+                txLoginCapslock.style.display = "block";
+                txNewPasswordCapslock.style.display = "block";
+            } else {
+                txLoginCapslock.style.display = "none"
+                txNewPasswordCapslock.style.display = "none"
+            }
+
+        }
+
+
+        $(".toggle-password").click(function () {
+
+            $(this).toggleClass("fa-eye fa-eye-slash");
+            var input = $($(this).attr("toggle"));
+            if (input.attr("type") == "password") {
+                input.attr("type", "text");
+            } else {
+                input.attr("type", "password");
+            }
+        });
+    </script>
+
+
+    <script>
+
+        $('#NewPasswordFrom').on('click', 'button', function () {
+
+            var ConfirmationPassword = $("#ConfirmationPassword").val();
+            var NewPassword = $("#NewPassword").val();
+
+            if (NewPassword != "" || ConfirmationPassword != "") {
+                var $this = $(this);
+                $this.button('loading');
+                setTimeout(function () {
+                    $this.button('reset');
+                }, 5000);
+            }
+        });
+    </script>
+
+    <script>
+        function validate(evt) {
+            var theEvent = evt || window.event;
+
+            // Handle paste
+            if (theEvent.type === 'paste') {
+                key = event.clipboardData.getData('text/plain');
+            } else {
+                // Handle key press
+                var key = theEvent.keyCode || theEvent.which;
+                key = String.fromCharCode(key);
+            }
+            var regex = /[0-9]|\./;
+            if (!regex.test(key)) {
+                theEvent.returnValue = false;
+                if (theEvent.preventDefault) theEvent.preventDefault();
+            }
+        }
+
+        $("#ResendCodes").on('click', function (e) {
+            var UserID = $("#UserID").val();
+
+            e.preventDefault()
+
+            bootbox.confirm({
+                title: "Resend Verification Code",
+                message: "Are you sure you want to resend a Code? It will be sent to your email address.",
+                buttons: {
+                    cancel: {
+                        label: '<i class="fa fa-times"></i> Cancel'
+                    },
+                    confirm: {
+                        label: '<i class="fa fa-check"></i> Confirm'
+                    }
+                },
+                callback: function (result) {
+                    if (result) {
+                        $.ajax({
+                            url: "/Login/ResendVeritificationCode",
+                            type: "POST",
+                            contentType: "application/json",
+                            data: JSON.stringify({
+                                UserID: UserID,
+                            }),
+                            dataType: "json",
+                            success: function (data) {
+
+                                if (data == "1") {
+                                    bootbox.alert({
+                                        size: "medium",
+                                        title: "Verification email with code has been sent.",
+                                        message: "You would have received a verification email with code in your email account.",
+                                        callback: function () { /* your callback code */
+                                        }
+                                    })
+                                }
+                            }
+                        });
+                    }
+                }
+            });
+
+
+        })
+
+        $("#LoginForm").submit(function () {
+
+            var UserName = $("#UserName").val();
+            var Password = $("#Password").val();
+            var ReturnUrl = $("#ReturnUrl").val();
+
+
+
+
+            if (UserName == "" || Password == "") {
+
+                return false;
+            }
+
+            var $this = $("#LoginButton");
+            $this.button('loading');
+            setTimeout(function () {
+                $this.button('reset');
+            }, 5000);
+
+
+            var action = $("#LoginForm").attr("action");
+            $.ajax({
+                url: action,
+                type: "POST",
+                contentType: "application/json",
+                data: JSON.stringify({
+                    UserName: UserName,
+                    Password: Password,
+                    ReturnUrl: ReturnUrl,
+                }),
+                dataType: "json"
+            });
+        })
+
+
+        $("#VerifyForm").submit(function () {
+
+            var VerificationCode = $("#VerificationCode").val();
+            var ReturnUrl = $("#ReturnUrl").val();
+            var UserID = $("#UserID").val();
+
+
+            var $this = $("#VerificationButton");
+            $this.button('loading');
+            setTimeout(function () {
+                $this.button('reset');
+            }, 5000);
+
+            var action = $("#VerifyForm").attr("action");
+            $.ajax({
+                url: action,
+                type: "POST",
+                contentType: "application/json",
+                data: JSON.stringify({
+                    UserID: UserID,
+                    VerificationCode: VerificationCode,
+                    ReturnUrl: ReturnUrl,
+                }),
+                dataType: "json"
+            });
+        })
+
+    </script>
+
+
+    <script type="text/javascript">
+        jQuery(document).ready(function () {
+
+            "use strict";
+
+            // Init Theme Core
+            Core.init();
+
+            // Init Demo JS
+            Demo.init();
+
+            // Init CanvasBG
+            CanvasBG.init({
+                Loc: {
+                    x: window.innerWidth / 5,
+                    y: window.innerHeight / 10
+                }
+            });
+
+        });
+    </script>
+
+</body>
+</html>

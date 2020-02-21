@@ -1,0 +1,314 @@
+﻿@model PO_PurchasingUI.Models.ClientModel
+@{
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+@{
+
+
+    List<SelectListItem> ListofPONumber = new List<SelectListItem>();
+    ListofPONumber.Add(new SelectListItem
+    {
+        Text = "",
+        Value = ""
+    });
+
+}
+
+<!-- Page Header -->
+<input type="hidden" value="62" id="ModuleAccess" />
+
+<div class="content bg-gray-lighter">
+    <div class="row items-push">
+        <div class="col-sm-7">
+            <h1 class="page-heading">
+                CLIENT INQUIRY <small></small>
+            </h1>
+        </div>
+        <div class="col-sm-5 text-right hidden-xs">
+            <ol class="breadcrumb push-10-t">
+                <li>INQUIRY</li>
+                <li><a class="link-effect" href="">CLIENT</a></li>
+            </ol>
+        </div>
+    </div>
+</div>
+
+<!-- END Page Header -->
+
+<div class="content">
+    <div class="block animated fadeIn">
+        <div class="block-header">
+            <h4 class="block-title">Date : @DateTime.Now.ToShortDateString()</h4>
+        </div>
+        <div class="block-content">
+            <div class="row">
+                @*<div class="col-xs-12 col-sm-12 col-md-6 col-md-offset-3">
+                        <div class="form-material form-material-primary input-group remove-margin-t remove-margin-b">
+                            <input class="form-control" type="text" autocomplete="off" id="txSearch" name="base-material-text" placeholder="Search..">
+                            <span class="input-group-addon"><i class="si si-magnifier"></i></span>
+                        </div>
+                    </div>*@
+
+                <div class="col-md-12">
+                    <div class="panel-body table-responsive">
+                        <table class="InquiryTable table table-striped table-borderless text-center js-dataTable-full-pagination">
+                            <thead>
+                                <tr>
+                                    <th style="font-size: 12px;" class="text-left col-md-1">Tag</th>
+                                    <th style="font-size: 12px;" class="text-left col-md-1">PO No.</th>
+                                    <th style="font-size: 12px;" class="text-left">Quotation No.</th>
+                                    <th style="font-size: 12px;" class="text-left">Reference No.</th>
+                                    <th style="font-size: 12px;" class="text-left col-md-2">Client</th>
+                                    <th style="font-size: 12px;" class="text-left col-md-2">Project Name</th>
+                                    <th style="font-size: 12px;" class="text-left">Location</th>
+                                    <th style="font-size: 12px;" class="text-left">Status</th>
+                                    <th style="font-size: 12px;" class="text-left">Date</th>
+                                </tr>
+                            </thead>
+                            <tbody class="tbsdisplay">
+                                @foreach (var item in Model.PopulateClientdetails)
+                                {
+                                <tr>
+                                    <td style="font-size: 12px;" class="text-left"><a class="btn btn-primary" href="#" id="UpdatePOTagging"><span class="fa fa-tags"></span></td>
+                                    <td style="font-size: 12px;" class="text-left">@Html.DisplayFor(Modelitem => item.PONumber)</td>
+                                    <td style="font-size: 12px;" class="text-left">@Html.DisplayFor(Modelitem => item.SignProposal)</td>
+                                    <td style="font-size: 12px;" class="text-left">@Html.DisplayFor(Modelitem => item.POC_ReferenceNo)</td>
+                                    <td style="font-size: 12px;" class="text-left">@Html.DisplayFor(Modelitem => item.ClientID)</td>
+                                    <td style="font-size: 12px;" class="text-left">@Html.DisplayFor(Modelitem => item.ProjectName)</td>
+                                    <td style="font-size: 12px;" class="text-left">@Html.DisplayFor(Modelitem => item.ClientLocation)</td>
+                                    @if (item.ProjectStatus == "ON-GOING")
+                                    {
+                                        <td style="font-size: 12px;" class="text-left"><span class="label label-default" style="background: #5c90d2">@Html.DisplayFor(Modelitem => item.ProjectStatus)</span></td>
+                                    }
+                                    else if (item.ProjectStatus == "REJECTED")
+                                    {
+                                        <td style="font-size: 12px;" class="text-left"><span class="label label-danger">@Html.DisplayFor(Modelitem => item.ProjectStatus)</span></td>
+                                    }
+                                    else if (item.ProjectStatus == "CLOSED")
+                                    {
+                                        <td style="font-size: 12px;" class="text-left"><span class="label label-success">COMPLETED</span></td>
+                                    }
+                                    else if (item.ProjectStatus == "CANCELLED")
+                                    {
+                                        <td style="font-size: 12px;" class="text-left"><span class="label label-danger">@Html.DisplayFor(Modelitem => item.ProjectStatus)</span></td>
+                                    }
+                                    <td style="font-size: 12px;" class="text-left">@Html.DisplayFor(Modelitem => item.EntryDate)</td>
+
+                                    @Html.HiddenFor(Modelitem => item.POC_ReferenceNo)
+                                </tr>
+                                }
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+<div class="modal fade" id="modal-slideright" tabindex="-1" role="dialog" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-popout modal-md">
+
+        @using (Html.BeginForm("UpdatePOTagging", "Main", FormMethod.Post, new { @id = "TaggingForm", @class = "js-validation-material form-horizontal push-10-t", role = "form" }))
+        {
+            <div class="modal-content">
+                <div class="block block-themed block-transparent remove-margin-b">
+                    <div class="block-header bg-primary-dark" style="background-image: url(/assets/img/try.jpg);">
+                        <ul class="block-options">
+                            <li>
+                                <button data-dismiss="modal" type="button"><i class="si si-close"></i></button>
+                            </li>
+                        </ul>
+                        <h3 class="block-title">PO Tagging</h3>
+                    </div>
+                    <div class="block-content">
+                        <div class="row">
+                            <div class="form-group">
+                                <div class="col-md-10 col-md-offset-1">
+                                    <div class="form-material form-material-primary">
+                                        @Html.HiddenFor(a => a.POC_ReferenceNo)
+                                        @Html.DropDownListFor(client => client.SupplierPONumberList, ListofPONumber, new { @class = "js-select2 form-control", data_placeholder = "Select P.O Number.", multiple = "multiple", style = "width:100%" })
+                                        <label for="SupplierPONumberList">Supplier PO Number</label>
+                                    </div>
+                                </div>
+                            </div>
+
+                        </div>
+
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button class="btn btn-sm btn-danger" type="button" data-dismiss="modal">Close</button>
+                    <button class="btn btn-sm btn-primary" id="UpdateItem" type="submit"><i class="fa fa-check"></i> Confirm</button>
+                </div>
+            </div>
+        }
+    </div>
+</div>
+
+
+
+@section scripts{
+
+    <script>
+
+   
+
+
+        $(".InquiryTable").on('click', "#UpdatePOTagging", function (event) {
+
+            var row = $(this).closest("tr");
+            var POC = $("#item_POC_ReferenceNo", row).val();
+
+            $("#POC_ReferenceNo").val(POC);
+         
+            //fetch ItemCategories form database
+
+            var ItemCategories = [] //SET STRING ARRAY
+
+            function LoadItemCategory(element) {
+                if (ItemCategories.length == 0) {
+                    //ajax function for fetch data
+
+                    $.ajax({
+
+                        type: "GET",
+                        url: '/Home/PopulateListOfPoNumber', //REDIRECT TO ACTION RESULT (HOME CONTROLLLER)
+                        success: function (data) { //RETURN DATA GALING SA CONTROLLER
+                            ItemCategories = data; // RENDER DATA TO STRING ARRAY
+
+                            //render item category
+                            renderCategory(element);
+                        }
+                    })
+                }
+                else {
+                    //render catagory to the element
+                    renderCategory(element);
+                }
+            }
+
+
+            function renderCategory(element) {
+                var $ele = $(element);
+                $ele.empty();
+                $ele.append($('<option/>').val('').text(''));
+                $.each(ItemCategories, function (i, val) {
+                    $ele.append($('<option/>').val(this['Value']).html(this['Text']));
+                })
+
+                var list = [];
+                var POC_ReferenceNo = $("#POC_ReferenceNo").val();
+                $.ajax({
+
+                    type: "POST",
+                    url: '/Home/PopulateListSupplierPONumber', //REDIRECT TO ACTION RESULT (HOME CONTROLLLER)
+                    data: JSON.stringify({
+                        POC_ReferenceNo: POC_ReferenceNo,
+                    }),
+                    contentType: "application/json",
+                    dataType: "json",
+                    success: function (data) { //RETURN DATA GALING SA CONTROLLER
+                        list = data;
+
+                        $("#SupplierPONumberList").val(list)
+                        $("#SupplierPONumberList").change();
+
+                    }
+                })
+            }
+
+            LoadItemCategory($("#SupplierPONumberList"))
+
+            $('#modal-slideright').modal({
+                show: 'false',
+                backdrop: 'static',
+            });
+
+
+
+        })
+
+    </script>
+
+  
+        <script>
+
+            $("#TaggingForm").submit(function (event) {
+
+               
+                var SupplierPONumberList = $("#SupplierPONumberList").val()
+                var POC_ReferenceNo = $("#POC_ReferenceNo").val();
+
+
+                event.preventDefault();
+                event.stopImmediatePropagation();
+
+                swal({
+                    title: "Are you sure?",
+                    text: "",
+                    type: "warning",
+                    showCancelButton: true,
+                    confirmButtonColor: '#5F69E0',
+                    confirmButtonText: 'Yes',
+                    cancelButtonText: "No",
+                    closeOnConfirm: false, width: 420,
+                    closeOnCancel: false,
+                    allowOutsideClick: false
+                }).then((isConfirm) => {
+                    if (isConfirm) {
+
+                        var action = $("#TaggingForm").attr("action"); // GET ACTION URL FROM FORM
+
+                        $.ajax({
+                            url: action,
+                            type: "POST",
+                            contentType: "application/json",
+                            data: JSON.stringify({
+                                POC_ReferenceNo: POC_ReferenceNo,
+                                SupplierPONumberList: SupplierPONumberList,
+                            }),
+                            dataType: "json",
+                            success: function (data) { //AFTER INSERT RETURN RESULT 
+
+                                if (data == 0) {
+                                    sweetAlert("Contact our administrator for assistance.", "", "error");
+                                    //alert("File Shouldn't Be Empty!!");
+                                    return false;
+                                }
+                                if (data == "empty") {
+                                    swal
+                                        ({
+                                            title: "Success",
+                                            text: "This Project is no longer tagged to any P.O.",
+                                            type: "success", allowOutsideClick: false
+                                        }).then(function () {
+                                            // Redirect the user
+                                            location.reload();
+                                        });
+                                }
+                                else {
+                                    swal
+                                        ({
+                                            title: "Success",
+                                            text: data + " P.O. Successfully Tagged in this Project.",
+                                            type: "success", allowOutsideClick: false
+                                        }).then(function () {
+                                            // Redirect the user
+                                            location.reload();
+                                        });
+                                }
+                            }
+                        });
+
+                    }
+                })
+            })
+
+        </script>
+
+
+
+}

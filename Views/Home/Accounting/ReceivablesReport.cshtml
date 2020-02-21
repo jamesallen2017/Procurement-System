@@ -1,0 +1,84 @@
+﻿@model PO_PurchasingUI.Models.AccountingModel
+@{
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<input type="hidden" value="94" id="ModuleAccess" />
+
+<!-- Page Header -->
+<div class="content bg-gray-lighter">
+    <div class="row items-push">
+        <div class="col-sm-7">
+            <h1 class="page-heading">
+                BILLINGS REPORT<small></small>
+            </h1>
+        </div>
+        <div class="col-sm-5 text-right hidden-xs">
+            <ol class="breadcrumb push-10-t">
+                <li>ACCOUNTING</li>
+                <li>REPORTS</li>
+                <li><a class="link-effect" href="">OUTSTANDING AR</a></li>
+            </ol>
+        </div>
+    </div>
+</div>
+<!-- END Page Header -->
+
+<div class="content">
+    <div class="block animated fadeIn">
+        <div class="block-header">
+            <h4 class="block-title">Date : @DateTime.Now.ToShortDateString()</h4>
+        </div>
+        <div class="block-content">
+            <div class="row">
+                <div class="col-md-12">
+                    <div class="panel-body table-responsive">
+                        <table class="ItemDisplay table table-striped table-borderless text-center js-dataTable-full-pagination">
+                            <thead>
+                                <tr>
+                                    <th style="font-size: 12px;" class="text-left"></th>
+                                    <th style="font-size: 12px;" class="text-left">P.O. Number.</th>
+                                    <th style="font-size: 12px;" class="text-left">Client</th>
+                                    <th style="font-size: 12px;" class="text-left">Project Name</th>
+                                    <th style="font-size: 12px;" class="text-left">Particulars</th>
+
+
+                                </tr>
+                            </thead>
+                            <tbody class="tbsdisplay">
+
+                                @foreach (var item in Model.PopulateEditReceivables)
+                                {
+                                <tr>
+                                    <td style="font-size: 12px;" class="text-left"></td>
+                                    <td style="font-size: 12px;" class="text-left">@Html.DisplayFor(Modelitem => item.ACC_PONumber)</td>
+                                    <td style="font-size: 12px;" class="text-left">@Html.DisplayFor(Modelitem => item.ACC_Client)</td>
+                                    <td style="font-size: 12px;" class="text-left">@Html.DisplayFor(Modelitem => item.ACC_ProjectName)</td>
+                                    <td style="font-size: 12px;" class="text-left">@Html.DisplayFor(Modelitem => item.ACC_Particular)</td>
+                                </tr>
+                                }
+
+                            </tbody>
+                        </table>
+                        <div class="form-group">
+                            <div class="col-md-2 col-md-offset-5">
+                                <button type="button" class="btn btn-primary btn-block" id="btnPrintReport"><i class="si si-printer"></i> Print Report</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+        </div>
+    </div>
+</div>
+
+
+<script>
+        $(document).ready(function () {
+
+            $("#btnPrintReport").on("click", function () {
+                window.open("/Report/ReceivablesReport/");
+
+
+            })
+        })
+</script>

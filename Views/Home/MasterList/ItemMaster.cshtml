@@ -1,0 +1,513 @@
+﻿@model PO_PurchasingUI.Models.ItemMaster
+@{
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+@{
+    List<SelectListItem> listItems = new List<SelectListItem>();
+    listItems.Add(new SelectListItem
+    {
+        Text = "Active",
+        Value = "Active",
+    });
+    listItems.Add(new SelectListItem
+    {
+        Text = "Deactivated",
+        Value = "Deactivated",
+    });
+}
+
+<input type="hidden" value="112" id="ModuleAccess" />
+
+<!-- Page Header -->
+<div class="content bg-gray-lighter">
+    <div class="row items-push">
+        <div class="col-sm-7">
+            <h1 class="page-heading">
+                MASTER LIST <small></small>
+            </h1>
+        </div>
+        <div class="col-sm-5 text-right hidden-xs">
+            <ol class="breadcrumb push-10-t">
+                <li>MAINTENANCE</li>
+                <li>MASTER LIST</li>
+                <li><a class="link-effect" href="">ITEM MASTER</a></li>
+            </ol>
+        </div>
+    </div>
+</div>
+<!-- END Page Header -->
+<div class="content">
+    <div class="block">
+        <div class="block-header">
+            <ul class="block-options"></ul>
+            <h4 class="block-title">Date : @DateTime.Now.ToShortDateString()</h4>
+
+            @if (ViewBag.ItemMonitoring == true)
+            {
+                <div class="block-content">
+
+                        <!-- Header Tiles -->
+                        <div class="row">
+                            <div class="col-sm-6 col-md-3">
+                                <a class="block block-link-hover3 text-center" href="@Url.Action("CreateItemMaster","Home")">
+                                    <div class="block-content block-content-full">
+                                        <div class="h1 font-w700 text-success"><i class="fa fa-plus"></i></div>
+                                    </div>
+                                    <div class="block-content block-content-full block-content-mini bg-gray-lighter text-success font-w600">Add New Item</div>
+                                </a>
+                            </div>
+                            <div class="col-sm-6 col-md-3">
+                                <a class="block block-link-hover3 text-center" href="javascript:void(0)">
+                                    <div class="block-content block-content-full">
+                                        <div class="h1 font-w700 text-danger" data-toggle="countTo" data-to="0"></div>
+                                    </div>
+                                    <div class="block-content block-content-full block-content-mini bg-gray-lighter text-danger font-w600">Out of Stock</div>
+                                </a>
+                            </div>
+                            <div class="col-sm-6 col-md-3">
+                                <a class="block block-link-hover3 text-center" href="javascript:void(0)">
+                                    <div class="block-content block-content-full">
+                                        <div class="h1 font-w700" data-toggle="countTo" data-to="@Model.CountActive"></div>
+                                    </div>
+                                    <div class="block-content block-content-full block-content-mini bg-gray-lighter text-muted font-w600">Active Products</div>
+                                </a>
+                            </div>
+                            <div class="col-sm-6 col-md-3">
+                                <a class="block block-link-hover3 text-center" href="javascript:void(0)">
+                                    <div class="block-content block-content-full">
+                                        <div class="h1 font-w700" data-toggle="countTo" data-to="@Model.PopulateAll_Item.Count()"></div>
+                                    </div>
+                                    <div class="block-content block-content-full block-content-mini bg-gray-lighter text-muted font-w600">All Products</div>
+                                </a>
+                            </div>
+                        </div>
+                        <!-- END Header Tiles -->
+
+
+
+                      
+
+                        <div class="col-md-12">
+                            <div class="panel-body table-responsive">
+                                <input type="hidden" ID="hfScrollPosition" Value="0" />
+                                <table class="table table-striped table-borderless text-center js-dataTable-full-pagination">
+                                    <thead>
+                                        <tr>
+                                            <th style="font-size: 12px;" class="col-xs-1 col-sm-1 text-center">Edit</th>
+                                            <th style="font-size: 12px;" class="col-xs-1 col-sm-1 text-left">item code</th>
+                                            <th style="font-size: 12px;" class="col-xs-2 col-sm-2 text-left">Name</th>
+                                            <th style="font-size: 12px;" class="col-xs-2 col-sm-2 text-left hidden-xs">Report View</th>
+                                            <th style="font-size: 12px;" class="col-xs-1 col-sm-1 text-center">Unit</th>
+                                            <th style="font-size: 12px;" class="col-xs-1 col-sm-1 text-center hidden-xs">Item Category</th>
+                                            <th style="font-size: 12px;" class="col-xs-1 col-sm-1 text-center hidden-xs">Status</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+
+                                        @foreach (var item in Model.PopulateAll_Item)
+                                        {
+                                        <tr>
+                                            <td style="font-size: 12px;" class="col-xs-1 col-sm-1"><a class="btn btn-primary" href="@Url.Action("EditItemMaster","Home", new { @Id = item.ItemID})"><span class="fa fa-edit"></span></a></td>
+                                            <td style="font-size: 12px;" class="col-xs-1 col-sm-1 text-left">@Html.DisplayFor(modelitem => item.ItemCode)</td>
+                                            <td style="font-size: 12px;" class="col-xs-2 col-sm-2 text-left">@Html.DisplayFor(modelitem => item.ItemName)</td>
+                                            <td style="font-size: 12px;" class="col-xs-2 col-sm-2 text-left hidden-xs">@Html.DisplayFor(modelitem => item.ItemDescription)</td>
+                                            <td style="font-size: 12px;" class="col-xs-1 col-sm-1">@Html.DisplayFor(modelitem => item.ItemMeasure)</td>
+                                            <td style="font-size: 12px;" class="col-xs-1 col-sm-1 hidden-xs">@Html.DisplayFor(modelitem => item.ItemCategory)</td>
+                                            <td style="font-size: 12px;" class="col-xs-1 col-sm-1 hidden-xs">@Html.DisplayFor(modelitem => item.ItemStatus)</td>
+                                        </tr>
+                                        }
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                </div>
+            }
+
+            @if (ViewBag.ItemMonitoring == false)
+            {
+                using (Html.BeginForm("InsertItemMasterInformation", "Main", FormMethod.Post, new { @id = "ItemValidation", @class = "js-validation-material form-horizontal push-10-t", role = "form" }))
+                {
+                    <div class="block-content">
+                        <table id="tableItemMaster" class="table" cellpadding="0" cellspacing="0" style="margin-bottom:100px;">
+                            <thead>
+                                <tr>
+                                    <th class="col-md-1"></th>
+                                    <th class="text-center col-md-1">Item Code</th>
+                                    <th class="text-center col-md-2">Name</th>
+                                    <th class="text-center col-md-2">Report View</th>
+                                    <th class="text-center col-md-1">Unit</th>
+                                    <th class="text-center col-md-1">Category</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr id="mainrow">
+                                    <td>  <a id="add" href="#" class="btn btn-success"><span class="fa fa-plus"></span> </a>  <a id="Remove" href="#" class="btn btn-danger"><span class="fa fa-close"></span> </a></td>
+                                    <td>
+                                        <div class="form-material form-material-primary floating">
+                                            @Html.DropDownListFor(client => client.ItemCode, Model.ItemCodeList, "Select Code", new { @class = "pc js-select2 form-control", style = "width:100%" })
+                                        </div>
+                                    </td>
+                                    <td><div class="form-material form-material-primary floating">@Html.TextBoxFor(item => item.ItemName, new { @class = "form-control", maxlength = "60" })</div></td>
+                                    <td><div class="form-material form-material-primary floating">@Html.TextAreaFor(item => item.ItemDescription, new { @class = "form-control", style = "margin:0px; width: 100%; height: 34px; resize:vertical;" })</div></td>
+                                    <td>
+                                        <div class="form-material form-material-primary floating">
+                                            @Html.DropDownListFor(client => client.ItemMeasure, Model.ItemListMeasure, "Select UOM", new { @class = "pc js-select2 form-control", style = "width:100%" })
+                                        </div>
+                                    </td>
+                                    <td>
+                                        <div class="form-material form-material-primary floating">
+                                            @Html.DropDownListFor(client => client.ItemCategory, Model.ItemListCategory, "Select Category", new { @class = "pc js-select2 form-control", style = "width:100%" })
+                                        </div>
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                        <a class="btn btn-sm btn-danger pull-right" id="back" onclick=" window.history.back();  ">Back</a>
+                        <input class="btn btn-sm btn-primary  pull-right" style="margin-right:5px;" type="submit" id="btnSaveItem" value="Submit" />
+                    </div>
+                }
+            }
+
+            @if (ViewBag.EditItemMaster == true)
+            {
+                using (Html.BeginForm("UpdateItemInformation", "Main", FormMethod.Post, new { @class = "js-validation-material form-horizontal push-10-t", id = "UpdateItemForm", name = "UpdateItemForm" }))
+                {
+
+                    <div class="block-content block-content-narrow">
+                        @if (ViewBag.SuccessUpdated == true)
+                        {
+
+                            <div class="alert alert-success alert-dismissable">
+                                <button type="button" class="close" data-dismiss="alert" aria-hidden="true">&times;</button>
+                                <h3 class="font-w300 push-15">Success</h3>
+                                <p>The <a class="alert-link" href="javascript:void(0)">Item</a> Information is Successfully Updated!</p>
+                            </div>
+
+                        }
+
+                            <div class="col-sm-6">
+                                @Html.HiddenFor(item => item.ItemID)
+                                @Html.HiddenFor(item => item.OldItemCode)
+
+                                <div class="form-group">
+                                    <div class="col-md-12">
+                                        <div class="form-material form-material-primary floating">
+                                            @Html.DropDownListFor(client => client.ItemCode, Model.ItemCodeList, "", new { @class = "pc js-select2 form-control" })
+                                            <label>Item Code</label>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="form-group">
+                                    <div class="col-md-12">
+                                        <div class="form-material form-material-primary floating">
+                                            @Html.TextBoxFor(item => item.ItemName, new { @class = "form-control", maxlength = "60" })
+                                            <label>Item Name</label>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="form-group">
+                                    <div class="col-md-12">
+                                        <div class="form-material form-material-primary floating">
+                                            @Html.TextAreaFor(item => item.ItemDescription, new { @class = "form-control", style = "margin: 0px; width: 100%; resize:vertical; height: 34px;" })
+                                            <label>ReportView</label>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                        <div class="col-sm-6">
+                            <div class="form-group">
+                                <div class="col-md-12">
+                                    <div class="form-material form-material-primary floating">
+                                        @Html.DropDownListFor(client => client.ItemMeasure, Model.ItemListMeasure, "", new { @class = "pc js-select2 form-control" })
+                                        <label>Unit</label>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="form-group">
+                                <div class="col-md-12">
+                                    <div class="form-material form-material-primary floating">
+                                        @Html.DropDownListFor(client => client.ItemCategory, Model.ItemListCategory, "", new { @class = "pc js-select2 form-control" })
+                                        <label>Item Category</label>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="form-group">
+                                <div class="col-md-12">
+                                    <div class="form-material form-material-primary floating">
+                                        @Html.DropDownListFor(x => x.ItemStatus, listItems, "", new { @class = "js-select2 form-control" })
+                                        <label>Status</label>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="col-xs-12">
+                            <div class="form-group">
+                                <a class="btn btn-sm btn-danger pull-right" href="@Url.Action("ItemMaster","Home")">Back</a>
+                                <button class="btn btn-sm btn-primary pull-right" style="margin-right:5px" type="submit">Submit</button>
+                            </div>
+                        </div>
+                    </div>
+                }
+            }
+        </div>
+    </div>
+</div>
+
+@*<script>
+
+
+    Timer();
+    var interval = null;
+    function Timer() {
+
+        if (interval == null) {
+            interval = setInterval(function () {
+                $.ajax({
+                    type: 'GET',
+                    url: '/Home/ItemTestCOntent',
+                    success: function (response) {
+                        $('#notiContent').empty();
+                        if (response.length != 0) {
+                           location = "";
+                        }
+                       
+                    },
+                    error: function (error) {
+                        console.log(error);
+                    }
+                })
+            }, 1000);
+
+        }
+    }
+</script>*@
+
+
+@section scripts
+{
+    <script>
+    $(document).ready(function () {
+
+        //--------------------------------------------------------------------------------------------- ADD TABLE ROW -----------------------------------------------------------------------//
+
+        var OldIItemName = $("#ItemName").val();
+        //add button click event
+
+        $("body").on("click", "#add", function () {
+
+            var validateitem = $('#ItemName').val();
+            var validateDesc = $('#ItemDescription').val();
+            var ItemCode = $('#ItemCode').val();
+            var ItemListCategory = $('#ItemCategory').val();
+            var ItemListMeasure = $('#ItemMeasure').val();
+
+            if (validateitem == "" || validateDesc == "" || ItemListCategory == "" || ItemListMeasure == "" || ItemCode == "") {
+                sweetAlert("Please fill in Required Fields.", "", "error");
+                //alert("File Shouldn't Be Empty!!");
+                return false;
+            }
+
+
+            $('select#ItemCode').select2('destroy');
+            $('select#ItemMeasure').select2('destroy');
+            $('select#ItemCategory').select2('destroy');
+
+
+
+            var $newRow = $('#mainrow').clone(true).appendTo('#tableItemMaster');
+            $('#ItemCode', $newRow).val($('#ItemCode').val());
+            $('#ItemMeasure', $newRow).val($('#ItemMeasure').val());
+            $('#ItemCategory', $newRow).val($('#ItemCategory').val());
+
+            //remove id attribute from new clone row
+            $('#ItemCode,#ItemName,#ItemDescription,#ItemMeasure,#ItemCategory', $newRow);
+
+
+            //clear select data
+            $('#ItemName').val("");
+            $('#ItemDescription').val("");
+            $('#ItemCode').val("");
+            $('#ItemMeasure').val("");
+            $('#ItemCategory').val("");
+            $('select#ItemCode').select2();
+            $('select#ItemMeasure').select2();
+            $('select#ItemCategory').select2();
+        })
+
+        //--------------------------------------------------------------------------------------------- DELETE TABLE ROW -----------------------------------------------------------------------//
+
+
+        //remove button click event
+        $('#tableItemMaster').on('click', '#Remove', function () {
+
+            var trIndex = $(this).closest("tr").index();
+            var count = $('#tableItemMaster tbody tr').length;
+
+            if (count > 1) {
+                $(this).closest("tr").remove();
+
+
+
+            } else {
+                sweetAlert("Sorry!! Can't remove first row!", "", "error");
+                //alert("File Shouldn't Be Empty!!");
+                return false;
+            }
+        });
+
+        //--------------------------------------------------------------------------------------------- INSERT FROM -----------------------------------------------------------------------//
+
+
+        $("#ItemValidation").submit(function (event) {
+            //Loop through the Table rows and build a JSON array.
+            var ItemDetails = new Array();
+            $("#tableItemMaster TBODY TR").each(function () {
+
+                var row = $(this);
+                var customer = {};
+
+                customer.ItemName = $("#ItemName", row).val();
+                customer.ItemCode = $("#ItemCode", row).val();
+                customer.ItemDescription = $("#ItemDescription", row).val();
+                customer.ItemMeasure = $("#ItemMeasure", row).val();
+                customer.ItemCategory = $("#ItemCategory", row).val();
+                ItemDetails.push(customer);
+            });
+
+
+            var action = $("#ItemValidation").attr("action");
+            event.preventDefault();
+            event.stopImmediatePropagation();
+            $.ajax({
+                url: action,
+                type: "POST",
+                contentType: "application/json",
+                data: JSON.stringify({
+                    value: ItemDetails,
+                }),
+                dataType: "json",
+                success: function (data) {
+                    if (data == 'Failed') {
+                        sweetAlert("Please fill in Required Fields.", "", "error");
+                        //alert("File Shouldn't Be Empty!!");
+                        return false;
+                    }
+                    else if (data == "SORRY") {
+                        sweetAlert("Item's Already exist.", "Please try again.", "error");
+                        //alert("File Shouldn't Be Empty!!");
+                        return false;
+                    }
+                    else {
+                        swal
+                            ({
+                                 title: "Success",
+                                text: " " + data + " Item/s successfully Added.",
+                                type: "success", allowOutsideClick: false
+                            }).then(function () {
+                                // Redirect the user
+                                window.location.href = '/Home/ItemMaster/';
+                            });
+
+                    }
+                }
+            });
+        }); //end .submit()
+
+        //--------------------------------------------------------------------------------------------- UPDATE FROM -----------------------------------------------------------------------//
+
+        $("#UpdateItemForm").submit(function (event) {
+            //Loop through the Table rows and build a JSON array.
+            var ItemDetails = new Array();
+
+            var ItemArray = {};
+
+            var ItemID = $("#ItemID").val();
+            var ItemName = $("#ItemName").val();
+            var ItemDescription = $("#ItemDescription").val();
+            var ItemMeasure = $("#ItemMeasure").val();
+            var ItemStatus = $("#ItemStatus").val();
+            var ItemCategory = $("#ItemCategory").val();
+            var ItemCode = $("#ItemCode").val();
+
+            ItemDetails.push(ItemArray);
+
+
+
+
+            var action = $("#UpdateItemForm").attr("action");
+            event.preventDefault();
+            event.stopImmediatePropagation();
+
+            swal({
+                title: "Are you sure?",
+                text: "",
+                type: "warning",
+                showCancelButton: true,
+                confirmButtonColor: '#5F69E0',
+                confirmButtonText: 'Yes',
+                cancelButtonText: "No",
+                closeOnConfirm: false, width: 420,
+                closeOnCancel: false,
+                allowOutsideClick: false
+            }).then((isConfirm) => {
+                if (isConfirm) {
+                    $.ajax({
+                url: action,
+            type: "POST",
+            contentType: "application/json",
+            data: JSON.stringify({
+                ItemID: ItemID,
+                ItemName: ItemName,
+                ItemDescription: ItemDescription,
+                ItemMeasure: ItemMeasure,
+                ItemStatus: ItemStatus,
+                OldItem: OldIItemName,
+                ItemCategory: ItemCategory,
+                ItemCode: ItemCode,
+            }),
+            dataType: "json",
+            success: function (data) {
+                if (data == 0) {
+                    sweetAlert("Please fill in Required Fields.", "", "error");
+                    //alert("File Shouldn't Be Empty!!");
+                    return false;
+                }
+                else if (data == "FAILED") {
+                    sweetAlert("Item's Already exist.", "Please try again.", "error");
+                    //alert("File Shouldn't Be Empty!!");
+                    return false;
+                }
+                else {
+                    swal
+                        ({
+                             title: "Success",
+                            text: " " + data + " Item/s successfully Updated.",
+                            type: "success", allowOutsideClick: false
+                        }).then(function () {
+                            // Redirect the user
+                            window.location.href = '/Home/ItemMaster/';
+
+                        });
+
+                }
+            }
+        });
+
+    }
+    })
+    }); //end .submit()
+    })
+
+
+</script>
+
+    }
+
+

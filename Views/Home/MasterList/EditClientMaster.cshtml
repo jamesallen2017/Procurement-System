@@ -1,0 +1,334 @@
+﻿@model PO_PurchasingUI.Models.ClientMaster
+
+@{
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+@{
+    List<SelectListItem> listItems = new List<SelectListItem>();
+    listItems.Add(new SelectListItem
+    {
+        Text = "Active",
+        Value = "Active",
+    });
+    listItems.Add(new SelectListItem
+    {
+        Text = "Deactivated",
+        Value = "Deactivated",
+    });
+}
+<input type="hidden" value="112" id="ModuleAccess" />
+
+
+<div class="content bg-gray-lighter">
+    <div class="row items-push">
+        <div class="col-sm-7">
+            <h1 class="page-heading">
+                MASTER LIST <small></small>
+            </h1>
+        </div>
+        <div class="col-sm-5 text-right hidden-xs">
+            <ol class="breadcrumb push-10-t">
+                <li>MAINTENANCE</li>
+                <li>MASTER LIST</li>
+                <li><a class="link-effect" href="">CLIENT MASTER</a></li>
+            </ol>
+        </div>
+    </div>
+</div>
+<!-- END Page Header -->
+
+<div class="content">
+    <div class="block">
+        <div class="block-header">
+            <ul class="block-options">
+                <li>
+                    <div class="form-group">
+                    </div>
+                </li>
+            </ul>
+            <h4 class="block-title">Date : @DateTime.Now.ToShortDateString()</h4>
+
+            @using (Html.BeginForm("UpdateClientMasterInformation", "Main", FormMethod.Post, new { @class = "js-validation-material form-horizontal push-10-t", id = "FormUser", name = "FormUser" }))
+            {
+
+            <div class="block-content block-content-narrow">
+
+                @if (ViewBag.SuccessUpdated == true)
+                {
+
+                    <div class="alert alert-success alert-dismissable">
+                        <button type="button" class="close" data-dismiss="alert" aria-hidden="true">&times;</button>
+                        <h3 class="font-w300 push-15">Success</h3>
+                        <p>The <a class="alert-link" href="javascript:void(0)">Client</a> Information is Successfully Updated!</p>
+                    </div>
+
+                }
+
+                @Html.HiddenFor(client => client.ClientID)
+                @Html.HiddenFor(client => client.HiddenClient)
+
+
+                <div class="col-sm-6">
+                    <div class="form-group">
+                        <div class="col-md-12">
+                            <div class="form-material form-material-primary floating">
+                                @Html.TextBoxFor(client => client.Client, new { @class = "form-control", autocomplete = "off" })
+                                <label for="Client">Company Name</label>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <div class="col-md-12">
+                            <div class="form-material form-material-primary floating">
+                                @Html.TextBoxFor(client => client.ContactPerson, new { @class = "form-control", autocomplete = "off" })
+                                <label for="ContactPerson">Contact Person</label>
+                            </div>
+                        </div>
+                    </div>
+
+                </div>
+
+                <div class="col-sm-6">
+
+                    <div class="form-group">
+                        <div class="col-md-12">
+                            <div class="form-material form-material-primary floating">
+                                @Html.TextBoxFor(client => client.EmailAddress, new { @class = "form-control", autocomplete = "off" })
+                                <label for="EmailAddress">Email Address</label>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <div class="col-md-12">
+                            <div class="form-material form-material-primary floating">
+                                @Html.TextBoxFor(client => client.ContactNo, new { @class = "form-control", onkeypress = "validatePhone(event)", autocomplete = "off" })
+                                <label for="ContactNo">Contact No.</label>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <div class="col-md-12">
+                            <div class="form-material form-material-primary floating">
+                                @Html.DropDownListFor(x => x.ClientStatus, listItems, "", new { @class = "js-select2 form-control", style = "width:100%" })
+                                <label for="SupplierStatus">Status</label>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <table id="tableAddress" class="table" cellpadding="0" cellspacing="0" style="margin-bottom:100px;">
+                    <thead>
+                        <tr>
+                            <th></th>
+                            <th class="text-center">Location</th>
+                            <th class="text-center">Office Address</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @foreach (var item in Model.PopulateAllClientsAddress)
+                        {
+                            <tr id="mainrow">
+                                @Html.HiddenFor(itemModel => item.AddID)
+                                <td>  <a id="add" value="Add" class="btn btn-success"><span class="fa fa-plus"></span> </a>  <a id="Remove" value="Remove" class="btn btn-danger"><span class="fa fa-close"></span> </a></td>
+                                <td><div class="form-material form-material-primary floating">@Html.TextBoxFor(itemModel => item.Location, new { @class = "form-control" })</div></td>
+                                <td><div class="form-material form-material-primary floating">@Html.TextAreaFor(itemModel => item.ClientAddress, new { @class = "form-control", style = "margin: 0px; height: 33px; width:100%; resize:vertical;" })</div></td>
+                            </tr>
+                        }
+                    </tbody>
+                </table>
+
+
+
+                <table id="DeleteDataTable" cellpadding="0" cellspacing="0" style="margin-bottom:100px; display:none;">
+                    <thead>
+                        <tr>
+                            <th></th>
+                            <th></th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                    </tbody>
+                </table>
+
+                <div class="col-xs-12">
+                    <div class="form-group">
+                        <a class="btn btn-sm btn-danger pull-right" href="@Url.Action("ClientMaster","Home")">Back</a>
+                        <button class="btn btn-sm btn-primary pull-right" style="margin-right:5px;" type="submit">Submit</button>
+                    </div>
+                </div>
+            </div>
+
+            }
+        </div>
+    </div>
+</div>
+
+
+@section scripts{
+
+
+    <script>
+        $(document).ready(function () {
+
+            //add button click event
+
+            $("body").on("click", "#add", function () {
+                var Location = $("#item_Location").val();
+                var AddID = $("#AddID").val();
+                var ClientAddress = $("#item_ClientAddress").val();
+
+
+                if (ClientAddress == "" || Location == "") {
+                    sweetAlert("Required field Shouldn't Be Empty!!", "Please fill out", "error");
+                    //alert("File Shouldn't Be Empty!!");
+                    return false;
+                }
+                var $newRow = $('#mainrow').clone(true).appendTo('#tableAddress');
+                //remove id attribute from new clone row
+                $('#item_Location,#item_ClientAddress', $newRow);
+
+
+                //clear select data
+                $('#item_Location').val('');
+                $('#item_ClientAddress').val('');
+                $('#item_AddID').val("0");
+            })
+
+            //remove button click event
+            $('#tableAddress').on('click', '#Remove', function () {
+
+                var trIndex = $(this).closest("tr");
+                var count = $('#tableAddress tbody tr').length;
+                var ID = "";
+
+                if (count > 1) {
+
+                    ID= $("#item_AddID", trIndex).val();
+
+                    var $newRow = $(trIndex).clone(true).appendTo('#DeleteDataTable');
+                    $(this).closest("tr").remove();
+
+
+
+                } else {
+                    sweetAlert("Sorry!! Can't remove first row!", "", "error");
+                    //alert("File Shouldn't Be Empty!!");
+                    return false;
+                }
+            });
+
+
+            $("#FormUser").submit(function (event) {
+                //Loop through the Table rows and build a JSON array.
+                var ClientDetails = new Array();
+                $("#tableAddress TBODY TR").each(function () {
+
+                    var row = $(this);
+                    var customer = {};
+
+                    customer.AddID = $("#item_AddID", row).val();
+                    customer.Location = $("#item_Location", row).val();
+                    customer.ClientAddress = $("#item_ClientAddress", row).val();
+                    ClientDetails.push(customer);
+
+                });
+
+                var DeleteDetails = new Array();
+                $("#DeleteDataTable TBODY TR").each(function () {
+
+                    var row1 = $(this);
+                    var customer2 = {};
+
+                    customer2.AddID = $("#item_AddID", row1).val();
+                    customer2.Location = $("#item_Location", row1).val();
+                    customer2.ClientAddress = $("#item_ClientAddress", row1).val();
+                    DeleteDetails.push(customer2);
+
+                });
+
+
+                var Client = $("#Client").val();
+                var ClientID = $("#ClientID").val();
+                var ContactPerson = $("#ContactPerson").val();
+                var ContactNo = $("#ContactNo").val();
+                var EmailAddress = $("#EmailAddress").val();
+                var HiddenClient = $("#HiddenClient").val();
+                var ClientStatus = $("#ClientStatus").val();
+
+                var action = $("#FormUser").attr("action");
+                event.preventDefault();
+                event.stopImmediatePropagation();
+                swal({
+                    title: "Are you sure?",
+                    text: "",
+                    type: "warning",
+                    showCancelButton: true,
+                    confirmButtonColor: '#5F69E0',
+                    confirmButtonText: 'Yes',
+                    cancelButtonText: "No",
+                    closeOnConfirm: false, width: 420,
+                    closeOnCancel: false,
+                    allowOutsideClick: false
+                }).then((isConfirm) => {
+                    if (isConfirm) {
+                        $.ajax({
+                            url: action,
+                            type: "POST",
+                            contentType: "application/json",
+                data: JSON.stringify({
+                                DeleteDetails:DeleteDetails,
+                                value: ClientDetails,
+                                Client: Client,
+                                ContactPerson: ContactPerson,
+                                ContactNo: ContactNo,
+                                EmailAddress: EmailAddress,
+                                HiddenClient: HiddenClient,
+                                ClientStatus: ClientStatus,
+                                ClientID: ClientID
+                            }),
+                            dataType: "json",
+                            success: function (data) {
+                                if (data == 'ERROR1') {
+                                    sweetAlert("Required field shouldn't be empty!!", "Please fill out", "error");
+                                    //alert("File Shouldn't Be Empty!!");
+                                    return false;
+                                }
+                                else if (data == "ERROR2") {
+                                    sweetAlert("field shouldn't be empty.", "Please fill out.", "error");
+                                    //alert("File Shouldn't Be Empty!!");
+                                    return false;
+                                }
+                                else if (data == "ERROR3") {
+                                    sweetAlert("Client's already exist.", "Please try again.", "error");
+                                    //alert("File Shouldn't Be Empty!!");
+                                    return false;
+                                }
+                                else {
+                                    swal
+                                        ({
+                                             title: "Success",
+                                            text: "" + Client + " has been successfully Updated.",
+                                            type: "success", allowOutsideClick: false
+                                        }).then(function () {
+                                            // Redirect the user
+                                            window.location.href = '/Home/ClientMaster/';
+                                        });
+
+                                }
+                            }
+                        });
+
+                    }
+                })
+            }); //end .submit()
+
+        })
+
+                  //LoadItemCategory($('#Particular'));
+
+    </script>
+
+}

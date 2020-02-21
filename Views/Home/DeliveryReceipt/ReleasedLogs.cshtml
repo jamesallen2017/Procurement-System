@@ -1,0 +1,286 @@
+﻿@model PO_PurchasingUI.Models.DRModel
+
+
+
+@{
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+
+<input type="hidden" value="74" id="ModuleAccess" />
+
+
+<!-- Page Header -->
+<div class="content bg-gray-lighter">
+    <div class="row items-push">
+        <div class="col-sm-7">
+            <h1 class="page-heading">
+                RELEASED LOGS<small></small>
+            </h1>
+        </div>
+        <div class="col-sm-5 text-right hidden-xs">
+            <ol class="breadcrumb push-10-t">
+                <li>DELIVERY RECEIPT</li>
+                <li><a class="link-effect" href="">RELEASED LOGS</a></li>
+            </ol>
+        </div>
+    </div>
+</div>
+<!-- END Page Header -->
+
+<div class="content">
+    <div class="block">
+        <div class="block-header">
+        </div>
+
+        <div class="block-content">
+            <div class="row">
+
+                @*<div class="col-xs-12 col-sm-12 col-md-6 col-md-offset-3" style="margin-bottom:15px">
+                        <div class="form-material form-material-primary input-group remove-margin-t remove-margin-b">
+                            <input class="form-control" type="text" autocomplete="off" id="txSearch" name="base-material-text" placeholder="Search..">
+                            <span class="input-group-addon"><i class="si si-magnifier"></i></span>
+                        </div>
+                    </div>*@
+                <div class="col-md-12">
+                    <div class="panel-body table-responsive">
+
+
+
+
+
+                        @if (ViewBag.ReleasedLogs == true)
+                        {
+                            <table class="myTablesss table table-striped table-borderless text-center js-dataTable-full-pagination">
+                                <thead>
+                                    <tr>
+                                        <th style="font-size: 12px;" class="text-left">View</th>
+                                        <th style="font-size: 12px;" class="text-left">Print</th>
+                                        <th style="font-size: 12px;" class="text-left">ATI DR No.</th>
+                                        <th style="font-size: 12px;" class="text-left">PO No.</th>
+                                        <th style="font-size: 12px;" class="text-left">Client</th>
+                                        <th style="font-size: 12px;" class="text-left">Responsible</th>
+                                        <th style="font-size: 12px;" class="text-left">Date Released</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    @foreach (var item in Model.PopulateReleasedLogs)
+                                    {
+                                    <tr>
+                                        <td style="font-size: 12px;" class="text-left"><a href="@Url.Action("RelasedLogs_DR", "Home", new { @id = item.DRNumber})" class="btn btn-primary"><span class="fa fa-eye"></span></a></td>
+                                        <td style="font-size: 12px;" class="text-left"><a href="javascript:void(0)" id="PrintDRReport" class="btn btn-default"><span class="fa fa-print"></span></a></td>
+                                        <td style="font-size: 12px;" class="text-left">@Html.DisplayFor(modelitem => item.DRNumber)</td>
+                                        <td style="font-size: 12px;" class="text-left">@Html.DisplayFor(modelitem => item.DRPONumber)</td>
+                                        <td style="font-size: 12px;" class="text-left">@Html.DisplayFor(modelitem => item.DRClient)</td>
+                                        <td style="font-size: 12px;" class="text-left">@Html.DisplayFor(modelitem => item.DRResponsible)</td>
+                                        <td style="font-size: 12px;" class="text-left">@Html.DisplayFor(modelitem => item.DRDateReleased)</td>
+                                        @Html.HiddenFor(modelitem => item.DRNumber)
+                                    </tr>
+                                    }
+                                </tbody>
+                            </table>
+                        }
+
+                        @if (ViewBag.ReleasedLogs == false)
+                        {
+                            <table class="myTabless table table-striped table-borderless text-center js-dataTable-full-pagination">
+                                <thead>
+                                    <tr>
+                                        <th style="font-size: 12px;" class="text-left">Edit</th>
+                                        @*<th style="font-size: 12px;" class="text-left">DR No.</th>*@
+                                        @*<th style="font-size: 12px; " class="text-left">PO No.</th>*@
+                                        <th style="font-size: 12px;" class="text-left">Particular</th>
+                                        <th style="font-size: 12px;" class="text-left">Quantity</th>
+                                        <th style="font-size: 12px;" class="text-left">Delivered</th>
+                                        @*<th style="font-size: 12px;" class="text-left">Status</th>*@
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    @foreach (var item in Model.PopulateReleasedLogs)
+                                    {
+                                        <tr>
+                                            <td style="font-size: 12px;" class="text-left"><a href="javascript:void(0)" id="btnEditReleasedLog" class="btn btn-primary"><span class="fa fa-edit"></span></a></td>
+                                            @*<td style="font-size: 12px;" class="text-left">@Html.DisplayFor(modelitem => item.DRNumber)</td>
+                                            <td style="font-size: 12px;" class="text-left">@Html.DisplayFor(modelitem => item.DRPONumber)</td>*@
+                                            <td style="font-size: 12px;" class="text-left">@Html.DisplayFor(modelitem => item.DRParticular)</td>
+                                            <td style="font-size: 12px;" class="text-left">@Html.DisplayFor(modelitem => item.DRQty)</td>
+                                            <td style="font-size: 12px;" class="text-left">@Html.DisplayFor(modelitem => item.DRReleased)</td>
+
+                                            @*@if (item.DRReleased == item.DRQty)
+                                                {
+                                                    <td style="font-size:13px;" class="text-left"><span class="label label-success">Delivered</span></td>
+                                                }
+                                                else if (item.DRReleased == "0")
+                                                {
+                                                    <td style="font-size:13px;" class="text-left"><span class="label label-danger">Returned</span></td>
+
+                                                }
+                                                else
+                                                {
+                                                    <td style="font-size:13px;" class="text-left"><span class="label label-primary">On-Going</span></td>
+                                                }*@
+
+                                            @Html.HiddenFor(modelitem => item.DRClient)
+                                            @Html.HiddenFor(modelitem => item.DRReferenceNo)
+                                            @Html.HiddenFor(modelitem => item.DRPONumber)
+                                            @Html.HiddenFor(modelitem => item.DRItemID)
+                                            @Html.HiddenFor(modelitem => item.DRNumber)
+                                            @Html.HiddenFor(modelitem => item.DRDateReleased)
+                                            @Html.HiddenFor(modelitem => item.DRResponsible)
+                                            @Html.HiddenFor(modelitem => item.DRParticular)
+                                            @Html.HiddenFor(modelitem => item.DRQty)
+                                            @Html.HiddenFor(modelitem => item.DRReleased)
+                                            @Html.HiddenFor(modelitem => item.DRRemarks)
+                                        </tr>
+                                    }
+                                </tbody>
+                            </table>
+                            <div class="form-group">
+                                <div class="col-xs-12">
+                                    <a href="@Url.Action("ReleasedLogs","Home")" class="btn btn-danger pull-right">Back</a>
+                                </div>
+                            </div>
+                        }
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+<!-- Top Modal -->
+<div class="modal fade" id="ReleasedModal" tabindex="-1" role="dialog" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-top">
+        @using (Html.BeginForm("UpdateEditItemReleased", "Main", FormMethod.Post, new { @id = "EditReleasedForm", @class = "js-validation-material form-horizontal push-10-t", role = "form" }))
+        {
+            <div class="modal-content">
+                <div class="block block-themed block-transparent remove-margin-b">
+                    <div class="block-header bg-primary-dark" style="background-image: url(/assets/img/try.jpg);">
+                        <ul class="block-options">
+                            <li>
+                                <button data-dismiss="modal" type="button"><i class="si si-close"></i></button>
+                            </li>
+                        </ul>
+                        <h3 class="block-title">Released item Information</h3>
+                    </div>
+                    <div class="block-content">
+                        <div class="row">
+                            @Html.HiddenFor(Edit => Edit.DRItemID, new { @class = "form-control", disabled = "disabled" })
+                            @Html.HiddenFor(Edit => Edit.DRPONumber, new { @class = "form-control", disabled = "disabled" })
+                            @Html.HiddenFor(Edit => Edit.DRReferenceNo, new { @class = "form-control", disabled = "disabled" })
+                            @Html.HiddenFor(Edit => Edit.DRClient, new { @class = "form-control", disabled = "disabled" })
+                            <div class="col-md-6">
+                                <div class="form-group">
+                                    <div class="col-md-12">
+                                        <div class="form-material form-material-primary">
+                                            @Html.TextBoxFor(Edit => Edit.DRNumber, new { @class = "form-control", disabled = "disabled" })
+                                            <label for="test">DR Number</label>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="col-md-6">
+                                <div class="form-group">
+                                    <div class="col-md-12">
+                                        <div class="form-material form-material-primary">
+                                            @Html.TextBoxFor(Edit => Edit.DRDateReleased, new { @class = "form-control", disabled = "disabled" })
+
+                                            <label for="test">Date Received</label>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="form-group">
+                                    <div class="col-md-12">
+                                        <div class="form-material form-material-primary">
+                                            @Html.TextBoxFor(Edit => Edit.DRResponsible, new { @class = "form-control", disabled = "disabled" })
+
+                                            <label for="test">Responsible</label>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="col-md-6">
+                                <div class="form-group">
+                                    <div class="col-md-12">
+                                        <div class="form-material form-material-primary">
+                                            @Html.TextAreaFor(Edit => Edit.DRRemarks, new { @class = "form-control", disabled = "disabled", style = "margin: 0px; width: 100%; height: 38px; resize:vertical;" })
+                                            <label for="test">Remarks</label>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="col-md-12">
+                                <div class="form-group">
+                                    <div class="col-md-12">
+                                        <div class="form-material form-material-primary">
+                                            @Html.TextBoxFor(Edit => Edit.DRParticular, new { @class = "form-control", disabled = "disabled" })
+                                            <label for="test">Particular</label>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="col-md-3">
+                                <div class="form-group">
+                                    <div class="col-md-12">
+                                        <div class="form-material form-material-primary">
+                                            @Html.TextBoxFor(Edit => Edit.DRQty, new { @class = "form-control", disabled = "disabled" })
+                                            <label for="test">Quantity</label>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="col-md-3">
+                                <div class="form-group">
+                                    <div class="col-md-12">
+                                        <div class="form-material form-material-primary">
+                                            @Html.TextBoxFor(Edit => Edit.DRReleased, new { @class = "form-control", disabled = "disabled" })
+                                            <label for="test">Item Delivered</label>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="col-md-6">
+                                <div class="form-group">
+                                    <div class="col-md-12">
+                                        <div class="form-material form-material-primary">
+                                            @Html.TextBoxFor(Edit => Edit.DRItemReturn, new { onkeypress = "validate(event)", onpaste = "return false;", @class = "form-control", autocomplete = "off" })
+                                            <label for="test">Item Return</label>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-md-12">
+                                <div class="form-group">
+                                    <div class="col-md-12">
+                                        <div class="form-material form-material-primary floating">
+                                            @Html.TextAreaFor(Edit => Edit.DRReasonRemarks, new { @class = "form-control", style = "margin: 0px; width: 100%; height: 38px; resize:vertical;" })
+                                            <label for="DRReasonRemarks">Reason of Return</label>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button class="btn btn-sm btn-default" type="button" data-dismiss="modal">Close</button>
+                    <button class="btn btn-sm btn-primary" type="submit" id="SaveEdit"><i class="fa fa-check"></i> Update</button>
+                </div>
+            </div>
+        }
+    </div>
+</div>
+<!-- END Top Modal -->
+
+@section scripts {
+    @Scripts.Render("~/bundles/ReleasedLogs")
+}

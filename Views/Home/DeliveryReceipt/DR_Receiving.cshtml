@@ -1,0 +1,180 @@
+﻿@model PO_PurchasingUI.Models.SupplierModel
+@{
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<input type="hidden" value="72" id="ModuleAccess" />
+
+<!-- Page Header -->
+<div class="content bg-gray-lighter">
+    <div class="row items-push">
+        <div class="col-sm-7">
+            <h1 class="page-heading">
+                DELIVERY RECEIPT<small></small>
+            </h1>
+        </div>
+
+        <div class="col-sm-5 text-right hidden-xs">
+            <ol class="breadcrumb push-10-t">
+                <li>DELIVERY RECEIPT</li>
+                <li><a class="link-effect" href="">RECEIVING</a></li>
+            </ol>
+        </div>
+    </div>
+</div>
+<!-- END Page Header -->
+
+
+<div class="row">
+    <div class="content">
+        <div class="block animated fadeIn">
+            <div class="block-header">
+                <h4 class="block-title">Date : @DateTime.Now.ToShortDateString()</h4>
+            </div>
+
+            <div class="block-content">
+                <div class="row">
+
+                    @*<div class="col-xs-12 col-sm-12 col-md-6 col-md-offset-3">
+                        <div class="form-material form-material-primary input-group remove-margin-t remove-margin-b">
+                            <input class="form-control" type="text" autocomplete="off" id="txSearch" name="base-material-text" placeholder="Search..">
+                            <span class="input-group-addon"><i class="si si-magnifier"></i></span>
+                        </div>
+                    </div>*@
+
+                    <div class="col-md-12">
+                        <div class="panel-body table-responsive">
+                            <table class="table table-striped table-borderless text-center js-dataTable-full-pagination" id="TableReceiving">
+                                <thead>
+                                    <tr>
+                                        <th style="font-size: 12px;" class="text-left">Receive</th>
+                                        <th style="font-size: 12px;" class="text-left">P.O. Number</th>
+                                        <th style="font-size: 12px;" class="text-left">Supplier</th>
+                                        <th style="font-size: 12px;" class="text-left col-md-4">Project Name</th>
+                                        <th style="font-size: 12px;" class="text-left">Item Status</th>
+                                    </tr>
+                                </thead>
+
+                                <tbody>
+                                    @foreach (var DR in Model.PopulateAllReceivingItem)
+                                    {
+                                        <tr>
+                                            <td style="font-size: 12px;" class="text-left"><a href="javascript:void(0)" class="btn btn-primary si si-action-undo" id="btnDisplayItemReceive"></a></td>
+                                            <td style="font-size: 12px;" class="text-left">@Html.DisplayFor(Modelitem => DR.POSupplierNumber)</td>
+                                            <td style="font-size: 12px;" class="text-left">@Html.DisplayFor(Modelitem => DR.Supplier)</td>
+                                            <td style="font-size: 12px;" class="text-left">@Html.DisplayFor(Modelitem => DR.ProjectName)</td>
+                                            @if (DR.ItemStatus == "FOR RECEIVING")
+{
+    <td style="font-size:12px;" class="text-left"><span class="label label-warning">@Html.DisplayFor(modelitem => DR.ItemStatus) </span></td>
+}
+                                            else if (DR.ItemStatus == "RECEIVED")
+                                            {
+                                                <td style="font-size:12px;" class="text-left"><span class="label label-success">@Html.DisplayFor(modelitem => DR.ItemStatus) </span></td>
+                                            }
+                                            @Html.HiddenFor(Modelitem => DR.POSReferenceNo)
+                                            @Html.HiddenFor(Modelitem => DR.POSupplierNumber)
+                                            @Html.HiddenFor(Modelitem => DR.Supplier)
+                                        </tr>
+                                    }
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Slide Right Modal RECEIVER -->
+<div class="modal fade" id="modal-slideright" tabindex="-1" role="dialog" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-popout modal-lg">
+
+        @using (Html.BeginForm("UpdateSupplierReceiving", "Main", FormMethod.Post, new { @id = "SupplierItemListForm", @class = "js-validation-material form-horizontal push-10-t", role = "form" }))
+        {
+            <div class="modal-content">
+                <div class="block block-themed block-transparent remove-margin-b">
+                    <div class="block-content">
+                        @Html.HiddenFor(a => a.POSupplierNumber)
+                        @Html.HiddenFor(a => a.POSReferenceNo)
+                        @Html.HiddenFor(a => a.Supplier)
+
+
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                <div class="col-sm-12">
+                                    <div class="form-material form-material-primary floating">
+                                        @Html.TextBoxFor(supplier => supplier.DeliveryNo, new { @class = "form-control", autocomplete = "off", maxlength = "20" })
+                                        <label for="DeliveryNo">Delivery Receipt No.</label>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="form-group">
+                                <div class="col-sm-12">
+                                    <div class="form-material form-material-primary floating">
+                                        @Html.TextAreaFor(supplier => supplier.DeliveryRemarks, new { @class = "form-control", autocomplete = "off", maxlength = "300", style = "margin: 0px; width: 100%; height: 38px; resize:vertical;" })
+                                        <label for="DeliveryRemarks">Remarks</label>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="col-md-6 ">
+                            <div class="form-group">
+                                <div class="col-sm-12">
+                                    <div class="form-material form-material-primary floating">
+                                        @Html.TextBoxFor(supplier => supplier.DeliveryDate, new { @class = "js-datepicker form-control", autocomplete = "off", maxlength = "10" })
+                                        <label id="DeliveryDate" for="DeliveryDate">Date</label>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <div class="col-sm-12">
+                                    <div class="form-material form-material-primary">
+                                        @Html.TextBoxFor(supplier => supplier.FullNameResponsible, new { @class = "form-control", disabled = "disabled", autocomplete = "off" })
+                                        <label id="User" for="FullNameResponsible">Responsible</label>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <div class="col-sm-12">
+
+                            </div>
+                        </div>
+                        <div class="panel-body table-responsive">
+                            <table class="ItemDisplay table table-borderless table-striped" id="myTable" style="max-width:100%; min-width:1037px;">
+                                <thead class="thdisplay">
+                                    <tr>
+                                        <th class="col-md-1">PARTICULAR</th>
+                                        <th class="col-md-1 text-center">QUANTITY</th>
+                                        <th class="col-md-1 text-center">COLLECTED</th>
+                                        <th class="col-md-1 text-center">RECEIVED</th>
+                                    </tr>
+                                </thead>
+                                <tbody class="tbdisplay"></tbody>
+
+                            </table>
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button class="btn btn-sm btn-danger" type="button" data-dismiss="modal">Close</button>
+                    <button class="btn btn-sm btn-primary" id="UpdateItem" type="submit"><i class="fa fa-check"></i> Confirm</button>
+                </div>
+            </div>
+        }
+    </div>
+</div>
+<!-- END Slide Right Modal -->
+
+
+@section scripts {
+<script>
+    var mySessionVariable = '@Session["UserFullName"].ToString()';
+
+    </script>
+
+    @Scripts.Render("~/bundles/DRReceiving")
+}

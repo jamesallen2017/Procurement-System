@@ -1,0 +1,210 @@
+﻿@model PO_PurchasingUI.Models.FormControlModel
+@{
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+@{
+    List<SelectListItem> listStatus = new List<SelectListItem>();
+    listStatus.Add(new SelectListItem
+    {
+        Text = "ON-GOING",
+        Value = "ON-GOING",
+    });
+    listStatus.Add(new SelectListItem
+    {
+        Text = "COMPLETED",
+        Value = "COMPLETED",
+    });
+    listStatus.Add(new SelectListItem
+    {
+        Text = "CANCELLED",
+        Value = "CANCELLED",
+    });
+
+    List<SelectListItem> listStatuss = new List<SelectListItem>();
+    listStatuss.Add(new SelectListItem
+    {
+        Text = "ON-GOING",
+        Value = "ON-GOING",
+    });
+    listStatuss.Add(new SelectListItem
+    {
+        Text = "COMPLETED",
+        Value = "COMPLETED",
+    });
+
+}
+<input type="hidden" value="82" id="ModuleAccess" />
+
+<!-- Page Header -->
+<div class="content bg-gray-lighter">
+    <div class="row items-push">
+        <div class="col-sm-7">
+            <h1 class="page-heading">
+                PURCHASE ORDER MONITORING <small></small>
+            </h1>
+        </div>
+        <div class="col-sm-5 text-right hidden-xs">
+            <ol class="breadcrumb push-10-t">
+                <li>PROJECT MONITORING</li>
+                <li><a class="link-effect" href="">SUPPLIER</a></li>
+            </ol>
+        </div>
+    </div>
+</div>
+<!-- END Page Header -->
+
+<div class="row">
+
+    <!-- Helper Classes -->
+    <div class="content">
+        <div class="block animated fadeIn">
+            <div class="block-header">
+                <ul class="block-options">
+                    <li>
+                    </li>
+                </ul>
+                <h4 class="block-title">Date : @DateTime.Now.ToShortDateString()</h4>
+            </div>
+            <div class="block-content">
+                <div class="row">
+
+                    <div class="col-md-12">
+                       
+                            <div class="panel-body table-responsive">
+                                <table id="TableSupplier" class="table table-striped table-borderless text-center js-dataTable-full-pagination">
+                                    <thead>
+                                        <tr>
+                                            <th style="font-size: 11px;" class="text-left">Print</th>
+                                            <th style="font-size: 11px;" class="text-left">ATI P.O. No.</th>
+                                            <th style="font-size: 11px; " class="text-left">Supplier</th>
+                                            <th style="font-size: 11px; " class="text-left">Prepared by</th>
+                                            <th style="font-size: 11px; " class="text-right">Overall Total</th>
+                                            <th style="font-size: 11px; " class="text-center">Project Status</th>
+                                            <th style="font-size: 11px; " class="text-center">P.O. Status</th>
+                                            <th style="font-size: 11px; " class="text-center">Item Status</th>
+                                            <th style="font-size: 11px; " class="text-center">Accounting Status</th>
+                                        </tr>
+                                    </thead>
+
+                                    <tbody id="SupplierTransaction">
+                                        @foreach (var SupplierTrasanction in Model.Populate_Clienttransaction)
+                                        {
+                                        <tr>
+                                            <td style="font-size: 12px;" class="text-left"><a class="btn btn-default" href="@Url.Action("ApprovedReportSupplier", "Report", new { @id = SupplierTrasanction.POSReferenceNo })" target="_blank"><span class="fa fa-print"></span></a></td>
+                                            <td style="font-size: 11px; " class="text-left">@Html.DisplayFor(modelitem => SupplierTrasanction.PONumberSupplier)</td>
+                                            <td style="font-size: 11px; " class="text-left">@Html.DisplayFor(modelitem => SupplierTrasanction.SupplierName)</td>
+                                            <td style="font-size: 11px; " class="text-left">@Html.DisplayFor(modelitem => SupplierTrasanction.Responsible)</td>
+                                            <td style="font-size: 11px; " class="text-right">@Html.DisplayFor(modelitem => SupplierTrasanction.GrandTotal)</td>
+                                            @if (SupplierTrasanction.SupplierStatus == "CANCELLED")
+                                            {
+                                                <td style="font-size: 11px; " class="text-center">@Html.DisplayFor(modelitem => SupplierTrasanction.SupplierStatus)</td>
+                                            }
+                                            else
+                                            {
+                                                if (Session["UserID"].ToString() == "73")
+                                                {
+                                                    <td style="font-size: 11px; " class="text-center">@Html.DropDownListFor(modelitem => SupplierTrasanction.SupplierStatus, new SelectList(listStatus, "Value", "Text", SupplierTrasanction.SupplierStatus), new { @class = "form-control", @style = "width: 100%; height: 3vh; font-size: 10px;" })</td>
+                                                }
+                                                else
+                                                {
+                                                    <td style="font-size: 11px; " class="text-center">@Html.DropDownListFor(modelitem => SupplierTrasanction.SupplierStatus, new SelectList(listStatuss, "Value", "Text", SupplierTrasanction.SupplierStatus), new { @class = "form-control", @style = "width: 100%; height: 3vh; font-size: 10px;" })</td>
+                                                }
+
+                                            }
+                                            @if (SupplierTrasanction.FormStatus == "FOR ENDORSEMENT")
+                                            {
+                                                <td style="font-size: 11px; " class="text-center"><span class="label label-warning">@Html.DisplayFor(Modelitem => SupplierTrasanction.FormStatus)</span></td>
+                                            }
+                                            @if (SupplierTrasanction.FormStatus == "FOR REVIEW")
+                                            {
+                                                <td style="font-size: 11px; " class="text-center"><span class="label label-primary">@Html.DisplayFor(Modelitem => SupplierTrasanction.FormStatus)</span></td>
+                                            }
+                                            else if (SupplierTrasanction.FormStatus == "FOR APPROVAL")
+                                            {
+                                                <td style="font-size: 11px; " class="text-center"><span class="label label-warning" style="background: #c7b7e4">@Html.DisplayFor(Modelitem => SupplierTrasanction.FormStatus)</span></td>
+                                            }
+                                            else if (SupplierTrasanction.FormStatus == "REJECTED")
+                                            {
+                                                <td style="font-size: 11px; " class="text-center"><span class="label label-danger">@Html.DisplayFor(Modelitem => SupplierTrasanction.FormStatus)</span></td>
+                                            }
+                                            else if (SupplierTrasanction.FormStatus == "APPROVED")
+                                            {
+                                                <td style="font-size: 11px; " class="text-center"><span class="label label-success">@Html.DisplayFor(Modelitem => SupplierTrasanction.FormStatus)</span></td>
+                                            }
+                                            @if (SupplierTrasanction.ItemStatus == "FOR RECEIVING")
+                                            {
+                                                <td style="font-size: 11px; " class="text-center"><span class="label label-warning">@Html.DisplayFor(modelitem => SupplierTrasanction.ItemStatus) </span></td>
+                                            }
+                                            else if (SupplierTrasanction.ItemStatus == "RECEIVED")
+                                            {
+                                                <td style="font-size: 11px; " class="text-center"><span class="label label-success">@Html.DisplayFor(modelitem => SupplierTrasanction.ItemStatus) </span></td>
+                                            }
+                                            @if (SupplierTrasanction.SupStatus == "UNPAID")
+                                            {
+                                                <td style="font-size: 11px; " class="text-center"><span class="label label-warning">@Html.DisplayFor(Modelitem => SupplierTrasanction.SupStatus)</span></td>
+                                            }
+                                            else if (SupplierTrasanction.SupStatus == "PAID")
+                                            {
+                                                <td style="font-size: 11px; " class="text-center"><span class="label label-success">@Html.DisplayFor(Modelitem => SupplierTrasanction.SupStatus)</span></td>
+                                            }
+
+                                            @Html.HiddenFor(modelitem => SupplierTrasanction.PONumberSupplier)
+                                            @Html.HiddenFor(modelitem => SupplierTrasanction.POSReferenceNo)
+                                            @Html.HiddenFor(modelitem => SupplierTrasanction.ClientStatus)
+                                            @Html.HiddenFor(modelitem => SupplierTrasanction.SupplierName)
+                                            @Html.HiddenFor(modelitem => SupplierTrasanction.FormStatus)
+                                        </tr>
+                                        }
+                                    </tbody>
+                                </table>
+                            </div>
+
+                         
+                    </div>
+                </div>
+            </div>
+            <!-- END Helper Classes -->
+        </div>
+    </div>
+</div>
+
+
+<!-- Slide Right Modal RELEASING -->
+<div class="modal fade" id="modal-slideright" tabindex="-1" role="dialog" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-popout modal-lg">
+
+        <div class="modal-content">
+            <div class="block block-themed block-transparent remove-margin-b">
+                <div class="block-content">
+
+                    <div class="panel-body table-responsive">
+                        <table class="ItemDisplay table table-borderless table-striped" id="myTable" style="max-width:100%; min-width:1037px;">
+                            <thead class="thdisplay">
+                                <tr>
+                                    <th class="col-md-1">Payment Status</th>
+                                    <th class="col-md-1 text-center">Billing Status</th>
+                                    <th class="col-md-1 text-center">Supplier Status</th>
+                                    <th class="col-md-1 text-center">Certificate of Completion</th>
+                                </tr>
+                            </thead>
+                            <tbody class="tbdisplay"></tbody>
+
+                        </table>
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button class="btn btn-sm btn-danger" type="button" data-dismiss="modal">Close</button>
+            </div>
+        </div>
+    </div>
+</div>
+<!-- END Slide Right Modal -->
+
+
+@section scripts {
+
+    @Scripts.Render("~/bundles/FormsControl")
+}
+

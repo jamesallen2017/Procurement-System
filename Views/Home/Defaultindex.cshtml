@@ -1,0 +1,49 @@
+﻿@{
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+
+
+<input type="hidden" value="0" id="ModuleAccess" />
+
+<!-- Page Header -->
+<div class="bg-image overflow-hidden" style="background-image: url('../../../assets/img/LongView.jpg');     background-position: 0px 40%">
+    <div class="bg-black-op">
+        <div class="content content-narrow">
+            <div class="block block-transparent">
+                <div class="block-content block-content-full">
+                    <h1 class="h1 font-w300 text-white animated fadeInDown push-50-t push-5">Dashboard</h1>
+                    <h2 class="h4 font-w300 text-white-op animated fadeInUp">Welcome @Session["UserFullName"].ToString()</h2>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<!-- END Page Header -->
+<!-- Stats -->
+<div class="content bg-white border-b">
+    <div class="row items-push text-uppercase">
+        <div class="col-xs-6 col-sm-3">
+            <div class="font-w700 text-gray-darker animated fadeIn">REVIEWED</div>
+            <div class="text-muted animated fadeIn"><small><i class="si si-calendar"></i> This @DateTime.Now.ToString("MMMM")</small></div>
+            <span class="h2 font-w300 text-black animated flipInX" id="REVIEWED"></span>
+
+        </div>
+        <div class="col-xs-6 col-sm-3">
+            <div class="font-w700 text-gray-darker animated fadeIn">ENDORSED</div>
+            <div class="text-muted animated fadeIn"><small><i class="si si-calendar"></i> This @DateTime.Now.ToString("MMMM")</small></div>
+            <span class="h2 font-w300 text-black animated flipInX" id="ENDORSED"></span>
+        </div>
+        <div class="col-xs-6 col-sm-3">
+            <div class="font-w700 text-gray-darker animated fadeIn">APPROVED</div>
+            <div class="text-muted animated fadeIn"><small><i class="si si-calendar"></i> This @DateTime.Now.ToString("MMMM")</small></div>
+            <span class="h2 font-w300 text-black animated flipInX" id="APPROVED"></span>
+        </div>
+        <div class="col-xs-6 col-sm-3">
+            <div class="font-w700 text-gray-darker animated fadeIn">REJECTED</div>
+            <div class="text-muted animated fadeIn"><small><i class="si si-calendar"></i> This @DateTime.Now.ToString("MMMM")</small></div>
+           <span class="h2 font-w300 text-black animated flipInX" id="REJECTED"></span>
+        </div>
+    </div>
+</div>
+<!-- END Stats -->

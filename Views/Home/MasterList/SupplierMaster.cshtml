@@ -1,0 +1,251 @@
+﻿@model PO_PurchasingUI.Models.SupplierMaster
+@{
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<input type="hidden" value="112" id="ModuleAccess" />
+
+
+<div class="content bg-gray-lighter">
+    <div class="row items-push">
+        <div class="col-sm-7">
+            <h1 class="page-heading">
+                MASTER LIST <small></small>
+            </h1>
+        </div>
+        <div class="col-sm-5 text-right hidden-xs">
+            <ol class="breadcrumb push-10-t">
+                <li>MAINTENANCE</li>
+                <li>MASTER LIST</li>
+                <li><a class="link-effect" href="">SUPPLIER MASTER</a></li>
+            </ol>
+        </div>
+    </div>
+</div>
+<!-- END Page Header -->
+<div class="content">
+    <div class="block">
+        <div class="block-header">
+            <ul class="block-options">
+                <li>
+                    <div class="form-group">
+                       
+                    </div>
+                </li>
+            </ul>
+            <h4 class="block-title">Date : @DateTime.Now.ToShortDateString()</h4>
+
+            @if (ViewBag.SupplierMonitoring == true)
+            {
+            <div class="block-content">
+                <div class="row">
+
+                    <div class="row">
+                        <div class="col-sm-6 col-md-4">
+                            <a class="block block-link-hover3 text-center" href="@Url.Action("CreateSupplierMaster","Home")">
+                                <div class="block-content block-content-full">
+                                    <div class="h1 font-w700 text-success"><i class="fa fa-plus"></i></div>
+                                </div>
+                                <div class="block-content block-content-full block-content-mini bg-gray-lighter text-success font-w600">Add New Supplier</div>
+                            </a>
+                        </div>
+                        <div class="col-sm-6 col-md-4">
+                            <a class="block block-link-hover3 text-center" href="javascript:void(0)">
+                                <div class="block-content block-content-full">
+                                    <div class="h1 font-w700" data-toggle="countTo" data-to="@Model.CountActive"></div>
+                                </div>
+                                <div class="block-content block-content-full block-content-mini bg-gray-lighter text-muted font-w600">Active Supplier</div>
+                            </a>
+                        </div>
+                        <div class="col-sm-6 col-md-4">
+                            <a class="block block-link-hover3 text-center" href="javascript:void(0)">
+                                <div class="block-content block-content-full">
+                                    <div class="h1 font-w700" data-toggle="countTo" data-to="@Model.PopulateAllSupplier.Count()"></div>
+                                </div>
+                                <div class="block-content block-content-full block-content-mini bg-gray-lighter text-muted font-w600">All Supplier</div>
+                            </a>
+                        </div>
+                    </div>
+
+                  
+                    <div class="col-md-12">
+                        <div class="panel-body table-responsive">
+                            <table class="table table-striped table-borderless text-center js-dataTable-full-pagination">
+                                <thead>
+                                    <tr>
+                                        <th style="font-size: 12px;" class="col-xs-1 col-sm-1 text-center">Edit</th>
+                                        <th style="font-size: 12px;" class="col-xs-2 col-sm-2 text-left">Supplier</th>
+                                        <th style="font-size: 12px;" class="col-xs-2 col-sm-2 text-left">Email Address</th>
+                                        <th style="font-size: 12px;" class="col-xs-1 col-sm-1 text-center">Contact NO.</th>
+                                        <th style="font-size: 12px;" class="col-xs-2 col-sm-2 text-center">Location</th>
+                                        <th style="font-size: 12px;" class="col-xs-1 col-sm-1 text-center">Status</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+
+                                    @foreach (var item in Model.PopulateAllSupplier)
+                                    {
+                                        <tr>
+                                            <td style="font-size: 12px;" class="col-xs-1 col-sm-1 text-center"><a class="btn btn-primary" href="@Url.Action("EditSupplierMaster","Home", new {@id= item.SupplierID})"><span class="fa fa-edit"></span></a></td>
+                                            <td style="font-size: 12px;" class="col-xs-2 col-sm-2 text-left">@Html.DisplayFor(modelitem => item.Supplier)</td>
+                                            <td style="font-size: 12px;" class="col-xs-2 col-sm-2 text-left">@Html.DisplayFor(modelitem => item.EmailAddress)</td>
+                                            <td style="font-size: 12px;" class="col-xs-1 col-sm-1 text-center">@Html.DisplayFor(modelitem => item.ContactNo)</td>
+                                            <td style="font-size: 12px;" class="col-xs-2 col-sm-2 text-center">@Html.DisplayFor(modelitem => item.Location)</td>
+                                            <td style="font-size: 12px;" class="col-xs-1 col-sm-1 text-center">@Html.DisplayFor(modelitem => item.SupplierStatus)</td>
+                                        </tr>
+                                    }
+                                </tbody>
+                            </table>
+                        </div>
+                        
+                    </div>
+                </div>
+            </div>
+            }
+
+            @if (ViewBag.SupplierMonitoring == false)
+            {
+                using (Html.BeginForm("InsertSupplierInformation", "Main", FormMethod.Post, new { @class = "js-validation-material form-horizontal push-10-t", id = "FormUser", name = "FormUser" }))
+                {
+                   
+
+                <div class="block-content block-content-narrow">
+
+                    @if (ViewBag.SuccessInserted == true)
+                    {
+
+                        <div class="alert alert-success alert-dismissable">
+                            <button type="button" class="close" data-dismiss="alert" aria-hidden="true">&times;</button>
+                            <h3 class="font-w300 push-15">Success</h3>
+                            <p>The <a class="alert-link" href="javascript:void(0)">Supplier</a> Information is Successfully Inserted!</p>
+                        </div>
+
+                    }
+                    <div class="col-sm-6">
+                        <div class="form-group">
+                            <div class="col-md-12">
+                                <div class="form-material form-material-primary floating">
+                                    @Html.TextBoxFor(supplier => supplier.Supplier, new { @class = "form-control", @autocomplete = "off" })
+                                    <label for="Supplier">Supplier Name</label>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="form-group">
+                            <div class="col-md-12">
+                                <div class="form-material form-material-primary floating">
+                                    @Html.TextAreaFor(supplier => supplier.SupplierAddress, new { @class = "form-control", autocomplete = "off", style = "margin: 0px; height: 33px; width: 100%;" })
+                                    <label for="SupplierAddress">Company Address</label>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="form-group">
+                            <div class="col-md-12">
+                                <div class="form-material form-material-primary floating">
+                                    @Html.TextBoxFor(supplier => supplier.EmailAddress, new { @class = "form-control", @autocomplete = "off" })
+                                    <label for="EmailAddress">Email Address</label>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="col-sm-6">
+                        <div class="form-group">
+                            <div class="col-md-12">
+                                <div class="form-material form-material-primary floating">
+                                    @Html.TextBoxFor(supplier => supplier.Location, new { @class = "form-control", @autocomplete = "off" })
+                                    <label for="Location">Location</label>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="form-group">
+                            <div class="col-md-12">
+                                <div class="form-material form-material-primary floating">
+                                    @Html.TextBoxFor(supplier => supplier.ContactNo, new { @class = "form-control", onkeypress = "validatePhone(event)", @autocomplete = "off" })
+                                    <label for="ContactNo">Contact No</label>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="form-group">
+                            <div class="col-md-12">
+                                <div class="form-material form-material-primary floating">
+                                    @Html.TextBoxFor(supplier => supplier.ContactPerson, new { @class = "form-control", @autocomplete = "off" })
+                                    <label for="ContactPerson">Contact Person</label>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <div class="col-xs-12">
+                            <a class="btn btn-sm btn-danger pull-right" href="@Url.Action("SupplierMaster","Home")">Back</a>
+                            <button class="btn btn-sm btn-primary pull-right" style="margin-right:5px;" type="submit">Submit</button>
+                        </div>
+                    </div>
+                </div>
+                }
+            }
+        </div>
+    </div>
+</div>
+
+
+@section scripts{
+    
+<script>
+    $(document).ready(function () {
+
+
+        $("#FormUser").submit(function (event) {
+
+            var Supplier = $("#Supplier").val();
+            var SupplierAddress = $("#SupplierAddress").val();
+            var EmailAddress = $("#EmailAddress").val();
+            var ContactNo = $("#ContactNo").val();
+            var ContactPerson = $("#ContactPerson").val();
+            var Location =  $("#Location").val();
+
+            var action = $("#FormUser").attr("action");
+            event.preventDefault();
+            event.stopImmediatePropagation();
+            $.ajax({
+                url: action,
+                type: "POST",
+                contentType: "application/json",
+                data: JSON.stringify({
+                    Supplier: Supplier,
+                    SupplierAddress: SupplierAddress,
+                    ContactNo: ContactNo,
+                    EmailAddress: EmailAddress,
+                    ContactPerson: ContactPerson,
+                    Location: Location,
+                }),
+                dataType: "json",
+                success: function (data) {
+                    if (data == 'ERROR1') {
+                        sweetAlert("Required field shouldn't be empty!!", "Please fill out", "error");
+                        //alert("File Shouldn't Be Empty!!");
+                        return false;
+                    }
+                    else {
+                        swal
+                            ({
+                                 title: "Success",
+                                text: "" + Supplier + " has been successfully Added.",
+                                type: "success", allowOutsideClick: false
+                            }).then(function () {
+                                // Redirect the user
+                                window.location.href = '/Home/SupplierMaster/';
+                            });
+
+                    }
+                }
+            });
+        }); //end .submit()
+
+
+    })
+    </script>
+    }

@@ -1,0 +1,279 @@
+﻿@model PO_PurchasingUI.Models.ClientModel
+@{
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<input type="hidden" value="92" id="ModuleAccess" />
+
+<!-- Page Header -->
+<div class="content bg-gray-lighter">
+    <div class="row items-push">
+        <div class="col-sm-7">
+            <h1 class="page-heading">
+                UPDATE CLIENT'S BILLING <small></small>
+            </h1>
+        </div>
+        <div class="col-sm-5 text-right hidden-xs">
+            <ol class="breadcrumb push-10-t">
+                <li>ACCOUNTING</li>
+                <li><a class="link-effect" href="">RECEIVABLES</a></li>
+            </ol>
+        </div>
+    </div>
+</div>
+<!-- END Page Header -->
+
+
+
+<div class="content">
+    <div class="block animated fadeIn">
+        <div class="block-header">
+            <ul class="block-options">
+                <li>
+                    <strong>@Html.DisplayFor(x => x.PONumber, new { @class = "form-control", disabled = "disabled", autocomplete = "off" })</strong>
+                </li>
+            </ul>
+            <h4 class="block-title">Date : @DateTime.Now.ToShortDateString()</h4>
+
+
+
+            <div class="block-content block-content-narrow">
+                <div class="row">
+                    @using (Html.BeginForm("UpdateClientBilling", "Main", FormMethod.Post, new { @id = "ReceivablesValidation", @class = "js-validation-material form-horizontal push-10-t", role = "form" }))
+                    {
+                        @Html.HiddenFor(a => a.ACC_ReferenceNo)
+
+                    <div class="col-md-6">
+
+                        <div class="form-group">
+                            <div class="col-md-12">
+                                <div class="form-material form-material-primary">
+                                    @Html.DropDownListFor(accounting => accounting.ClientBilling, Model.ListofClientBilling, "New Payment", new { @class = "js-select2 form-control", @onchange = "getPaymentDetails()", style = "margin: 0px; width: 100%; resize:vertical; height: 38px;" })
+                                    <label for="ACC_CheckDate">Select Update Payment</label>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="form-group">
+                            <div class="col-md-12">
+                                <div class="form-material form-material-primary floating">
+                                    @Html.TextBoxFor(accounting => accounting.Typeofbilling, new { @class = "form-control", disabled = "disabled" })
+                                    <label for="TypeOfNumber">Type of billing</label>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="form-group">
+                            <div class="col-md-12">
+                                <div class="form-material form-material-primary floating">
+                                    @Html.TextBoxFor(accounting => accounting.ACC_BillNo, new { @class = "form-control", autocomplete = "off", maxlength = "50", disabled = "disabled" })
+                                    <label for="ACC_BillNo">Bill No.</label>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="form-group">
+                            <div class="col-md-12">
+                                <div class="form-material form-material-primary floating">
+                                    @Html.TextBoxFor(accounting => accounting.ORCRNO, new { @class = "form-control", autocomplete = "off", maxlength = "50" })
+                                    <label for="ORCRNO">OR / CR No.</label>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="form-group">
+                            <div class="col-md-12">
+                                <div class="form-material form-material-primary floating">
+                                    @Html.TextBoxFor(accounting => accounting.ACC_COCNO, new { @class = "form-control", autocomplete = "off", maxlength = "50", disabled = "disabled" })
+                                    <label for="ACC_COCNO">COC No.</label>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="form-group">
+                            <div class="col-md-12">
+                                <div class="form-material form-material-primary floating">
+                                    @Html.EditorFor(accounting => accounting.DisplayACC_BillDate, new { htmlAttributes = new { @class = "js-datepicker form-control", @readonly = "readonly", autocomplete = "off", maxlength = "50", disabled = "disabled" } })
+                                    <label for="ACC_BillDate">Bill Date</label>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <div class="col-md-12">
+                                <div class="form-material form-material-primary floating">
+                                    @Html.EditorFor(accounting => accounting.ACC_Discount, new { htmlAttributes = new { @class = "form-control", autocomplete = "off", maxlength = "50", disabled = "disabled" } })
+                                    <label for="ACC_Discount">Less Discount</label>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                <div class="col-md-12">
+                                    <div class="form-material form-material-primary floating">
+                                        @Html.TextBoxFor(accounting => accounting.ACC_DatePaid, new { @class = "js-datepicker form-control", autocomplete = "off", maxlength = "50" })
+                                        <label for="ACC_DatePaid">Date Collected</label>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="form-group">
+                                <div class="col-sm-12">
+                                    <div class="form-material form-material-primary floating">
+                                        @Html.TextBoxFor(accounting => accounting.ACC_TypeOfTerms, new { @class = "form-control", disabled = "disabled" })
+                                        <label for="TypeOfTerms">Terms of Payment</label>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="form-group">
+                                <div class="col-md-12">
+                                    <div class="form-material form-material-primary floating">
+                                        @Html.TextBoxFor(accounting => accounting.ACC_Particular, new { @class = "form-control", autocomplete = "off", maxlength = "150", disabled = "disabled" })
+                                        <label for="ACC_Particular">Particulars</label>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="form-group">
+                                <div class="col-md-12">
+                                    <div id="DivACC_BillAmount" class="form-material form-material-primary floating">
+                                        @Html.EditorFor(accounting => accounting.DisplayACC_BillAmount, new { htmlAttributes = new { @class = "form-control", onkeypress = "validate(event)", maxlength = "50", autocomplete = "off", oncopy = "return false", onpaste = "return false", style = "text-align:right", disabled = "disabled" } })
+
+                                        <label for="ACC_BillAmount">Bill Amount</label>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="form-group">
+                                <div class="col-md-12">
+                                    <div class="form-material form-material-primary floating">
+                                        @Html.TextBoxFor(accounting => accounting.ACC_Responsible, new { @class = "form-control", disabled = "disabled" })
+
+                                        <label for="ACC_Responsible">Responsible</label>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <div class="col-xs-12">
+                                @if (Session["UserRole"].ToString() == "5")
+                                {
+                                    <a class="btn btn-danger pull-right" style="margin-right:5px;" onclick="window.history.back()">Back</a>
+                                }
+                                else
+                                {
+
+                                    <button class="btn btn-primary pull-right" type="submit">Submit</button>
+                                    <a class="btn btn-danger pull-right" style="margin-right:5px;" onclick="window.history.back()">Back</a>
+                                }
+                            </div>
+                        </div>
+                    }
+                </div>
+            </div>
+
+
+        </div>
+    </div>
+</div>
+
+
+@section scripts {
+
+
+    <script>
+        function getPaymentDetails() {
+
+            var ClientBilling = $("#ClientBilling").val()
+            var ACC_ReferenceNo = $("#ACC_ReferenceNo").val()
+
+            if (ClientBilling == "") {
+                window.location.href = '/Home/GETRECEIVABLES/' + ACC_ReferenceNo;
+                return false;
+            }
+            else {
+                window.location.href = '/Home/GetClientBillingDetails/?id=' + ClientBilling;
+            }
+
+        }
+    </script>
+
+
+    <script>
+        $("#ReceivablesValidation").submit(function (event) {
+
+            var ACC_ReferenceNo = $("input[id*='ACC_ReferenceNo']").val();
+            var ACC_DatePaid = $("input[id*='ACC_DatePaid']").val();
+            var ORCRNO = $("input[id*='ORCRNO']").val();
+            var ClientBilling = $("#ClientBilling").val()
+            var ACC_Responsible = $("#ACC_Responsible").val()
+
+
+
+
+
+            if (ACC_DatePaid == "" || ORCRNO == "") {
+                sweetAlert("Please fill out Date Collected and OR/CR No..", "", "error");
+                return false;
+            }
+            var action = $("#ReceivablesValidation").attr("action");
+            event.preventDefault();
+            event.stopImmediatePropagation();
+
+            swal({
+                title: "Are you sure?",
+                text: "",
+                type: "warning",
+                showCancelButton: true,
+                confirmButtonColor: '#5F69E0',
+                confirmButtonText: 'Yes',
+                cancelButtonText: "No",
+                closeOnConfirm: false, width: 420,
+                closeOnCancel: false,
+                allowOutsideClick: false
+            }).then((isConfirm) => {
+                if (isConfirm) {
+
+                    $.ajax({
+                        url: action,
+                        type: "POST",
+                        contentType: "application/json",
+                        data: JSON.stringify({
+                            ClientBilling: ClientBilling,
+                            ORCRNO: ORCRNO,
+                            ACC_DatePaid: ACC_DatePaid,
+                            ACC_ReferenceNo: ACC_ReferenceNo,
+                            ACC_Responsible: ACC_Responsible,
+                        }),
+                        dataType: "json",
+                        success: function (data) {
+                            if (data == "0") {
+                                sweetAlert("System Error, Please contact our administrator for assistance.", "", "error");
+                                return false;
+                            }
+                            else {
+
+                                swal
+                                    ({
+                                         title: "Success",
+                                        text: "The Billing has been successfully updated.",
+                                        type: "success", allowOutsideClick: false
+                                    }).then(function () {
+                                        window.location.href = '/Home/RECEIVABLES/';
+                                    });
+                            }
+
+                        }
+                    });
+
+                }
+            })
+
+        })
+
+    </script>
+
+
+
+}

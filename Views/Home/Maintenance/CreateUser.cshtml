@@ -1,0 +1,249 @@
+﻿@model PO_PurchasingUI.Models.UserMaintenance
+@{
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<input type="hidden" value="111" id="ModuleAccess" />
+
+<!-- Page Header -->
+<div class="content bg-gray-lighter">
+    <div class="row items-push">
+        <div class="col-sm-7">
+            <h1 class="page-heading">
+                USER MAINTENANCE <small></small>
+            </h1>
+        </div>
+        <div class="col-sm-5 text-right hidden-xs">
+            <ol class="breadcrumb push-10-t">
+                <li>MAINTENANCE</li>
+                <li>USER</li>
+                <li><a class="link-effect" href="">CREATE</a></li>
+            </ol>
+        </div>
+    </div>
+</div>
+<!-- END Page Header -->
+
+<div class="content">
+    <div class="block">
+        <div class="block-header">
+            <ul class="block-options">
+                <li>
+                </li>
+            </ul>
+            <h4 class="block-title">Date : @DateTime.Now.ToShortDateString()</h4>
+        </div>
+
+
+        @using (Html.BeginForm("InsertUserInformation", "Main", FormMethod.Post, new { @enctype = "multipart/form-data", @class = "js-validation-material form-horizontal push-10-t", id = "FormUser", name = "FormUser" }))
+        {
+
+            <div class="block-content block-content-narrow">
+
+                @if (ViewBag.SuccessInsert == true)
+                {
+
+                    <div class="alert alert-success alert-dismissable">
+                        <button type="button" class="close" data-dismiss="alert" aria-hidden="true">&times;</button>
+                        <h3 class="font-w300 push-15">Success</h3>
+                        <p>The <a class="alert-link" href="javascript:void(0)">User</a> User Successfully Inserted!</p>
+                    </div>
+
+                }
+
+                @if (ViewBag.SuccessUpdated == true)
+                {
+
+                    <div class="alert alert-success alert-dismissable">
+                        <button type="button" class="close" data-dismiss="alert" aria-hidden="true">&times;</button>
+                        <h3 class="font-w300 push-15">Success</h3>
+                        <p>The <a class="alert-link" href="javascript:void(0)">User</a> Information was Successfully Updated!</p>
+                    </div>
+
+                }
+
+                <div class="col-md-6">
+                    <div class="form-group">
+                        <div class="col-sm-12">
+                            <div class="form-material form-material-primary floating">
+                                @Html.TextBoxFor(user => user.FirstName, new { @class = "form-control", autocomplete = "off", maxlength = "30" })
+                                <label for="FirstName">First Name</label>
+                            </div>
+
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <div class="col-sm-12">
+                            <div class="form-material form-material-primary floating">
+                                @Html.TextBoxFor(user => user.LastName, new { @class = "form-control", autocomplete = "off", maxlength = "30" })
+                                <label for="LastName">Last Name</label>
+                            </div>
+
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <div class="col-sm-12">
+                            <div class="form-material form-material-primary floating">
+                                @Html.TextBoxFor(user => user.UserName, new { @class = "form-control", autocomplete = "off", maxlength = "30" })
+                                <label for="UserName">User Name</label>
+
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <div class="col-sm-12">
+                            <div class="form-material form-material-primary floating">
+                                @Html.TextBoxFor(user => user.EmployeeID, new { @class = "form-control", autocomplete = "off", maxlength = "20" })
+                                <label for="EmployeeID">Employee ID</label>
+                            </div>
+
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <div class="col-sm-12">
+                            <div class="form-material form-material-primary floating">
+                                @Html.TextBoxFor(user => user.Location, new { @class = "form-control", autocomplete = "off", maxlength = "50" })
+                                <label for="Location">Location</label>
+                            </div>
+
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <div class="col-sm-12">
+                            <div class="form-material form-material-primary floating">
+                                @Html.TextBoxFor(user => user.Position, new { @class = "form-control", autocomplete = "off", maxlength = "50" })
+                                <label for="Position">Position</label>
+                            </div>
+
+                        </div>
+                    </div>
+                </div>
+
+
+                <div class="col-md-6">
+                    <div class="form-group">
+                        <div class="col-sm-12">
+                            <div class="form-material form-material-primary floating">
+                                @Html.TextBoxFor(user => user.EmailAddress, new { @class = "form-control", autocomplete = "off" })
+                                <label for="EmailAddress">Email Address</label>
+                            </div>
+
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <div class="col-sm-12">
+                            <div class="form-material form-material-primary floating">
+                                @Html.DropDownListFor(user => user.ApproverID, Model.ListAllApprover, "", new { @class = "js-select2 form-control", style = "width:100%" })
+                                <label for="ApproverID">Approver</label>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <div class="col-sm-12">
+                            <div class="form-material form-material-primary floating">
+                                @Html.DropDownListFor(user => user.UserRoleID, Model.ListAllUserRole, "", new { @class = "js-select2 form-control", style = "width:100%" })
+                                <label for="UserRoleID">User Role</label>
+                            </div>
+
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <div class="col-sm-12">
+                            <div class="form-material form-material-primary floating">
+                                @Html.DropDownListFor(user => user.UserGroupID, Model.ListAllUserGroup, "", new { @class = "js-select2 form-control", style = "width:100%" })
+                                <label for="UserGroupID">Department</label>
+                            </div>
+
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <div class="col-sm-12">
+                            <div class="form-material form-material-primary">
+                                @Html.EditorFor(user => user.Img)
+                                <input type="file" id="Imgs" class="form-control" name="File" />
+                                <label for="example-file-input" class="pull-right">Signature</label>
+                            </div>
+                        </div>
+                    </div>
+
+                </div>
+                <div class="form-group">
+                    <div class="col-xs-12">
+                        <input type="submit" name="btnSubmit" class="btn btn-sm btn-primary pull-right" id="btnSubmit" value="Submit" />
+                    </div>
+                </div>
+            </div>
+        }
+    </div>
+</div>
+
+
+
+@section scripts {
+    <!--FILTER USERGROUP DROPDOWNLIST-->
+    @if (ViewBag.HeaderSuccess != null)
+    {
+        <script>
+
+            var UserName = $("#UserName").val();
+            swal
+                ({
+                    title: "Success",
+                    text: "@ViewBag.HeaderSuccess Successfully Created",
+                    type: "success", allowOutsideClick: false
+
+
+                }).then(function () {
+                    // Redirect the user
+                    window.location.href = "/Home/CreateUser/";
+                });
+
+        </script>
+
+    }
+
+    <script>
+
+        $("#FormUser").submit("btnSubmit", function () {
+
+            var UserName = $("#UserName").val().trim();
+            var FirstName = $("#FirstName").val().trim();
+            var EmployeeID = $("#EmployeeID").val().trim();
+            var Location = $("#Location").val().trim();
+            var Position = $("#Position").val().trim();
+            var EmailAddress = $("#EmailAddress").val().trim();
+            var ApproverID = $("#ApproverID").val().trim();
+            var UserRoleID = $("#UserRoleID").val().trim();
+            var UserGroupID = $("#UserGroupID").val().trim();
+            var Img = $("#Imgs").val();
+
+
+            if (UserName == "" || FirstName == "" || EmployeeID == "" ||
+                Location == "" || Position == "" || EmailAddress == "" ||
+                ApproverID == "" || 
+                UserRoleID == "" || UserGroupID == "") {
+                return false;
+            }
+
+            else if (Img == "") {
+                sweetAlert("Please upload your signature.", "Required", "error");
+                return false;
+            }
+
+
+        })
+    </script>
+
+
+
+    <!--FILTER USERGROUP DROPDOWNLIST-->
+}

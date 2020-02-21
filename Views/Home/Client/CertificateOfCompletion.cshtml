@@ -1,0 +1,218 @@
+﻿@model PO_PurchasingUI.Models.ClientModel
+@{
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+<input type="hidden" value="51" id="ModuleAccess" />
+
+<!-- Page Header -->
+<div class="content bg-gray-lighter">
+    <div class="row items-push">
+        <div class="col-sm-7">
+            <h1 class="page-heading">
+                CERTIFICATE OF COMPLETION<small></small>
+            </h1>
+        </div>
+
+        <div class="col-sm-5 text-right hidden-xs">
+            <ol class="breadcrumb push-10-t">
+                <li>CERTIFICATE OF COMPLETION</li>
+                <li><a class="link-effect" href="">CREATE</a></li>
+            </ol>
+        </div>
+    </div>
+</div>
+
+<!-- END Page Header -->
+
+@if(ViewBag.COCTable == true)
+{
+    
+<div class="row">
+    <div class="content">
+        <div class="block animated fadeIn">
+            <div class="block-header">
+                <ul class="block-options">
+                    <li>
+                    </li>
+                </ul>
+                <h4 class="block-title">Date : @DateTime.Now.ToShortDateString()</h4>
+            </div>
+
+            <div class="block-content">
+                <div class="row">
+
+                    @*<div class="col-xs-12 col-sm-12 col-md-6 col-md-offset-3">
+                        <div class="form-material form-material-primary input-group remove-margin-t remove-margin-b">
+                            <input class="form-control" type="text" autocomplete="off" id="txSearch" name="base-material-text" placeholder="Search..">
+                            <span class="input-group-addon"><i class="si si-magnifier"></i></span>
+                        </div>
+                    </div>*@
+
+                    <div class="col-md-12">
+                        <div class="panel-body table-responsive">
+                            <table class="table table-striped table-borderless text-center js-dataTable-full-pagination" id="TableReleasing">
+                                <thead>
+                                    <tr>
+                                        <th style="font-size: 12px;" class="text-left">Create</th>
+                                        <th style="font-size: 12px;" class="text-left">Quotation No.</th>
+                                        <th style="font-size: 12px;" class="text-left">PO Number</th>
+                                        <th style="font-size: 12px;" class="text-left">Client</th>
+                                        <th style="font-size: 12px;" class="text-left">Project Name</th>
+                                        <th style="font-size: 12px;" class="text-left">Location</th>
+                                    </tr>
+                                </thead>
+
+                                <tbody>
+                                    @foreach (var COC in Model.PopulateAllReleasingItem)
+                                    {
+                                        <tr>
+                                            <td style="font-size: 12px;" class="col-xs-1 col-sm-1 text-left"><a href="@Url.Action("AddCertificateOfCompletion", "Home", new { @id = COC.POC_ReferenceNo })" class="btn btn-primary fa fa-plus"></a></td>
+                                            <td style="font-size: 12px;" class="col-xs-1 col-sm-1 text-left">@Html.DisplayFor(modelitem => COC.SignProposal)</td>
+                                            <td style="font-size: 12px;" class="col-xs-2 col-sm-2 text-left">@Html.DisplayFor(modelitem => COC.PONumber)</td>
+                                            <td style="font-size: 12px;" class="col-xs-2 col-sm-2 text-left">@Html.DisplayFor(modelitem => COC.ClientID)</td>
+                                            <td style="font-size: 12px;" class="col-xs-2 col-sm-2 text-left">@Html.DisplayFor(modelitem => COC.ProjectName)</td>
+                                            <td style="font-size: 12px;" class="col-xs-2 col-sm-2 text-left">@Html.DisplayFor(modelitem => COC.Location)</td>
+                                            @Html.HiddenFor(modelitem => COC.POC_ReferenceNo)
+                                            @Html.HiddenFor(modelitem => COC.PONumber)
+                                            @Html.HiddenFor(modelitem => COC.ClientID)
+                                            @Html.HiddenFor(modelitem => COC.ClientAddress)
+                                            @Html.HiddenFor(modelitem => COC.SignProposal)
+                                            @Html.HiddenFor(modelitem => COC.FullNameResponsible)
+                                            @Html.HiddenFor(modelitem => COC.Location)
+                                        </tr>
+                                    }
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+}
+else if (ViewBag.COCTable == false)
+{
+    <div class="content">
+        <div class="block animated fadeIn">
+            <div class="block-header">
+                <h4 class="block-title">Date : @DateTime.Now.ToShortDateString()</h4>
+            </div>
+            @using (Html.BeginForm("InsertCoCInformation", "Main", FormMethod.Post, new { @id = "CoCValidation", @class = "js-validation-material form-horizontal push-10-t", role = "form" }))
+            {
+
+                @Html.HiddenFor(client => client.POC_ReferenceNo)
+                @Html.HiddenFor(client => client.FullNameResponsible)
+                @Html.HiddenFor(client => client.ClientAddress)
+                @Html.HiddenFor(client => client.ClientLocation)
+
+                <input type="text" id="HiddenPreview" style="display:none;" />
+                <div class="block-content block-content-narrow">
+                    <div class="col-md-6">
+                        <div class="form-group">
+                            <div class="col-sm-12">
+                                <div class="form-material form-material-primary floating">
+                                    @Html.DropDownListFor(client => client.ClientID, Model.ClientNameList, "", new { @class = "js-select2 form-control", style = "width:100%", disabled = "disabled" })
+                                    <label for="ClientNameList">Client</label>
+                                </div>
+                            </div>
+                        </div>
+
+
+                        <div class="form-group">
+                            <div class="col-sm-12">
+                                <div class="form-material form-material-primary floating">
+                                    @Html.TextBoxFor(client => client.ProjectName, new { @class = "form-control", autocomplete = "off", maxlength = "50", disabled = "disabled" })
+                                    <label for="ProjectName">Project Title</label>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="form-group">
+                            <div class="col-sm-12">
+                                <div class="form-material form-material-primary floating">
+                                    @Html.TextBoxFor(client => client.StartDate, new { @class = "js-datepicker form-control", autocomplete = "off" })
+                                    <label for="StartDate">Start Date</label>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="form-group">
+                            <div class="col-sm-12">
+                                <div class="form-material form-material-primary floating">
+                                    @Html.TextBoxFor(client => client.CompletionDate, new { @class = "js-datepicker form-control", autocomplete = "off" })
+                                    <label for="CompletionDate">Completion Date</label>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+
+                    <div class="col-md-6">
+                        <div class="form-group">
+                            <div class="col-sm-12">
+                                <div class="form-material form-material-primary floating">
+                                    @Html.TextBoxFor(client => client.POReferenceNo, new { @class = "form-control", autocomplete = "off", maxlength = "50", @onchange = "getPOReferenceNo()", disabled = "disabled" })
+                                    <label for="StartDate">PO Reference</label>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <div class="col-sm-12">
+                                <div class="form-material form-material-primary floating">
+                                    @Html.DropDownListFor(client => client.Approver, Model.Approver, "", new { @class = "js-select2 form-control", style = "width:100%;", disabled = "disabled" })
+                                    <label for="Approver">Approver</label>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="form-group">
+                            <div class="col-sm-12">
+                                <div class="form-material form-material-primary floating">
+                                    @Html.TextBoxFor(client => client.COC_Resposible, new { @class = "form-control", autocomplete = "off", maxlength = "50" })
+                                    <label for="StartDate">Assessed By</label>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="col-sm-12">
+                        <div class="form-group">
+                            <div class="col-sm-12">
+                                <div class="form-material form-material-primary floating">
+                                    @Html.TextAreaFor(client => client.ProjectDetails, new { @class = "form-control", autocomplete = "off", style = "margin: 0px; width: 100%; resize:vertical; height: 38px;" })
+                                    <label for="ProjectDetails">Project Details</label>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <div class="col-xs-12">
+                            @if (Session["UserRole"].ToString() == "5")
+                            {
+                                <button class="btn btn-sm btn-default  pull-right" type="submit" onclick="DoPreview()" id="btnPreviewCOC">Preview</button>
+                            }
+                            else
+                            {
+                                <button class="btn btn-sm btn-primary  pull-right" type="submit" onclick="DoSave()" style="margin-left:5px;" id="btnSaveCoC">Submit </button>
+                                <button class="btn btn-sm btn-default  pull-right" type="submit" onclick="DoPreview()" id="btnPreviewCOC">Preview</button>
+                            }
+
+                        </div>
+                    </div>
+                </div>
+            }
+        </div>
+</div>
+}
+
+
+
+
+
+@section scripts
+{
+
+    @Scripts.Render("~/bundles/CreateCOC")
+}

@@ -1,0 +1,116 @@
+﻿@model PO_PurchasingUI.Models.ClientModel
+
+@{
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+<input type="hidden" value="94" id="ModuleAccess" />
+
+<!-- Page Header -->
+<div class="content bg-gray-lighter">
+    <div class="row items-push">
+        <div class="col-sm-7">
+            <h1 class="page-heading">
+                PROJECT SUMMARY<small></small>
+            </h1>
+        </div>
+        <div class="col-sm-5 text-right hidden-xs">
+            <ol class="breadcrumb push-10-t">
+                <li>ACCOUNTING</li>
+                <li>REPORT</li>
+                <li><a class="link-effect" href="">PROJECT SUMMARY</a></li>
+            </ol>
+        </div>
+    </div>
+</div>
+<!-- END Page Header -->
+
+
+<div class="content">
+    <div class="block animated fadeIn">
+        <div class="block-header">
+            <h4 class="block-title">Date : @DateTime.Now.ToShortDateString()</h4>
+        </div>
+
+        <div class="block-content">
+            <div class="row">
+                <div class="col-md-12">
+                    <div class="panel-body table-responsive">
+                        <table class="table table-striped table-borderless text-center js-dataTable-full-pagination">
+                            <thead>
+                                <tr>
+                                    <th style="font-size: 12px;" class="text-left">Print</th>
+                                    <th style="font-size: 12px;" class="c text-left">PO No.</th>
+                                    <th style="font-size: 12px;" class="text-left">Quotation No.</th>
+                                    <th style="font-size: 12px;" class="text-left">Client</th>
+                                    <th style="font-size: 12px;" class="text-left">Project Name</th>
+                                    <th style="font-size: 12px;" class="text-center">Project Status</th>
+                                    <th style="font-size: 12px;" class="text-left">Entry Date</th>
+                                </tr>
+                            </thead>
+
+                            <tbody>
+                                @foreach (var item in Model.PopulateAllEditClient)
+                                {
+                                <tr>
+                                    <td style="font-size: 12px;" class="text-left"><a class="btn btn-primary" href="@Url.Action("ProjectCostReport", "Report", new { @id = item.POC_ReferenceNo })" target="_blank"><span class="fa fa-print"></span></a></td>
+                                    <td style="font-size: 12px;" class="text-left">@Html.DisplayFor(Modelitem => item.PONumber)</td>
+                                    <td style="font-size: 12px;" class="text-left">@Html.DisplayFor(Modelitem => item.SignProposal)</td>
+                                    <td style="font-size: 12px;" class="text-left">@Html.DisplayFor(Modelitem => item.ClientID)</td>
+                                    <td style="font-size: 12px;" class="text-left">@Html.DisplayFor(Modelitem => item.ProjectName)</td>
+                                    @if (item.ProjectStatus == "FOR COLLECTION")
+                                    {
+                                        <td style="font-size: 12px;" class="text-center"><span class="label label-danger">@Html.DisplayFor(Modelitem => item.ProjectStatus)</span></td>
+
+                                    }
+                                    else if (item.ProjectStatus == "COLLECTED")
+                                    {
+                                        <td style="font-size: 12px;" class="text-center"><span class="label label-success">@Html.DisplayFor(Modelitem => item.ProjectStatus)</span></td>
+                                    }
+                                    <td style="font-size: 12px;" class="text-left">@Html.DisplayFor(Modelitem => item.EntryDate)</td>
+                                    @Html.HiddenFor(Modelitem => item.POC_ReferenceNo)
+                                </tr>
+                                }
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+    </div>
+</div>
+
+
+
+
+<!-- Slide Right Modal RELEASING -->
+<div class="modal fade" id="modal-slideright" tabindex="-1" role="dialog" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-popout modal-lg">
+
+        <div class="modal-content">
+            <div class="block block-themed block-transparent remove-margin-b">
+                <div class="block-content">
+
+                    <div class="panel-body table-responsive">
+                        <table class="ItemDisplay table table-borderless table-striped" id="myTable" style="max-width:100%; min-width:1037px;">
+                            <thead class="thdisplay">
+                                <tr>
+                                    <th class="col-md-1">PO NUMBER</th>
+                                    <th class="col-md-1 text-center">SUPPLIER</th>
+                                    <th class="col-md-1 text-center">PROJECT COST</th>
+                                </tr>
+                            </thead>
+                            <tbody class="tbdisplay"></tbody>
+
+                        </table>
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button class="btn btn-sm btn-danger" type="button" data-dismiss="modal">Close</button>
+            </div>
+        </div>
+    </div>
+</div>
+<!-- END Slide Right Modal -->
+

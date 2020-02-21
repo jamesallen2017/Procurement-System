@@ -1,0 +1,1030 @@
+﻿@model PO_PurchasingUI.Models.SupplierModel
+@{
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+@{
+    List<SelectListItem> MeasureUnit = new List<SelectListItem>();
+    MeasureUnit.Add(new SelectListItem
+    {
+        Text = "",
+        Value = ""
+    });
+
+    List<SelectListItem> Location = new List<SelectListItem>();
+    MeasureUnit.Add(new SelectListItem
+    {
+        Text = "No Location",
+        Value = ""
+    });
+
+    List<SelectListItem> listItems = new List<SelectListItem>();
+    listItems.Add(new SelectListItem
+    {
+        Text = "",
+        Value = ""
+    });
+}
+
+@{
+    List<SelectListItem> TypeOfVat = new List<SelectListItem>();
+    TypeOfVat.Add(new SelectListItem
+    {
+        Text = "Without VAT",
+        Value = "0",
+    });
+    TypeOfVat.Add(new SelectListItem
+    {
+
+        Text = "With VAT",
+        Value = "1",
+    });
+}
+<input type="hidden" value="11" id="ModuleAccess" />
+
+<!-- Page Header -->
+<div class="content bg-gray-lighter">
+    <div class="row items-push">
+        <div class="col-sm-7">
+            <h1 class="page-heading">
+                PURCHASE REQUISITION <small></small>
+            </h1>
+        </div>
+        <div class="col-sm-5 text-right hidden-xs">
+            <ol class="breadcrumb push-10-t">
+                <li>PURCHASE REQUISITION</li>
+                <li><a class="link-effect" href="">CREATE</a></li>
+            </ol>
+        </div>
+    </div>
+</div>
+<!-- END Page Header -->
+<!-- Page Content -->
+<!-- Forms Row -->
+<div class="content">
+
+
+    @using (Html.BeginForm("InsertUsePRInformation", "Main", FormMethod.Post, new { @id = "RequestPRValidation", @class = "js-validation-material form-horizontal push-10-t", role = "form" }))
+    {<div class="block animated fadeIn">
+            <div class="block-header">
+                <h4 class="block-title">Date : @DateTime.Now.ToShortDateString()</h4>
+            </div>
+            <div class="block-content block-content-narrow">
+                <input type="text" id="HiddenPreview" style="display:none;" />
+                <div class="col-xs-12 col-sm-12 col-md-6 col-lg-6">
+                    <div class="form-group">
+                        <div class="col-sm-12">
+                            <div class="form-material form-material-primary floating">
+                                @Html.TextBoxFor(client => client.DateNeeded, new { @class = "js-datepicker form-control", autocomplete = "off", maxlength = "10", @readonly = "readonly" })
+                                <label for="DateNeeded">Date Needed</label>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <div class="col-sm-12">
+                            <div id="DeliveryDiv" class="form-material form-material-primary floating">
+                                @Html.TextAreaFor(supplier => supplier.ProjectDescription, new { @class = "form-control", autocomplete = "off", style = "margin: 0px; width: 100%; resize:vertical; height: 32px;", maxlength = "150" })
+                                <label for="ProjectDescription">Project Description</label>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="col-xs-12 col-sm-12 col-md-6 col-lg-6">
+                    <div class="form-group">
+                        <div class="col-sm-12">
+                            <div class="form-material form-material-primary floating">
+                                @Html.DropDownListFor(supplier => supplier.CanvessedBy, Model.ListAllUser, "", new { @class = "js-select2 form-control", style = "width:100%;" })
+                                <label for="CanvessedBy">Canvassed By</label>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <div class="col-sm-12">
+                            <div class="form-material form-material-primary floating">
+                                @Html.DropDownListFor(supplier => supplier.EndorserID, Model.Endorser, "", new { @class = "js-select2 form-control", style = "width:100%;" })
+                                <label for="EndorserID">Endorser</label>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <div class="col-sm-12">
+                            <div class="form-material form-material-primary floating">
+                                @Html.DropDownListFor(supplier => supplier.ApproverID, new SelectList(Model.Approver, "Value", "Text", "73"), new { @class = "js-select2 form-control", style = "width:100%;", disabled = "true" })
+                                <label for="ApproverID">Approver</label>
+                            </div>
+                        </div>
+                    </div>
+
+
+
+                </div>
+
+                <div class="form-group">
+                    <div class="col-sm-12">
+
+                    </div>
+                </div>
+            </div>
+
+            <div class="block-content">
+                <div class="panel-body table-responsive" style="overflow-x:auto;">
+                    <table id="TableSupplierItemList" class="table table-striped" cellpadding="0" cellspacing="0">
+                        <thead>
+                            <tr>
+                                <th class="col-md-1">
+                                    <ul class="block-options" style="float:left;">
+                                        <li data-toggle="tooltip" data-placement="top" title="Refresh Particular">
+                                            <button type="button" id="RefreshItemContent" data-toggle="block-option" data-action="refresh_toggle" style="color:black" data-action-mode="demo"><i class="si si-refresh"></i></button>
+                                        </li>
+                                    </ul>
+                                </th>
+                                <th class="col-md-2 text-center" style="font-size: 12px;">Particular</th>
+                                <th class="col-md-1 text-center" style="font-size: 12px;">Unit</th>
+                                <th class="col-md-1 text-center" style="font-size: 12px;">Qty</th>
+                                <th class="col-md-2 text-center" style="font-size: 12px;">
+                                    <div class="form-material form-material-primary ">
+                                        @Html.DropDownListFor(supplier => supplier.SupplierID_One, Model.SupplierName, "", new { @class = "js-select2 form-control", style = "text-overflow: ellipsis;", autocomplete = "off" })
+                                        <label for="SupplierID_One">Select Supplier 1</label>
+                                    </div>
+                                </th>
+                                <th class="col-md-2 text-center" style="font-size: 12px;">
+                                    <div class="form-material form-material-primary ">
+                                        @Html.DropDownListFor(supplier => supplier.SupplierID_Two, Model.SupplierName, "", new { @class = "js-select2 form-control", style = "text-overflow: ellipsis;", autocomplete = "off" })
+                                        <label for="SupplierID_Two">Select Supplier 2</label>
+                                    </div>
+                                </th>
+                                <th class="col-md-2 text-center" style="font-size: 12px;">
+                                    <div class="form-material form-material-primary ">
+                                        @Html.DropDownListFor(supplier => supplier.SupplierID_Three, Model.SupplierName, "", new { @class = "js-select2 form-control", style = "text-overflow: ellipsis;", autocomplete = "off" })
+                                        <label for="SupplierID_Three">Select Supplier 3</label>
+                                    </div>
+                                </th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr id="mainrow" style="background-color:white">
+                                <td>  <a id="add" value="Add" class="btn btn-success"><span class="fa fa-plus"></span> </a>  <a id="Remove" value="Remove" class="btn btn-danger"><span class="fa fa-close"></span> </a></td>
+
+                                <td class="col-xs-3">
+                                    <div class="form-group">
+                                        <div class="form-material form-material-primary floating">
+                                            @Html.DropDownListFor(supplier => supplier.ParticularName, Model.Particular,"", new { @class = "pc js-select2 form-control", style = "width: 100%; text-overflow: ellipsis;" })
+                                            <br />
+
+                                            @Html.TextAreaFor(supplier => supplier.itemDescription, new { @class = "form-control", style = "margin:0px; width: 100%; height: 34px; resize:vertical;" })
+                                        </div>
+                                    </div>
+                                </td>
+
+                                <td class="col-xs-1">
+                                    <div class="form-group">
+                                        <div class="col-sm-12">
+                                            <div class="form-material form-material-primary floating">
+                                                @Html.TextBoxFor(supplier => supplier.ItemMeasure, new { @class = "form-control", autocomplete = "off", style = "text-align:center;", disabled = "disabled" })
+                                            </div>
+                                        </div>
+                                    </div>
+                                </td>
+
+                                <td class="col-xs-1">
+                                    <div class="form-group">
+                                        <div class="col-sm-12">
+                                            <div class="form-material form-material-primary floating">
+                                                @Html.TextBoxFor(supplier => supplier.Qty, new { @class = "form-control", onkeypress = "validate(event)", autocomplete = "off", style = "text-align:right; width: 100%;", maxlength = "10" })
+                                            </div>
+                                        </div>
+                                        <strong class="text-black-op" style=" font-size:13px; position: relative; top:20px; left:15px">Total Amount</strong>
+                                    </div>
+
+                                </td>
+
+                                <td class="col-xs-2">
+                                    <div class="form-group">
+                                        <div class="col-sm-12">
+                                            <div class="form-material form-material-primary floating">
+                                                @Html.TextBoxFor(supplier => supplier.Amount_One, new { @class = "form-control", style = "text-align:right", onkeypress = "validate(event)", autocomplete = "off", disabled = "true" })
+                                                <br />
+                                                <br />
+                                                @Html.EditorFor(supplier => supplier.DisplayTotalAmount_One, new { htmlAttributes = new { @class = "form-control", style = "text-align:right", autocomplete = "off", disabled = "true", placeholder = "Total Amount" } })
+                                            </div>
+                                        </div>
+                                    </div>
+                                </td>
+
+                                <td class="col-xs-2">
+                                    <div class="form-group">
+                                        <div class="col-sm-12">
+                                            <div class="form-material form-material-primary floating">
+                                                @Html.TextBoxFor(supplier => supplier.Amount_Two, new { @class = "form-control", style = "text-align:right", onkeypress = "validate(event)", autocomplete = "off", disabled = "true" })
+                                                <br />
+                                                <br />
+                                                @Html.EditorFor(supplier => supplier.DisplayTotalAmount_Two, new { htmlAttributes = new { @class = "form-control", style = "text-align:right", autocomplete = "off", disabled = "true", placeholder = "Total Amount" } })
+                                            </div>
+                                        </div>
+                                    </div>
+                                </td>
+                                <td class="col-xs-2">
+                                    <div class="form-group">
+                                        <div class="col-sm-12">
+                                            <div class="form-material form-material-primary floating">
+                                                @Html.TextBoxFor(supplier => supplier.Amount_Three, new { @class = "form-control", style = "text-align:right", onkeypress = "validate(event)", autocomplete = "off", disabled = "true" })
+                                                <br />
+                                                <br />
+                                                @Html.EditorFor(supplier => supplier.DisplayTotalAmount_Three, new { htmlAttributes = new { @class = "form-control", style = "text-align:right", autocomplete = "off", disabled = "true", placeholder = "Total Amount" } })
+                                            </div>
+                                        </div>
+                                    </div>
+                                </td>
+                            </tr>
+                        </tbody>
+                        <tfoot>
+
+                            <tr style="background-color:#eeeeee;">
+                                <td></td>
+                                <td></td>
+                                <td></td>
+                                <td class="text-left" style="font-size:13px"><strong class="text-black-op">Overall Total</strong></td>
+                                <td> @Html.EditorFor(client => client.DisplayGrandTotal_One, new { htmlAttributes = new { @class = "form-control", disabled = "disabled", style = "border:none; background-color:##f5f5f5; text-align:right;cursor:default;font-weight:bold", onkeypress = "validate(event)" } })</td>
+                                <td> @Html.EditorFor(client => client.DisplayGrandTotal_Two, new { htmlAttributes = new { @class = "form-control", disabled = "disabled", style = "border:none; background-color:##f5f5f5; text-align:right;cursor:default;font-weight:bold", onkeypress = "validate(event)" } })</td>
+                                <td> @Html.EditorFor(client => client.DisplayGrandTotal_Three, new { htmlAttributes = new { @class = "form-control", disabled = "disabled", style = "border:none; background-color:##f5f5f5; text-align:right;cursor:default;font-weight:bold", onkeypress = "validate(event)" } })</td>
+                            </tr>
+                        </tfoot>
+                    </table>
+                </div>
+
+                <div class="form-group">
+                    <div class="col-xs-12">
+                        @if (Session["UserRole"].ToString() == "5")
+                        {
+                            <input class="btn btn-sm btn-dark  pull-right" type="submit" id="btnPreviewPR" onclick="DoPreview()" value="Preview" />
+                        }
+                        else
+                        {
+                            <input class="btn btn-sm btn-primary  pull-right" type="submit" style="margin-left:5px;" id="btnSavePR" disabled="disabled" onclick="DoSave()" value="Submit" />
+                            <input class="btn btn-sm btn-dark  pull-right" type="submit" id="btnPreviewPR" onclick="DoPreview()" value="Preview" />
+                        }
+
+                    </div>
+                </div>
+            </div>
+        </div>
+    }
+
+</div>
+<!-- END Page Content -->
+
+@section scripts {
+
+    <script>
+        var ItemCategories = [];
+       var SupplierList = [];
+
+
+        $("body").on("click", "#RefreshItemContent", function () {
+
+            $("#TableSupplierItemList tbody tr").each(function () {
+                var row = $(this);
+
+                var Particular = $("#ParticularName", row).val();
+
+                if (Particular != "") {
+
+                    //ajax function for fetch data
+
+                    $.ajax({
+                        type: "GET",
+                        url: '/Home/PopulateitemList',
+                        success: function (data) {
+                            ItemCategories = data;
+
+                            var $ele = $("#ParticularName", row);
+                            $ele.empty();
+                            $.each(ItemCategories, function (i, val) {
+                                $ele.append($('<option/>').val(this['Value']).html(this['Text']));
+                            })
+                            $("#ParticularName", row).val(Particular);
+
+
+                            $.ajax({
+                                url: '/Home/GetItemDetails',
+                                type: "POST",
+                                contentType: "application/json",
+                                data: JSON.stringify({
+                                    value: Particular,
+                                    POCReferenceNo: "",
+                                }),
+
+                                dataType: "json",
+                                success: function (data) {
+
+                                    $("#ItemMeasure", row).val(data.ItemMeasure);
+                                    $("#Qty", row).attr('placeholder', data.Qty);
+                                    $("#itemDescription", row).val(data.itemDescription); // Render data into textbox
+                                }
+                            });
+
+
+                        }
+                    })
+                }
+                else {
+
+                    $.ajax({
+                        type: "GET",
+                        url: '/Home/PopulateitemList',
+                        success: function (data) {
+                            ItemCategories = data;
+
+                            var $ele = $("#ParticularName", row);
+                            $ele.empty();
+                            $.each(ItemCategories, function (i, val) {
+                                $ele.append($('<option/>').val(this['Value']).html(this['Text']));
+                            })
+                        }
+                    })
+
+                }
+            })
+
+
+
+            var SupplierID_One = $("#SupplierID_One").val();
+            var SupplierID_Two = $("#SupplierID_Two").val();
+            var SupplierID_Three = $("#SupplierID_Three").val();
+         
+            $.ajax({
+
+                type: "GET",
+                url: '/Home/RefereshSupplier', //REDIRECT TO ACTION RESULT (HOME CONTROLLLER)
+                success: function (data) { //RETURN DATA GALING SA CONTROLLER
+                    SupplierList = data; // RENDER DATA TO STRING ARRAY
+
+                    //render item category
+
+                    var $ele1 = $("#SupplierID_One");
+                    $ele1.empty();
+                    $ele1.append($('<option/>').val('').text(''));
+                    $.each(SupplierList, function (i, val) {
+                        $ele1.append($('<option/>').val(this['Value']).html(this['Text']));
+                    })
+
+                    var $ele2 = $("#SupplierID_Two");
+                    $ele2.empty();
+                    $ele2.append($('<option/>').val('').text(''));
+                    $.each(SupplierList, function (i, val) {
+                        $ele2.append($('<option/>').val(this['Value']).html(this['Text']));
+                    })
+
+                    var $ele3 = $("#SupplierID_Three");
+                    $ele3.empty();
+                    $ele3.append($('<option/>').val('').text(''));
+                    $.each(SupplierList, function (i, val) {
+                        $ele3.append($('<option/>').val(this['Value']).html(this['Text']));
+                    })
+
+
+                    $("#SupplierID_One").val(SupplierID_One)
+                    $("#SupplierID_Two").val(SupplierID_Two)
+                    $("#SupplierID_Three").val(SupplierID_Three)
+
+                }
+            })
+
+
+        })
+
+        function DoPreview() {
+            $("#HiddenPreview").val("PREVIEW");
+        }
+
+        function DoSave() {
+            $("#HiddenPreview").val("SAVED");
+        }
+
+        $("#SupplierID_One").on('change', function () {
+
+            $("#SupplierID_One").prop('disabled', true);
+            var SupplierOne = $(this).val();
+
+            setTimeout(function () {
+                $("#SupplierID_One").prop('disabled', false);
+            }, 2000);
+
+            if (SupplierOne == "") {
+                $("#TableSupplierItemList tbody tr").each(function () {
+
+                    var row = $(this);
+
+                    $("#Amount_One", row).prop('disabled', true);
+                    $("#Amount_One", row).val("")
+                    $("#DisplayTotalAmount_One", row).val("0.00")
+                    $("#DisplayGrandTotal_One").val("0.00")
+                })
+
+            }
+            else {
+                $("#TableSupplierItemList tbody tr").each(function () {
+
+                    var row = $(this);
+                    $("#Amount_One", row).prop('disabled', false);
+                })
+            }
+        })
+
+        $("#SupplierID_Two").on('change', function () {
+            $("#SupplierID_Two").prop('disabled', true);
+            var SupplierOne = $(this).val();
+
+            setTimeout(function () {
+                $("#SupplierID_Two").prop('disabled', false);
+            }, 2000);
+
+            if (SupplierOne == "") {
+
+                $("#TableSupplierItemList tbody tr").each(function () {
+
+                    var row = $(this);
+                    $("#Amount_Two", row).prop('disabled', true);
+                    $("#Amount_Two", row).val("")
+                    $("#DisplayTotalAmount_Two", row).val("0.00")
+                    $("#DisplayGrandTotal_Two").val("0.00")
+                })
+
+
+            }
+            else {
+                $("#TableSupplierItemList tbody tr").each(function () {
+
+                    var row = $(this);
+                    $("#Amount_Two", row).prop('disabled', false);
+
+                })
+            }
+        })
+
+        $("#SupplierID_Three").on('change', function () {
+            $("#SupplierID_Three").prop('disabled', true);
+            var SupplierOne = $(this).val();
+
+            setTimeout(function () {
+                $("#SupplierID_Three").prop('disabled', false);
+            }, 2000);
+
+            if (SupplierOne == "") {
+                $("#TableSupplierItemList tbody tr").each(function () {
+
+                    var row = $(this);
+
+                    $("#Amount_Three", row).prop('disabled', true);
+                    $("#Amount_Three", row).val("")
+                    $("#DisplayTotalAmount_Three", row).val("0.00")
+                    $("#DisplayGrandTotal_Three").val("0.00")
+                })
+            }
+            else {
+                $("#TableSupplierItemList tbody tr").each(function () {
+
+                    var row = $(this);
+                    $("#Amount_Three", row).prop('disabled', false);
+                })
+            }
+        })
+
+        $('#TableSupplierItemList').on('change', '#ParticularName', function () {
+
+            var count = $(this).closest("tr");
+            var ItemName = $("#ParticularName", count).val();
+            var POCReferenceNo = $("#POCReferenceNo").val();
+
+            $("#ParticularName", count).prop('disabled', true);
+
+            setTimeout(function () {
+                $("#ParticularName", count).prop('disabled', false);
+            }, 2000);
+
+            $.ajax({
+                url: '/Home/GetItemDetails',
+                type: "POST",
+                contentType: "application/json",
+                data: JSON.stringify({
+                    value: ItemName,
+                    POCReferenceNo: POCReferenceNo,
+                }),
+
+                dataType: "json",
+                success: function (data) {
+
+                    $("#ItemMeasure", count).val(data.ItemMeasure);
+                    $("#Qty", count).attr('placeholder', data.Qty);
+                    $("#itemDescription", count).val(data.itemDescription); // Render data into textbox
+                }
+            });
+
+        })
+
+        $("#Qty").on('keyup', function () {
+            var qty = $(this).val().replace(/,/g, '');
+            var row = $(this).closest("tr");
+            var DisplayAmount_One = $("input[id*='Amount_One']", row).val().replace(/,/g, '');
+            var DisplayAmount_Two = $("input[id*='Amount_Two']", row).val().replace(/,/g, '');
+            var DisplayAmount_Three = $("input[id*='Amount_Three']", row).val().replace(/,/g, '');
+
+
+
+            if (qty != "" && DisplayAmount_One != "") {
+                var subTotal = parseInt(qty) * parseFloat(DisplayAmount_One);
+
+                if (!isNaN(subTotal)) {
+
+                    var i = (subTotal).toFixed(2).toString();
+                    var Comma2 = i.toString().split(".");
+                    Comma2[0] = Comma2[0].replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+                    //$("input[id*='TotalAmount']", row).val(Comma2.join("."));
+                    $("#DisplayTotalAmount_One", row).val(Comma2.join("."));
+                }
+                else {
+                    $("input[id*='DisplayGrandTotal_One']").val((0).toFixed(2).toString());
+                    $("input[id*='DisplayTotalAmount_One']", row).val((0).toFixed(2).toString());
+                }
+
+            }
+            else {
+
+                $("input[id*='DisplayGrandTotal_One']").val((0).toFixed(2).toString());
+                $("input[id*='DisplayTotalAmount_One']", row).val((0).toFixed(2).toString());
+
+            }
+
+            if (qty != "" && DisplayAmount_Two != "") {
+                var subTotal = parseInt(qty) * parseFloat(DisplayAmount_Two);
+
+                if (!isNaN(subTotal)) {
+
+                    var i = (subTotal).toFixed(2).toString();
+                    var Comma2 = i.toString().split(".");
+                    Comma2[0] = Comma2[0].replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+                    //$("input[id*='TotalAmount']", row).val(Comma2.join("."));
+                    $("#DisplayTotalAmount_Two", row).val(Comma2.join("."));
+                }
+
+
+            }
+            else {
+
+                $("input[id*='DisplayGrandTotal_Two']").val((0).toFixed(2).toString());
+                $("input[id*='DisplayTotalAmount_Two']", row).val((0).toFixed(2).toString());
+            }
+
+
+
+
+            if (qty != "" && DisplayAmount_Three != "") {
+                var subTotal = parseInt(qty) * parseFloat(DisplayAmount_Three);
+
+                if (!isNaN(subTotal)) {
+
+                    var i = (subTotal).toFixed(2).toString();
+                    var Comma2 = i.toString().split(".");
+                    Comma2[0] = Comma2[0].replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+                    //$("input[id*='TotalAmount']", row).val(Comma2.join("."));
+                    $("#DisplayTotalAmount_Three", row).val(Comma2.join("."));
+                }
+
+
+            }
+            else {
+
+                $("input[id*='DisplayGrandTotal_Three']").val((0).toFixed(2).toString());
+                $("input[id*='DisplayTotalAmount_Three']", row).val((0).toFixed(2).toString());
+            }
+
+
+
+            var TotalAmounts1 = 0;
+            // $("#VAT").each(function () {
+            $("input[id*='DisplayTotalAmount_One']").each(function () {
+                TotalAmounts1 = TotalAmounts1 + parseFloat($(this).val().replace(/,/g, ''));
+            });
+
+
+            var GrandTOtalAmount = parseFloat(TotalAmounts1);
+            var GrandTOtalAmount = (GrandTOtalAmount).toFixed(2).toString();
+            var Comma1 = GrandTOtalAmount.toString().split(".");
+            Comma1[0] = Comma1[0].replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+            $("#DisplayGrandTotal_One").val(Comma1.join("."));
+
+            var TotalAmounts2 = 0;
+            // $("#VAT").each(function () {
+            $("input[id*='DisplayTotalAmount_Two']").each(function () {
+                TotalAmounts2 = TotalAmounts2 + parseFloat($(this).val().replace(/,/g, ''));
+            });
+
+
+            var GrandTOtalAmount = parseFloat(TotalAmounts2);
+            var GrandTOtalAmount = (GrandTOtalAmount).toFixed(2).toString();
+            var Comma1 = GrandTOtalAmount.toString().split(".");
+            Comma1[0] = Comma1[0].replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+            $("#DisplayGrandTotal_Two").val(Comma1.join("."));
+
+
+            var TotalAmounts3 = 0;
+            // $("#VAT").each(function () {
+            $("input[id*='DisplayTotalAmount_Three']").each(function () {
+                TotalAmounts3 = TotalAmounts3 + parseFloat($(this).val().replace(/,/g, ''));
+            });
+
+
+            var GrandTOtalAmount = parseFloat(TotalAmounts3);
+            var GrandTOtalAmount = (GrandTOtalAmount).toFixed(2).toString();
+            var Comma1 = GrandTOtalAmount.toString().split(".");
+            Comma1[0] = Comma1[0].replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+            $("#DisplayGrandTotal_Three").val(Comma1.join("."));
+
+
+        })
+
+        $("#Amount_One").on('keyup', function () {
+            var DisplayAmount_One = $(this).val().replace(/,/g, '');
+            var row = $(this).closest("tr");
+            var qty = $("input[id*='Qty']", row).val().replace(/,/g, '');
+
+
+
+            if (qty != "" && DisplayAmount_One != "") {
+                var subTotal = parseInt(qty) * parseFloat(DisplayAmount_One);
+
+                if (!isNaN(subTotal)) {
+
+                    var i = (subTotal).toFixed(2).toString();
+                    var Comma2 = i.toString().split(".");
+                    Comma2[0] = Comma2[0].replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+                    //$("input[id*='TotalAmount']", row).val(Comma2.join("."));
+                    $("#DisplayTotalAmount_One", row).val(Comma2.join("."));
+                }
+
+            }
+            else {
+
+                $("input[id*='DisplayGrandTotal_One']").val((0).toFixed(2).toString());
+                $("input[id*='DisplayTotalAmount_One']", row).val((0).toFixed(2).toString());
+            }
+
+            var TotalAmounts = 0;
+            // $("#VAT").each(function () {
+            $("input[id*='DisplayTotalAmount_One']").each(function () {
+                TotalAmounts = TotalAmounts + parseFloat($(this).val().replace(/,/g, ''));
+            });
+
+
+            var GrandTOtalAmount = parseFloat(TotalAmounts);
+            var GrandTOtalAmount = (GrandTOtalAmount).toFixed(2).toString();
+            var Comma1 = GrandTOtalAmount.toString().split(".");
+            Comma1[0] = Comma1[0].replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+            $("#DisplayGrandTotal_One").val(Comma1.join("."));
+        })
+
+        $("#Amount_Two").on('keyup', function () {
+            var DisplayAmount_Two = $(this).val().replace(/,/g, '');
+            var row = $(this).closest("tr");
+            var qty = $("input[id*='Qty']", row).val().replace(/,/g, '');
+
+
+
+            if (qty != "" && DisplayAmount_Two != "") {
+                var subTotal = parseInt(qty) * parseFloat(DisplayAmount_Two);
+
+                if (!isNaN(subTotal)) {
+
+                    var i = (subTotal).toFixed(2).toString();
+                    var Comma2 = i.toString().split(".");
+                    Comma2[0] = Comma2[0].replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+                    //$("input[id*='TotalAmount']", row).val(Comma2.join("."));
+                    $("#DisplayTotalAmount_Two", row).val(Comma2.join("."));
+                }
+
+            }
+            else {
+
+                $("input[id*='DisplayGrandTotal_Two']").val((0).toFixed(2).toString());
+                $("input[id*='DisplayTotalAmount_Two']", row).val((0).toFixed(2).toString());
+            }
+
+            var TotalAmounts = 0;
+            // $("#VAT").each(function () {
+            $("input[id*='DisplayTotalAmount_Two']").each(function () {
+                TotalAmounts = TotalAmounts + parseFloat($(this).val().replace(/,/g, ''));
+            });
+
+
+            var GrandTOtalAmount = parseFloat(TotalAmounts);
+            var GrandTOtalAmount = (GrandTOtalAmount).toFixed(2).toString();
+            var Comma1 = GrandTOtalAmount.toString().split(".");
+            Comma1[0] = Comma1[0].replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+            $("#DisplayGrandTotal_Two").val(Comma1.join("."));
+
+
+        })
+
+        $("#Amount_Three").on('keyup', function () {
+            var DisplayAmount_tree = $(this).val().replace(/,/g, '');
+            var row = $(this).closest("tr");
+            var qty = $("input[id*='Qty']", row).val().replace(/,/g, '');
+
+
+
+            if (qty != "" && DisplayAmount_tree != "") {
+                var subTotal = parseInt(qty) * parseFloat(DisplayAmount_tree);
+
+                if (!isNaN(subTotal)) {
+
+                    var i = (subTotal).toFixed(2).toString();
+                    var Comma2 = i.toString().split(".");
+                    Comma2[0] = Comma2[0].replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+                    //$("input[id*='TotalAmount']", row).val(Comma2.join("."));
+                    $("#DisplayTotalAmount_Three", row).val(Comma2.join("."));
+                }
+
+            }
+            else {
+
+                $("input[id*='DisplayGrandTotal_Three']").val((0).toFixed(2).toString());
+                $("input[id*='DisplayTotalAmount_Three']", row).val((0).toFixed(2).toString());
+            }
+
+            var TotalAmounts = 0;
+            // $("#VAT").each(function () {
+            $("input[id*='DisplayTotalAmount_Three']").each(function () {
+                TotalAmounts = TotalAmounts + parseFloat($(this).val().replace(/,/g, ''));
+            });
+
+
+            var GrandTOtalAmount = parseFloat(TotalAmounts);
+            var GrandTOtalAmount = (GrandTOtalAmount).toFixed(2).toString();
+            var Comma1 = GrandTOtalAmount.toString().split(".");
+            Comma1[0] = Comma1[0].replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+            $("#DisplayGrandTotal_Three").val(Comma1.join("."));
+        })
+
+        $("#TableSupplierItemList").on("click", "#add", function () {
+            var ParticularName = $("#ParticularName").val()
+            var ItemMeasure = $("#ItemMeasure").val()
+            var Qty = $("#Qty").val()
+
+            if (ParticularName == "" || Qty == "" || ItemMeasure == "") {
+                sweetAlert("Item row can't be empty.", "", "error");
+
+                return false;
+            }
+
+            $('select#ParticularName').select2('destroy');
+
+
+            var $newRow = $('#mainrow').clone(true).insertBefore('#mainrow');
+
+            $('.pc', $newRow).val($('#ParticularName').val());
+
+            //remove id attribute from new clone row
+            $('#ParticularName,#itemDescription,#ItemMeasure,#Qty,#Amount_One,#Amount_Two,#Amount_Three,#DisplayTotalAmount_One,#DisplayTotalAmount_Two,#DisplayTotalAmount_Three', $newRow);
+
+            //clear select data
+            $('#ParticularName').val("");
+            $("#Qty").val("");
+            $('#ItemMeasure').val("");
+            $('#itemDescription').val("");
+            $('#Amount_One').val('');
+            $('#Amount_Two').val('');
+            $('#Amount_Three').val('');
+            $('#DisplayTotalAmount_One').val('0.00');
+            $('#DisplayTotalAmount_Two').val('0.00');
+            $('#DisplayTotalAmount_Three').val('0.00');
+            $('select#ParticularName').select2();
+            $("#ParticularName").prop('disabled', false);
+
+
+            $("#TableSupplierItemList span.input-group-addon").attr("title", "test").tooltip({
+                showURL: false,
+                fixPNG: true,
+                track: true,
+                delay: 0
+            });
+
+        })
+
+        $('#TableSupplierItemList').on('click', '#Remove', function () {
+
+            var trIndex = $(this).closest("tr").index();
+            var Discount = $("#Discount").val();
+            var TypeofVAT = $("#TypeOfVat").val();
+
+            var count = $('#TableSupplierItemList tbody tr').length;
+            if (count > 1) {
+                $(this).closest("tr").remove();
+
+                //--------------------------------------------------------------------------------------------- RECALCULATE AFTER REMOVE TABLE ROW -----------------------------------------------------------------------//
+
+                var TotalAmounts1 = 0;
+                // $("#VAT").each(function () {
+                $("input[id*='DisplayTotalAmount_One']").each(function () {
+                    TotalAmounts1 = TotalAmounts1 + parseFloat($(this).val().replace(/,/g, ''));
+                });
+
+                if (TotalAmounts1 == "NaN") {
+                    TotalAmounts1 = 0;
+                }
+
+                var GrandTOtalAmount = parseFloat(TotalAmounts1);
+                var GrandTOtalAmount = (GrandTOtalAmount).toFixed(2).toString();
+                var Comma1 = GrandTOtalAmount.toString().split(".");
+                Comma1[0] = Comma1[0].replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+                $("#DisplayGrandTotal_One").val(Comma1.join("."));
+
+
+
+                var TotalAmounts2 = 0;
+                // $("#VAT").each(function () {
+                $("input[id*='DisplayTotalAmount_Two']").each(function () {
+                    TotalAmounts2 = TotalAmounts2 + parseFloat($(this).val().replace(/,/g, ''));
+                });
+
+                if (TotalAmounts2 == "NaN") {
+                    TotalAmounts2 = 0;
+                }
+
+                var GrandTOtalAmount = parseFloat(TotalAmounts2);
+                var GrandTOtalAmount = (GrandTOtalAmount).toFixed(2).toString();
+                var Comma1 = GrandTOtalAmount.toString().split(".");
+                Comma1[0] = Comma1[0].replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+                $("#DisplayGrandTotal_Two").val(Comma1.join("."));
+
+
+                var TotalAmounts3 = 0;
+                // $("#VAT").each(function () {
+                $("input[id*='DisplayTotalAmount_Three']").each(function () {
+                    TotalAmounts3 = TotalAmounts3 + parseFloat($(this).val().replace(/,/g, ''));
+                });
+
+
+                if (TotalAmounts3 == "NaN") {
+                    TotalAmounts3 = 0;
+                }
+                var GrandTOtalAmount = parseFloat(TotalAmounts3);
+                var GrandTOtalAmount = (GrandTOtalAmount).toFixed(2).toString();
+                var Comma1 = GrandTOtalAmount.toString().split(".");
+                Comma1[0] = Comma1[0].replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+                $("#DisplayGrandTotal_Three").val(Comma1.join("."));
+
+
+
+            } else {
+                sweetAlert("Item row can't be empty.", "", "error");
+                //alert("File Shouldn't Be Empty!!");
+                return false;
+            }
+        });
+
+        $("#RequestPRValidation").submit(function (e) {
+
+            var validate = false;
+
+            var ApproverID = $("#ApproverID").val();
+            var EndorserID = $("#EndorserID").val();
+            var CanvessedBy = $("#CanvessedBy").val();
+            var DateNeeded = $("#DateNeeded").val();
+            var ProjectDescription = $("#ProjectDescription").val();
+            var SupplierID_One = $("#SupplierID_One").val();
+            var SupplierID_Two = $("#SupplierID_Two").val();
+            var SupplierID_Three = $("#SupplierID_Three").val();
+            var vDisplayGrandTotal_One = $("#DisplayGrandTotal_One").val();
+            var vDisplayGrandTotal_Two = $("#DisplayGrandTotal_Two").val();
+            var vDisplayGrandTotal_Three = $("#DisplayGrandTotal_Three").val();
+            var Preview = $("#HiddenPreview").val();
+            var PreparedID = myUserID;
+
+
+
+
+            var PRMainList = new Array();
+
+            $("#TableSupplierItemList tbody tr").each(function () {
+                var row = $(this);
+
+
+                var itemname = $("#ParticularName", row).val();
+                var vQty = $("#Qty", row).val();
+
+                if (itemname == "" || vQty == "") {
+                    validate = true;
+                }
+                var PrList = {};
+
+                PrList.ParticularName = $("#ParticularName", row).val();
+                PrList.ItemMeasure = $("#ItemMeasure", row).val();
+                PrList.Qty = $("#Qty", row).val();
+                PrList.itemDescription = $("#itemDescription", row).val();
+                PrList.Amount_One = $("#Amount_One", row).val();
+                PrList.TotalAmount_One = $("#DisplayTotalAmount_One", row).val();
+                PrList.Amount_Two = $("#Amount_Two", row).val();
+                PrList.TotalAmount_Two = $("#DisplayTotalAmount_Two", row).val();
+                PrList.Amount_Three = $("#Amount_Three", row).val();
+                PrList.TotalAmount_Three = $("#DisplayTotalAmount_Three", row).val();
+
+                PRMainList.push(PrList);
+
+            })
+
+            if (DateNeeded == "" || CanvessedBy == "" || ProjectDescription == "" || validate == true) {
+                return false;
+            }
+            else if (SupplierID_One == "" && SupplierID_Two == "" && SupplierID_Three == "") {
+                sweetAlert("Select Supplier atleast one", "", "error");
+                return false;
+
+            }
+
+            var action = $(this).attr('action');
+
+            e.preventDefault()
+            e.stopImmediatePropagation();
+
+            if (Preview == "SAVED") {
+                var $this = $("#btnSavePR");
+                $this.button('loading');
+                setTimeout(function () {
+                    $this.button('reset');
+                }, 10000);
+            }
+
+
+            $.ajax({
+                url: action,
+                type: "POST",
+                contentType: "application/json",
+                data: JSON.stringify({
+                    PRMainList: PRMainList,
+                    ApproverID: ApproverID,
+                    CanvessedBy: CanvessedBy,
+                    EndorserID: EndorserID,
+                    DateNeeded: DateNeeded,
+                    ProjectDescription: ProjectDescription,
+                    SupplierID_One: SupplierID_One,
+                    SupplierID_Two: SupplierID_Two,
+                    SupplierID_Three: SupplierID_Three,
+                    GrandTotalAmount_One: vDisplayGrandTotal_One,
+                    GrandTotalAmount_Two: vDisplayGrandTotal_Two,
+                    GrandTotalAmount_Three: vDisplayGrandTotal_Three,
+                    HiddenPreview: Preview,
+                    PreparedID: PreparedID,
+                }),
+                dataType: "json",
+                success: function (data) {
+
+                    if (data == 'Information') {
+
+                        sweetAlert("Please fill out required field", "", "error");
+                        return false;
+                    }
+                    else if (data == 'ItemGrid') {
+                        sweetAlert("Please fill out empty field!!", "", "error");
+                        return false;
+                    }
+                    else if (data == 'RedirectLogin') {
+                        sweetAlert("Your Session has been ended", "Please Refresh the page.", "error").then(function () {
+                            // Redirect the user
+                            location.reload();
+                        });
+                    }
+                    else if (data == 'SuccessPreview') {
+
+                        window.open("/Report/ReportPreviewPurchaseRequisition/");
+                        var $this = $("#btnPreviewPR");
+                        $this.button('loading');
+                        setTimeout(function () {
+                            $("#btnSavePR").prop('disabled', false);
+                            $this.button('reset');
+                        }, 5000);
+                    }
+                    else {
+                        swal
+                            ({
+                                title: "Success",
+                                text: data + " Item/s Successfully Added; and Purchase Requisition Successfully Saved.",
+                                type: "success", allowOutsideClick: false
+                            }).then(function () {
+
+                                window.location.href = "/Report/PurchaseRequisitionReport/";
+                            });
+
+                    }
+                }
+            });
+
+        })
+
+
+    </script>
+}
+

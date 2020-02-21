@@ -1,0 +1,86 @@
+﻿@model PO_PurchasingUI.Models.SMTPModel
+@{
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<input type="hidden" value="114" id="ModuleAccess" />
+
+<div class="content bg-gray-lighter">
+    <div class="row items-push">
+        <div class="col-sm-7">
+            <h1 class="page-heading">
+                TEST E-MAIL <small></small>
+            </h1>
+        </div>
+        <div class="col-sm-5 text-right hidden-xs">
+            <ol class="breadcrumb push-10-t">
+                <li>MAINTENANCE</li>
+                <li>SMTP</li>
+                <li><a class="link-effect" href="">VIEW</a></li>
+            </ol>
+        </div>
+    </div>
+</div>
+<!-- END Page Header -->
+
+<div class="content">
+    <div class="block">
+        <div class="block-header">
+            <ul class="block-options">
+                <li>
+                </li>
+            </ul>
+            <h4 class="block-title">Date : @DateTime.Now.ToShortDateString()</h4>
+
+            @using (Html.BeginForm("SendTestingEmail", "Main", FormMethod.Post, new { @class = "js-validation-material form-horizontal push-10-t", id = "SMTPForm", name = "SMTPForm" }))
+            {
+                @Html.AntiForgeryToken()
+                HtmlHelper.UnobtrusiveJavaScriptEnabled = false;
+
+                <div class="block-content block-content-narrow">
+                    <div class="col-sm-12 col-md-6 col-md-offset-3">
+                        <div class="form-group">
+                            <div class="col-md-12">
+                                <div class="form-material form-material-primary floating">
+                                    @Html.TextBoxFor(smtp => smtp.SMTP_To, new { @class = "form-control", autocomplete = "off" })
+                                    <label for="SMTP_To">To</label>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="form-group">
+                            <div class="col-md-12">
+                                <div class="form-material form-material-primary floating">
+                                    @Html.TextBoxFor(smtp => smtp.SMTP_Subject, new { @class = "form-control", autocomplete = "off" })
+                                    <label for="SMTP_To">Subject</label>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="form-group">
+                            <div class="col-md-12">
+                                <div class="form-material form-material-primary floating">
+                                    @Html.TextAreaFor(smtp => smtp.SMTP_Body, new { @class = "form-control", autocomplete = "off" })
+                                    <label for="SMTP_To">Body</label>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="col-xs-12">
+                            <div class="form-group">
+                                <button class="btn btn-sm btn-primary pull-right" style="margin-left:10px;" type="submit">Send</button>
+                                <a class="btn btn-sm btn-success pull-right" href="@Url.Action("SMTP", "Home")">Back</a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            }
+            </div>
+    </div>
+</div>
+
+
+@section scripts{
+    
+    @Scripts.Render("~/bundles/SMTP")
+    }

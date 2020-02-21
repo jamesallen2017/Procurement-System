@@ -1,0 +1,151 @@
+﻿@model PO_PurchasingUI.Models.SupplierModel
+@{
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+@{
+
+
+    List<SelectListItem> ListofPONumber = new List<SelectListItem>();
+    ListofPONumber.Add(new SelectListItem
+    {
+        Text = "",
+        Value = ""
+    });
+
+}
+
+<!-- Page Header -->
+<input type="hidden" value="65" id="ModuleAccess" />
+
+<div class="content bg-gray-lighter">
+    <div class="row items-push">
+        <div class="col-sm-7">
+            <h1 class="page-heading">
+                PURCHASE REQUISITION INQUIRY<small></small>
+            </h1>
+        </div>
+        <div class="col-sm-5 text-right hidden-xs">
+            <ol class="breadcrumb push-10-t">
+                <li>INQUIRY</li>
+                <li><a class="link-effect" href="">PURCHASE REQUISITION</a></li>
+            </ol>
+        </div>
+    </div>
+</div>
+
+<!-- END Page Header -->
+
+<div class="content">
+    <div class="block animated fadeIn">
+        <div class="block-header">
+            <h4 class="block-title">Date : @DateTime.Now.ToShortDateString()</h4>
+        </div>
+        <div class="block-content">
+            <div class="row">
+                <div class="col-md-12">
+                    <div class="panel-body table-responsive">
+                        <table class="InquiryTable table table-striped table-borderless text-center js-dataTable-full-pagination">
+                            <thead>
+                                <tr>
+                                    <th style="font-size: 12px;" class="col-xs-1 col-sm-1 text-left">Print</th>
+                                    <th style="font-size: 12px;" class="col-xs-1 col-sm-1 text-left">PR No.</th>
+                                    <th style="font-size: 12px;" class="col-xs-2 col-sm-2 text-left">Project Description</th>
+                                    <th style="font-size: 12px;" class="col-xs-2 col-sm-2 text-left">Responsible</th>
+                                    <th style="font-size: 12px;" class="col-xs-2 col-sm-2 text-left">Canvassed by</th>
+                                    <th style="font-size: 12px;" class="col-xs-1 col-sm-1 text-left">Status</th>
+                                    <th style="font-size: 12px;" class="col-xs-2 col-sm-2 text-left">Date</th>
+                                </tr>
+                            </thead>
+                            <tbody class="tbsdisplay">
+                                @foreach (var item in Model.PopulateAllPurchaseRequisition)
+                                {
+                                <tr>
+                                    <td style="font-size: 12px;" class="text-left"><a class="btn btn-default" href="@Url.Action("PurchaseRequisitionReport", "Report", new { @id = item.PRReferenceNo })" target="_blank"><span class="fa fa-print"></span></a></td>
+                                    <td style="font-size: 12px;" class="text-left">@Html.DisplayFor(Modelitem => item.PRNumber)</td>
+                                    <td style="font-size: 12px;" class="text-left">@Html.DisplayFor(Modelitem => item.ProjectDescription)</td>
+                                    <td style="font-size: 12px;" class="text-left">@Html.DisplayFor(Modelitem => item.FullNameResponsible)</td>
+                                    <td style="font-size: 12px;" class="text-left">@Html.DisplayFor(Modelitem => item.CanvessedBy)</td>
+                                    @if (item.FormStatus == "FOR ENDORSEMENT")
+                                    {
+                                        <td style="font-size: 12px;" class="text-left"><span class="label label-warning">@Html.DisplayFor(Modelitem => item.FormStatus)</span></td>
+                                    }
+                                    else if (item.FormStatus == "FOR REVIEW")
+                                    {
+                                        <td style="font-size: 12px;" class="text-left"><span class="label label-primary">@Html.DisplayFor(Modelitem => item.FormStatus)</span></td>
+                                    }
+                                    else if (item.FormStatus == "FOR APPROVAL")
+                                    {
+                                        <td style="font-size: 12px;" class="text-left"><span class="label label-warning" style="background: #c7b7e4">@Html.DisplayFor(Modelitem => item.FormStatus)</span></td>
+                                    }
+                                    else if (item.FormStatus == "REJECTED")
+                                    {
+                                        <td style="font-size: 12px;" class="text-left"><span class="label label-danger">@Html.DisplayFor(Modelitem => item.FormStatus)</span></td>
+                                    }
+                                    else if (item.FormStatus == "APPROVED")
+                                    {
+                                        <td style="font-size: 12px;" class="text-left"><span class="label label-success">@Html.DisplayFor(Modelitem => item.FormStatus)</span></td>
+                                    }
+                                    else if (item.FormStatus == "CANCELLED")
+                                    {
+                                        <td style="font-size: 12px;" class="text-left "><span class="label label-danger">@Html.DisplayFor(Modelitem => item.FormStatus)</span></td>
+                                    }
+
+                                    <td style="font-size: 12px;" class="text-left hidden-xs">
+                                        <label>Created Date     &nbsp;&nbsp;&nbsp;:</label> @Html.DisplayFor(Modelitem => item.EntryDate) <br />
+                                        <label>Reviewed Date    :</label> @Html.DisplayFor(Modelitem => item.ReviewedDate) <br />
+                                        <label>Endorsed Date    :</label> @Html.DisplayFor(Modelitem => item.EndorsedDate) <br />
+                                        <label>Approved Date    :</label> @Html.DisplayFor(Modelitem => item.ApprovedDate) <br />
+                                        <label>Rejected Date     &nbsp;&nbsp;:</label> @Html.DisplayFor(Modelitem => item.RejectedDate) <br />
+                                        <label>Cancelled Date    :</label> @Html.DisplayFor(Modelitem => item.CancelledDate) <br />
+
+                                    </td>
+
+                                    @Html.HiddenFor(Modelitem => item.POSupplierNumber)
+                                </tr>
+                                }
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="modal fade" id="modal-slideright" tabindex="-1" role="dialog" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-popout modal-md">
+
+        @using (Html.BeginForm("UpdatePOTagging", "Main", FormMethod.Post, new { @id = "TaggingForm", @class = "js-validation-material form-horizontal push-10-t", role = "form" }))
+        {
+            <div class="modal-content">
+                <div class="block block-themed block-transparent remove-margin-b">
+                    <div class="block-header bg-primary-dark" style="background-image: url(/assets/img/try.jpg);">
+                        <ul class="block-options">
+                            <li>
+                                <button data-dismiss="modal" type="button"><i class="si si-close"></i></button>
+                            </li>
+                        </ul>
+                        <h3 class="block-title">PO Tagging</h3>
+                    </div>
+                    <div class="block-content">
+                        <div class="row">
+                            <div class="form-group">
+                                <div class="col-md-10 col-md-offset-1">
+                                    <div class="form-material form-material-primary">
+                                        @Html.HiddenFor(a => a.POSupplierNumber)
+                                        @Html.DropDownListFor(client => client.ListClientReferenceNo, ListofPONumber, new { @class = "js-select2 form-control", data_placeholder = "Select Client Reference No.", multiple = "multiple", style = "width:100%" })
+                                        <label for="SupplierPONumberList">Client Reference No.</label>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button class="btn btn-sm btn-danger" type="button" data-dismiss="modal">Close</button>
+                    <button class="btn btn-sm btn-primary" id="UpdateItem" type="submit"><i class="fa fa-check"></i> Confirm</button>
+                </div>
+            </div>
+        }
+    </div>
+</div>

@@ -1,0 +1,630 @@
+﻿<!DOCTYPE html>
+<html class="no-focus" lang="en">
+<head>
+    <meta charset="utf-8" />
+    <meta http-equiv="cache-control" content="no-cache" />
+    <meta http-equiv="Pragma" content="no-cache" />
+    <meta http-equiv="Expires" content="-1" />
+
+    <meta name="description" content="E-Procurement System - Archangel Techonologies Inc.">
+    <meta name="author" content="James Allen S. Plata">
+    <meta name="robots" content="noindex, nofollow">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <meta http-equiv="X-UA-Compatible" content="IE=9; IE=8; IE=7;IE=10;IE=11; IE=EDGE" />
+
+    <!-- Icons -->
+
+
+
+
+    <link rel="icon" type="image/x-icon" href="@Url.Content("~/assets/img/E-P.PNG")">
+    <title> - Procurement System</title>
+
+    @Styles.Render("~/Content/css")
+
+    @Scripts.Render("~/bundles/jquery")
+
+    <style>
+        table#myTables {
+            max-width: 100%;
+            /* table-layout: fixed; */
+            margin: auto;
+            width: 1190px;
+        }
+
+        @@media only screen and (max-width: 767px) {
+            table#myTables {
+                max-width: 100%;
+                min-width: 1540px;
+            }
+        }
+
+        th, td {
+            padding: 5px 10px;
+        }
+
+        thead.thdisplay {
+            background-color: #001c3a;
+            border-radius: 5px 5px 0 0;
+            color: white;
+            display: table;
+            width: 100%;
+            width: calc(100% - 16px);
+        }
+
+        tbody.tbdisplay {
+            max-height: 295px;
+            /* min-height: 10px; */
+            overflow: scroll;
+            overflow-x: hidden;
+            display: block;
+            width: 100%;
+            font-size: 13px;
+        }
+
+            tbody.tbdisplay tr {
+                display: table;
+                width: 100%;
+                table-layout: fixed;
+            }
+    </style>
+</head>
+
+<body>
+    <div id="page-loader"></div>
+    <div id="page-container" class="sidebar-l sidebar-o side-scroll header-navbar-fixed">
+
+        <!-- Side Overlay-->
+        <aside id="side-overlay">
+            <!-- Side Overlay Scroll Container -->
+            <div id="side-overlay-scroll">
+                <!-- Side Header -->
+                <div class="side-header side-content">
+                    <!-- Layout API, functionality initialized in App() -> uiLayoutApi() -->
+                    <button class="btn btn-default pull-right" type="button" data-toggle="layout" data-action="side_overlay_close">
+                        <i class="fa fa-times"></i>
+                    </button>
+                    <span>
+                        <img class="img-avatar img-avatar32" src="/../assets/img/avatars/avatar10.jpg" alt="">
+                        <span class="font-w600 push-10-l">@Session["UserFullName"].ToString()</span>
+                    </span>
+                </div>
+                <!-- END Side Header -->
+                <!-- Side Content -->
+                <div class="side-content remove-padding-t">
+
+                    <div class="block pull-r-l border-t">
+                        <div class="block-content tab-content">
+                            @if (Session["UserRole"].ToString() == "1")
+                            {
+                                <div class="form-inline text-center" style="margin-top:-0px">
+                                    <label style="font-size:11px;  padding-right:8px"> LEGEND </label><br />
+                                    <span style="font-size:11px;  padding-right:8px"> <i class="fa fa-circle text-default"></i> Reviewed</span>
+                                    <span style="font-size:11px;  padding-right:8px"> <i class="fa fa-circle text-warning"></i> Endorsed</span>
+                                    <span style="font-size:11px;  padding-right:8px"><i class="fa fa-circle text-success"></i> Approved</span>
+                                    <span style="font-size:11px;  padding-right:8px"><i class="fa fa-circle text-danger"></i> Rejected</span>
+                                </div>
+                            }
+                            else
+                            {
+                                <div class="form-inline text-center" style="margin-top:-0px">
+                                    <label style="font-size:11px;  padding-right:8px"> LEGEND </label><br />
+                                    <span style="font-size:11px;  padding-right:8px"> <i class="fa fa-circle text-default"></i> Review</span>
+                                    <span style="font-size:11px;  padding-right:8px"> <i class="fa fa-circle text-warning"></i> Endorsement</span>
+                                    <span style="font-size:11px;  padding-right:8px"><i class="fa fa-circle text-amethyst-light"></i> Approval</span><br />
+                                    <span style="font-size:11px;  padding-right:8px"><i class="fa fa-circle text-success"></i> Approved</span>
+                                    <span style="font-size:11px;  padding-right:8px"><i class="fa fa-circle text-danger"></i> Rejected</span>
+                                </div>
+                            }
+
+                        </div>
+
+                            <div class="block-content tab-content">
+                                <div class="tab-pane fade fade-right in active" id="tabs-side-overlay-forendorsement">
+                                    <div class="block pull-r-l">
+
+                                        <div class="block-header bg-gray-lighter">
+                                            <ul class="block-options">
+                                                <li>
+                                                    <button type="button" data-toggle="block-option" data-action="refresh_toggle" id="RefreshPOPendingRequest" data-action-mode="demo"><i class="si si-refresh"></i></button>
+                                                </li>
+                                                <li>
+                                                    <button type="button" data-toggle="block-option" data-action="content_toggle"></button>
+                                                </li>
+                                            </ul>
+                                            <h3 class="block-title">PR REQUESTS <span class="PRcount badge badge-danger pull-right">0</span></h3>
+                                        </div>
+                                        <div class="block-content">
+                                            <ul class="list list-activity pull-r-l" id="PRNotificationContent"></ul>
+                                        </div>
+                                    </div>
+
+                                    <div class="block pull-r-l">
+                                        <div class="block-header bg-gray-lighter">
+                                            <ul class="block-options">
+                                                <li>
+                                                    <button type="button" data-toggle="block-option" data-action="refresh_toggle" id="RefreshPOPendingRequest" data-action-mode="demo"><i class="si si-refresh"></i></button>
+                                                </li>
+                                                <li>
+                                                    <button type="button" data-toggle="block-option" data-action="content_toggle"></button>
+                                                </li>
+                                            </ul>
+                                            <h3 class="block-title">SUPPLIER REQUESTS <span class="POcount badge badge-danger pull-right">0</span></h3>
+                                        </div>
+                                        <div class="block-content">
+                                            <ul class="list list-activity pull-r-l" id="SupplierNotificationContent"></ul>
+                                        </div>
+                                    </div>
+
+                                    <div class="block pull-r-l">
+                                        <div class="block-header bg-gray-lighter">
+                                            <ul class="block-options">
+                                                <li>
+                                                    <button type="button" data-toggle="block-option" data-action="refresh_toggle" id="RefreshPOPendingRequest" data-action-mode="demo"><i class="si si-refresh"></i></button>
+                                                </li>
+                                                <li>
+                                                    <button type="button" data-toggle="block-option" data-action="content_toggle"></button>
+                                                </li>
+                                            </ul>
+                                            <h3 class="block-title">COC REQUESTS <span class="COCcount badge badge-danger pull-right">0</span></h3>
+                                        </div>
+                                        <div class="block-content">
+                                            <ul class="list list-activity pull-r-l" id="COCNotificationContent"></ul>
+                                        </div>
+                                    </div>
+
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+            </div>
+            <!-- END Side Overlay Scroll Container -->
+        </aside>
+        <!-- END Side Overlay -->
+
+        <nav id="sidebar">
+            <!-- Sidebar Scroll Container -->
+            <div id="sidebar-scroll">
+                <!-- Sidebar Content -->
+                <!-- Adding .sidebar-mini-hide to an element will hide it when the sidebar is in mini mode -->
+                <div class="sidebar-content">
+                    <!-- Side Header -->
+                    <div class="side-header side-content">
+                        <!-- Layout API, functionality initialized in App() -> uiLayoutApi() -->
+                        <button class="btn btn-link text-gray pull-right hidden-md hidden-lg" type="button" data-toggle="layout" data-action="sidebar_close">
+                            <i class="fa fa-times"></i>
+                        </button>
+                        <!-- Themes functionality initialized in App() -> uiHandleTheme() -->
+                        <a class="h5 text-white" href="@Url.Action("Index","Home")">
+                            <span class="h4 font-w600 sidebar-mini-hide"><img src="~/assets/img/ATILOGO_HORI.png" style="height:35px; position:relative;" /></span>
+                        </a>
+                    </div>
+                    <!-- END Side Header -->
+                    <!-- Side Content -->
+                    <div class="side-content">
+                        <ul class="nav-main">
+                            <li>
+                                <a href="@Url.Action("Index","Home")"><i class="si si-home"></i><span class="sidebar-mini-hide text-uppercase">Home</span></a>
+                            </li>
+                            <li class="nav-main-heading"><span class="sidebar-mini-hide">User Module</span></li>
+
+                            <li class="module">
+                                <a class="nav-submenu" data-toggle="nav-submenu" href="javascript:void(0)"><i class="si si-social-dropbox"></i><span class="sidebar-mini-hide text-uppercase">PR</span></a>
+                                <ul>
+                                    <li id="11" class="submodule">
+                                        <a class="Confirmation text-uppercase" href="@Url.Action("PurchaseRequisition", "Home")"><i class="fa fa-circle-o"></i>Create</a>
+                                    </li>
+
+                                    <li id="12" class="submodule">
+                                        <a class="Confirmation text-uppercase" href="@Url.Action("EditPurchaseRequisition", "Home")"><i class="fa fa-circle-o"></i>Edit</a>
+                                    </li>
+                                </ul>
+                            </li>
+
+                            <li class="module">
+                                <a class="nav-submenu" data-toggle="nav-submenu" href="javascript:void(0)"><i class="si si-note"></i><span class="sidebar-mini-hide text-uppercase">Quotation</span></a>
+                                <ul>
+                                    <li id="21" class="submodule">
+                                        <a class="Confirmation text-uppercase" href="@Url.Action("CLIENT_QUOTATIONITEM", "Home")"><i class="fa fa-circle-o"></i>Create</a>
+                                    </li>
+
+                                    <li id="22" class="submodule">
+                                        <a class="Confirmation text-uppercase" href="@Url.Action("CLIENT_EDITQUOTATION", "Home")"><i class="fa fa-circle-o"></i>Edit</a>
+                                    </li>
+                                </ul>
+                            </li>
+
+                            <li class="module">
+                                <a class="nav-submenu" data-toggle="nav-submenu" href="javascript:void(0)"><i class="si si-note"></i><span class="sidebar-mini-hide text-uppercase">PO from Client</span></a>
+                                <ul>
+                                    <li id="31" class="submodule">
+                                        <a class="Confirmation text-uppercase" href="@Url.Action("POBYCLIENT_QUOTATION", "Home")"><i class="fa fa-circle-o"></i>Create</a>
+                                    </li>
+
+                                    <li id="32" class="submodule">
+                                        <a class="Confirmation text-uppercase" href="@Url.Action("EditClient", "Home")"><i class="fa fa-circle-o"></i>Edit</a>
+                                    </li>
+                                </ul>
+                            </li>
+
+
+
+                            <li class="module">
+                                <a class="nav-submenu" data-toggle="nav-submenu" href="javascript:void(0)"><i class="si si-social-dropbox"></i><span class="sidebar-mini-hide text-uppercase">PO to Supplier</span></a>
+                                <ul>
+                                    <li id="41" class="submodule">
+                                        <a class="Confirmation text-uppercase" href="@Url.Action("POTOSUPPLIER", "Home")"><i class="fa fa-circle-o"></i>Create</a>
+                                    </li>
+
+                                    <li id="42" class="submodule">
+                                        <a class="Confirmation text-uppercase" href="@Url.Action("EditSupplier", "Home")"><i class="fa fa-circle-o"></i>Edit</a>
+                                    </li>
+                                </ul>
+                            </li>
+
+                            <li class="module">
+                                <a class="nav-submenu" data-toggle="nav-submenu" href="javascript:void(0)"><i class="si si-paper-clip"></i><span class="sidebar-mini-hide">COC</span></a>
+                                <ul>
+                                    <li id="51" class="submodule">
+                                        <a class="Confirmation text-uppercase" href="@Url.Action("CertificateOfCompletion","Home")"><i class="fa fa-circle-o"></i>Create</a>
+                                    </li>
+                                    <li id="52" class="submodule">
+                                        <a class="Confirmation text-uppercase" href="@Url.Action("EditCertificateOfCompletion","Home")"><i class="fa fa-circle-o"></i>Edit</a>
+                                    </li>
+                                </ul>
+                            </li>
+
+                            <li class="module">
+                                <a class="nav-submenu" data-toggle="nav-submenu" href="javascript:void(0)"><i class="si si-book-open"></i><span class="sidebar-mini-hide">INQUIRY</span></a>
+                                <ul>
+                                    <li id="65" class="submodule">
+                                        <a class="Confirmation text-uppercase" href="@Url.Action("InquiryPurchaseRequisition", "Home")"><i class="fa fa-circle-o"></i>PURCHASE REQUISITION</a>
+                                    </li>
+
+                                    <li id="61" class="submodule">
+                                        <a class="Confirmation text-uppercase" href="@Url.Action("InquiryClientQuotation", "Home")"><i class="fa fa-circle-o"></i>QUOTATION</a>
+                                    </li>
+
+                                    <li id="62" class="submodule">
+                                        <a class="Confirmation text-uppercase" href="@Url.Action("InquiryClient", "Home")"><i class="fa fa-circle-o"></i>CLIENT</a>
+                                    </li>
+
+                                    <li id="63" class="submodule">
+                                        <a class="Confirmation text-uppercase" href="@Url.Action("InquirySupplier", "Home")"><i class="fa fa-circle-o"></i>SUPPLIER</a>
+                                    </li>
+
+                                    <li id="64" class="submodule">
+                                        <a class="Confirmation text-uppercase" href="@Url.Action("InquiryCertificateOfCompletion", "Home")"><i class="fa fa-circle-o"></i>CERTIFICATE OF COMPLETION</a>
+                                    </li>
+                                </ul>
+                            </li>
+
+                            <li class="module">
+                                <a class="nav-submenu" data-toggle="nav-submenu" href="javascript:void(0)"><i class="si si-book-open"></i><span class="sidebar-mini-hide text-uppercase">Delivery Receipt</span></a>
+                                <ul>
+                                    <li id="71" class="submodule">
+                                        <a class="Confirmation text-uppercase" href="@Url.Action("DR_RELEASING", "Home")"><i class="fa fa-circle-o"></i>RELEASING</a>
+                                    </li>
+                                    <li id="72" class="submodule">
+                                        <a class="Confirmation text-uppercase" href="@Url.Action("DR_RECEIVING", "Home")"><i class="fa fa-circle-o"></i>RECEIVING</a>
+                                    </li>
+
+                                    <li id="73" class="submodule">
+                                        <a class="Confirmation text-uppercase" href="@Url.Action("ReceivedLogs", "Home")"><i class="fa fa-circle-o"></i>RECEIVED LOGS</a>
+                                    </li>
+                                    <li id="74" class="submodule">
+                                        <a class="Confirmation text-uppercase" href="@Url.Action("ReleasedLogs", "Home")"><i class="fa fa-circle-o"></i>RELEASED LOGS</a>
+                                    </li>
+                                    <li id="75" class="submodule">
+                                        <a class="Confirmation text-uppercase" href="@Url.Action("ItemReturnedLogs", "Home")"><i class="fa fa-circle-o"></i>ITEM RETURNED LOGS</a>
+                                    </li>
+                                </ul>
+                            </li>
+
+                            <li class="module">
+                                <a class="nav-submenu" data-toggle="nav-submenu" href="javascript:void(0)"><i class="si si-screen-desktop"></i><span class="sidebar-mini-hide text-uppercase" style="font-size:13px">Project Monitoring</span></a>
+                                <ul>
+                                    
+                                    <li id="83" class="submodule">
+                                        <a class="Confirmation text-uppercase" href="@Url.Action("PR_Monitoring", "Home")"><i class="fa fa-circle-o"></i>PURCHASE REQUISITION</a>
+                                    </li>
+                                    <li id="81" class="submodule">
+                                        <a class="Confirmation text-uppercase" href="@Url.Action("ProjectMonitoring", "Home")"><i class="fa fa-circle-o"></i>CLIENT</a>
+                                    </li>
+                                    <li id="82" class="submodule">
+                                        <a class="Confirmation text-uppercase" href="@Url.Action("PO_Monitoring", "Home")"><i class="fa fa-circle-o"></i>SUPPLIER</a>
+                                    </li>
+                                </ul>
+                            </li>
+
+                            <li class="module">
+                                <a class="nav-submenu" data-toggle="nav-submenu" href="javascript:void(0)"><i class="si si-notebook"></i><span class="sidebar-mini-hide text-uppercase">Accounting</span></a>
+                                <ul>
+
+                                    <li id="91" class="submodule">
+                                        <a class="Confirmation text-uppercase" href="@Url.Action("PAYABLES","Home")"><i class="fa fa-circle-o"></i>Payables</a>
+                                    </li>
+
+                                    <li id="92" class="submodule">
+                                        <a class="Confirmation text-uppercase" href="@Url.Action("RECEIVABLES","Home")"><i class="fa fa-circle-o"></i>Receivables</a>
+                                    </li>
+
+                                    <li hidden id="93" class="submodule">
+                                        <a class="Confirmation text-uppercase" href="@Url.Action("AccountingLogs","Home")"><i class="fa fa-circle-o"></i>Accounting Logs</a>
+                                    </li>
+
+                                    <li id="94" class="submodule">
+                                        <a class="nav-submenu text-uppercase" data-toggle="nav-submenu" href="javascript:void(0)"><i class="fa fa-circle-o"></i>Reports</a>
+                                        <ul>
+                                            <li id="94"><a class="Confirmation text-uppercase" href="@Url.Action("PopulatePayablesReport", "Home")"><i class="fa fa-circle-o"></i>Outstanding AP</a></li>
+                                            <li id="94"><a class="Confirmation text-uppercase" href="@Url.Action("PopulateReceivablesReport", "Home")"><i class="fa fa-circle-o"></i>Outstanding AR</a></li>
+                                            <li id="94"><a class="Confirmation text-uppercase" href="@Url.Action("ProjectCostReport", "Home")"><i class="fa fa-circle-o"></i>Project Summary</a></li>
+                                        </ul>
+                                    </li>
+                                </ul>
+                            </li>
+
+                            <li class="module">
+                                <a class="nav-submenu" data-toggle="nav-submenu" href="javascript:void(0)"><i class="si si-loop"></i><span class="sidebar-mini-hide text-uppercase">Routing Approval</span></a>
+                                <ul>
+                                    <li id="105" class="submodule">
+                                        <a class="Confirmation text-uppercase" href="@Url.Action("PR_FORREVIEW", "Home")"><i class="fa fa-circle-o"></i>PR For Review</a>
+                                    </li>
+
+                                    <li id="106" class="submodule">
+                                        <a class="Confirmation text-uppercase" href="@Url.Action("PR_FORENDORSEMENT", "Home")"><i class="fa fa-circle-o"></i>PR For Endorsement</a>
+                                    </li>
+
+                                    <li id="107" class="submodule">
+                                        <a class="Confirmation text-uppercase" href="@Url.Action("PR_FORAPPROVAL", "Home")"><i class="fa fa-circle-o"></i>PR For Approval</a>
+                                    </li>
+
+                                    <li id="101" class="submodule">
+                                        <a class="Confirmation text-uppercase" href="@Url.Action("FORREVIEW", "Home")"><i class="fa fa-circle-o"></i>PO For Review</a>
+                                    </li>
+
+                                    <li id="102" class="submodule">
+                                        <a class="Confirmation text-uppercase" href="@Url.Action("FORENDORSEMENT", "Home")"><i class="fa fa-circle-o"></i>PO For Endorsement</a>
+                                    </li>
+
+                                    <li id="103" class="submodule">
+                                        <a class="Confirmation text-uppercase" href="@Url.Action("FORAPPROVAL", "Home")"><i class="fa fa-circle-o"></i>PO For Approval</a>
+                                    </li>
+
+                                    <li id="104" class="submodule">
+                                        <a class="Confirmation text-uppercase" href="@Url.Action("COCFORAPPROVAL", "Home")"><i class="fa fa-circle-o"></i>COC For Approval</a>
+                                    </li>
+                                </ul>
+                            </li>
+
+                            <li class="module">
+                                <a class="nav-submenu" data-toggle="nav-submenu" href="javascript:void(0)"><i class="si si-wrench"></i><span class="sidebar-mini-hide text-uppercase">Maintenance</span></a>
+                                <ul>
+                                    <li id="111" class="submodule">
+                                        <a class="nav-submenu text-uppercase" data-toggle="nav-submenu" href="javascript:void(0)"><i class="fa fa-circle-o"></i>User</a>
+                                        <ul>
+                                            <li id="111"><a class="Confirmation text-uppercase" href="@Url.Action("CreateUser", "Home")"><i class="fa fa-circle-o"></i>Create</a></li>
+                                            <li id="111"><a class="Confirmation text-uppercase" href="@Url.Action("EditUser", "Home")"><i class="fa fa-circle-o"></i>Edit</a></li>
+                                        </ul>
+                                    </li>
+
+                                    <li id="112" class="submodule">
+                                        <a class="nav-submenu text-uppercase" data-toggle="nav-submenu" href="javascript:void(0)"><i class="fa fa-circle-o"></i>Master List</a>
+                                        <ul>
+                                            <li id="112"><a class="Confirmation text-uppercase" href="@Url.Action("ItemMaster", "Home")"><i class="fa fa-circle-o"></i>Item Master</a></li>
+                                            <li id="112"><a class="Confirmation text-uppercase" href="@Url.Action("ClientMaster", "Home")"><i class="fa fa-circle-o"></i>Client Master</a></li>
+                                            <li id="112"><a class="Confirmation text-uppercase" href="@Url.Action("SupplierMaster", "Home")"><i class="fa fa-circle-o"></i>Supplier Master</a></li>
+                                        </ul>
+                                    </li>
+
+                                    <li id="113" class="submodule">
+                                        <a class="nav-submenu" data-toggle="nav-submenu" href="javascript:void(0)"><i class="fa fa-circle-o"></i>USER ROLE</a>
+                                        <ul>
+                                            <li id="113"><a class="Confirmation text-uppercase" href="@Url.Action("UserRole", "Home")"><i class="fa fa-circle-o"></i>View</a></li>
+                                        </ul>
+                                    </li>
+
+                                    <li id="114" class="submodule">
+                                        <a class="nav-submenu" data-toggle="nav-submenu" href="javascript:void(0)"><i class="fa fa-circle-o"></i>SMTP</a>
+                                        <ul>
+                                            <li id="114"><a class="Confirmation text-uppercase" href="@Url.Action("SMTP", "Home")"><i class="fa fa-circle-o"></i>View</a></li>
+                                        </ul>
+                                    </li>
+                                    <li id="115" class="submodule">
+                                        <a class="nav-submenu" data-toggle="nav-submenu" href="javascript:void(0)"><i class="fa fa-circle-o"></i>SYSTEM LOGS</a>
+                                        <ul>
+                                            <li id="115"><a class="Confirmation text-uppercase" href="@Url.Action("SystemLogs", "Home")"><i class="fa fa-circle-o"></i>View</a></li>
+                                        </ul>
+                                    </li>
+
+                                </ul>
+                            </li>
+
+                        </ul>
+                    </div>
+                    <!-- END Side Content -->
+                </div>
+                <!-- Sidebar Content -->
+            </div>
+            <!-- END Sidebar Scroll Container -->
+        </nav>
+
+
+        <header id="header-navbar" class="content-mini content-mini-full">
+            <!-- Header Navigation Right -->
+            <ul class="nav-header pull-right">
+                <li>
+
+                    <input type="hidden" id="hiddenEMPID" name="name" value="@Session["EmployeeID"].ToString()" />
+                    <div class="btn-group">
+                        <button class="btn btn-default btn-image dropdown-toggle" data-toggle="dropdown" type="button">
+                            <img src="~/assets/img/avatars/avatar10.jpg" alt="Avatar">
+
+                            <span class="text-username text-black-op" style="text-transform:uppercase"> @Session["UserName"].ToString()</span>
+                            <span class="caret"></span>
+                        </button>
+                        <ul class="dropdown-menu dropdown-menu-right">
+
+                            <li class="dropdown-header"><i class="fa fa-wpforms pull-right"></i>User Role</li>
+                            <li>
+                                <a tabindex="-1" href="javascript:void(0)" style="cursor:auto;">
+                                    @Session["UserRoleName"].ToString()
+                                </a>
+                            </li>
+
+                            <li class="dropdown-header"><i class="fa fa-lock pull-right"></i>AUTHENTICATOR</li>
+                            <li>
+                                <a tabindex="-1" href="@Url.Action("Authenticator","Home")">
+                                    MANAGE
+                                </a>
+                            </li>
+
+                            <li class="divider"></li>
+                            <li class="dropdown-header">Action</li>
+                            <li>
+                                <a class="LogOut" tabindex="-1" href="@Url.Action("LogOut","Login")">
+                                    <i class="si si-logout pull-right"></i><span style="text-transform:uppercase">Log out</span>
+                                </a>
+                            </li>
+                        </ul>
+                    </div>
+
+                    <div class="btn-group">
+                        <a href="javascript:void(0)" id="BellNotification" class="btn btn-group-justified" style="color:#808080" data-toggle="layout" data-action="side_overlay_toggle">
+                            <span class="noti si si-bell  text-danger"></span><span class="count badge badge-danger pull-right">0</span>
+                        </a>
+                    </div>
+                </li>
+            </ul>
+            <!-- END Header Navigation Right -->
+            <!-- Header Navigation Left -->
+            <ul class="nav-header pull-left">
+                <li class="hidden-md hidden-lg">
+                    <button class="btn btn-default" data-toggle="layout" data-action="sidebar_toggle" type="button">
+                        <i class="fa fa-navicon"></i>
+                    </button>
+                </li>
+            </ul>
+            <!-- END Header Navigation Left -->
+        </header>
+        <!-- END Header -->
+        <!-- Main Container -->
+        <main id="main-container">
+            @RenderBody()
+        </main>
+        <!-- END Main Container -->
+        <!-- Footer -->
+        <footer id="page-footer" class="content-mini content-mini-full font-s12 bg-gray-lighter clearfix">
+            <div class="pull-right">
+                Powered by <span class="font-w600">Archangel Technologies, Inc.</span>
+            </div>
+            <div class="pull-left">
+                <span class="font-w600">Beta Version 2.0.5</span>
+            </div>
+        </footer>
+        <!-- END Footer -->
+
+    </div>
+
+
+    <script src="~/signalr/hubs"></script>
+    @Scripts.Render("~/bundles/JSFormValidation")
+    @RenderSection("scripts", required: false)
+
+    <script>
+        var mySessionVariable = '@Session["UserFullName"].ToString()';
+        var myUserID = '@Session["UserID"].ToString()';
+        var UserRoleName = '@Session["UserRoleName"].ToString()';
+        var myUserGroupID = '@Session["UserGroupID"].ToString()';
+
+    </script>
+
+    
+
+    <script>
+        $(document).ajaxError(function (xhr, props) {
+            if (props.status === 401) {
+                bootbox.alert({
+                    size: "small",
+                    title: "Session Timeout.",
+                    message: "You will be redirected to the Login page.",
+                    callback: function(){ /* your callback code */
+                        window.location.href = '@Url.Action("LogOut", "Login")';
+                    }
+                })
+            }
+        })
+
+        $('.nav-main ul li').find('.Confirmation').click(function (e) {
+            e.preventDefault();
+            var link = $(this).attr('href');
+
+            swal({
+                title: "Are you sure?",
+                text: "You will be redirected to the page.",
+                type: "warning",
+                showCancelButton: true,
+                confirmButtonColor: '#5F69E0',
+                confirmButtonText: 'Yes',
+                cancelButtonText: "No",
+                closeOnConfirm: false, width: 420,
+                animation: false,
+                allowOutsideClick:false,
+                closeOnCancel: false
+            }).then((isConfirm) => {
+                if (isConfirm) {
+                    window.location.href = link;
+        }
+        })
+        });
+    </script>
+
+
+    <script>
+
+        function setNavigation() {
+            $('.nav-main ul li').find('a').each(function () {
+                var link = new RegExp($(this).attr('href')); //Check if some menu compares inside your the browsers link
+                if (link.test(document.location.href)) {
+                    if (!$(this).parents().hasClass('active')) {
+                        $(this).parents('li').addClass('open');
+                        $(this).parents().addClass("active");
+                        $(this).addClass("active"); //Add this too
+                    }
+                }
+            });
+        }
+
+    </script>
+
+    <script>
+        $(document).ready(function () {
+
+
+            jQuery(function () {
+                // Init page helpers (Select2 plugin)
+                App.initHelpers('select2');
+            });
+        });
+    </script>
+
+    <script>
+        jQuery(function () {
+            // Init page helpers (CountTo plugin)
+            App.initHelpers('appear-countTo');
+        });
+    </script>
+
+    <script>
+        $(document).ready(function () {
+            jQuery(function () {
+                // Init page helpers (BS Datepicker + BS Datetimepicker + BS Colorpicker + BS Maxlength + Select2 + Masked Input + Range Sliders + Tags Inputs plugins)
+                App.initHelpers(['datepicker', 'datetimepicker', 'colorpicker', 'maxlength', 'select2', 'masked-inputs', 'rangeslider', 'tags-inputs']);
+            });
+        });
+    </script>
+
+
+
+</body>
+</html>

@@ -1,0 +1,139 @@
+﻿@model PO_PurchasingUI.Models.ClientModel
+
+@{
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<input type="hidden" value="64" id="ModuleAccess" />
+
+<!-- Page Header -->
+<div class="content bg-gray-lighter">
+    <div class="row items-push">
+        <div class="col-sm-7">
+            <h1 class="page-heading">
+                CERTIFICATE OF COMPLETION INQUIRY <small></small>
+            </h1>
+        </div>
+        <div class="col-sm-5 text-right hidden-xs">
+            <ol class="breadcrumb push-10-t">
+                <li>INQUIRY</li>
+                <li><a class="link-effect" href="#">CERTIFICATE OF COMPLETION</a></li>
+            </ol>
+        </div>
+    </div>
+</div>
+<!-- END Page Header -->
+
+
+<div class="content">
+    <div class="block animated fadeIn">
+        <div class="block-header">
+            <h4 class="block-title">Date : @DateTime.Now.ToShortDateString()</h4>
+        </div>
+        <div class="block-content">
+            <div class="row">
+                @*<div class="col-xs-12 col-sm-12 col-md-6 col-md-offset-3">
+                        <div class="form-material form-material-primary input-group remove-margin-t remove-margin-b">
+                            <input class="form-control" type="text" autocomplete="off" id="txSearch" name="base-material-text" placeholder="Search..">
+                            <span class="input-group-addon"><i class="si si-magnifier"></i></span>
+                        </div>
+                    </div>*@
+
+                <div class="col-md-12">
+                    <div class="panel-body table-responsive">
+                        <table class="ItemDisplay table table-striped table-borderless text-center js-dataTable-full-pagination">
+                            <thead>
+                                <tr>
+                                    <th style="font-size: 12px;" class="col-xs-1 col-sm-1 text-left">Print</th>
+                                    <th style="font-size: 12px;" class="col-xs-2 col-sm-2 text-left">Control No.</th>
+                                    <th style="font-size: 12px;" class="col-xs-3 col-sm-3 text-left">Client</th>
+                                    <th style="font-size: 12px;" class="col-xs-2 col-sm-2 text-left">Project Name</th>
+                                    <th style="font-size: 12px;" class="col-xs-2 col-sm-2 text-left">Status</th>
+                                    <th style="font-size: 12px;" class="col-xs-2 col-sm-2 text-left">Date</th>
+                                </tr>
+                            </thead>
+                            <tbody class="tbsdisplay">
+                                @foreach (var item in Model.PopulateCOCInformation)
+                                {
+                                <tr>
+                                    <td style="font-size: 12px;" class="col-xs-1 col-sm-1 text-left"><a class="btn btn-default" href="@Url.Action("COC_Report", "Report", new { @id = item.COC_ControlNo })" target="_blank"><span class="fa fa-print"></span></a></td>
+                                    <td style="font-size: 12px;" class="col-xs-2 col-sm-2 text-left">@Html.DisplayFor(Modelitem => item.COC_ControlNo)</td>
+                                    <td style="font-size: 12px;" class="col-xs-2 col-sm-2 text-left">@Html.DisplayFor(Modelitem => item.COC_Client)</td>
+                                    <td style="font-size: 12px;" class="col-xs-2 col-sm-2 text-left">@Html.DisplayFor(Modelitem => item.COC_ProjectTitle)</td>
+                                    @if (item.COC_Status == "FOR ENDORSEMENT")
+                                    {
+                                        <td style="font-size: 12px;" class="text-left"><span class="label label-warning">@Html.DisplayFor(Modelitem => item.COC_Status)</span></td>
+                                    }
+                                    else if (item.COC_Status == "FOR APPROVAL")
+                                    {
+                                        <td style="font-size: 12px;" class="text-left"><span class="label label-primary" style="background: #c7b7e4">@Html.DisplayFor(Modelitem => item.COC_Status)</span></td>
+                                    }
+                                    else if (item.COC_Status == "REJECTED")
+                                    {
+                                        <td style="font-size: 12px;" class="text-left"><span class="label label-danger">@Html.DisplayFor(Modelitem => item.COC_Status)</span></td>
+                                    }
+                                    else if (item.COC_Status == "APPROVED")
+                                    {
+                                        <td style="font-size: 12px;" class="text-left"><span class="label label-success">@Html.DisplayFor(Modelitem => item.COC_Status)</span></td>
+                                    }
+                                        <td style="font-size: 12px;" class="text-left">
+                                            <label>Created Date     &nbsp;&nbsp;&nbsp;:</label> @Html.DisplayFor(Modelitem => item.EntryDate) <br />
+                                            <label>Approved Date    :</label> @Html.DisplayFor(Modelitem => item.ApprovedDate) <br />
+                                            <label>Rejected Date     &nbsp;&nbsp;:</label> @Html.DisplayFor(Modelitem => item.RejectedDate) <br />
+                                        </td>
+                                </tr>
+                                }
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section scripts {
+    @*<script>
+    $(document).ready(function(){
+
+        var Responsible = '@Session["UserID"].ToString()';
+        var action = '/Home/GetInquiryCertificateOfCompletion';
+
+        event.preventDefault();
+        event.stopImmediatePropagation();
+
+        $.ajax({
+            url: action,
+            type: "POST",
+            contentType: "application/json",
+            data: JSON.stringify({
+                Responsible: Responsible,
+            }),
+            dataType: "json",
+            success: function (data) {
+                var employeeTable = $('.ItemDisplay .tbsdisplay');
+                if (data == 0) {
+                    employeeTable.empty();
+                }
+                else {
+                    employeeTable.empty();
+                    $("#btnPrintReport").css("display", "")
+
+                    $(data).each(function (index, data) {
+                        employeeTable.append('<tr class="animated fadeIn">'
+                            + '<td style="font-size: 13px;" class="col-xs-1 col-sm-1 text-center"><a class="btn btn-primary" href="/Report/COC_Report/' + data.COC_ControlNo + '" target="__blank"><span class="fa fa-print"></span></a></td>'
+                            + '<td style="font-size: 13px;" class="col-xs-2 col-sm-2 text-center">' + data.COC_ControlNo + '</td>'
+                            + '<td style="font-size: 13px;" class="col-xs-3 col-sm-3 text-left">' + data.COC_Client + '</td>'
+                            + '<td style="font-size: 13px;" class="col-xs-2 col-sm-2 text-left">' + data.COC_ProjectTitle + '</td>'
+                            + '<td style="font-size: 13px;" class="col-xs-2 col-sm-2 text-center">' + data.COC_Status + '</td>'
+                            + '<td style="font-size: 13px;" class="col-xs-2 col-sm-2 text-center">' + data.EntryDate + '</td>'
+                            + '</tr>');
+                    });
+
+                }
+            }
+        });
+
+    })
+    </script>*@
+}

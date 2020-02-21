@@ -1,0 +1,124 @@
+﻿@model PO_PurchasingUI.Models.AccountingModel
+
+@{
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<!-- Page Header -->
+<div class="content bg-gray-lighter">
+    <div class="row items-push">
+        <div class="col-sm-7">
+            <h1 class="page-heading">
+                ACCOUNTING <small></small>
+            </h1>
+        </div>
+        <div class="col-sm-5 text-right hidden-xs">
+            <ol class="breadcrumb push-10-t">
+                <li>ACCOUNTING</li>
+                <li><a class="link-effect" href="">SUPPLIER MONITORING</a></li>
+            </ol>
+        </div>
+    </div>
+</div>
+<!-- END Page Header -->
+
+
+
+<div class="content">
+    <div class="block">
+        <div class="block-header">
+            <ul class="block-options">
+                <li>
+                    <button type="button"><i class="si si-settings"></i></button>
+                </li>
+            </ul>
+            <h4 class="block-title">Date : @DateTime.Now.ToShortDateString()</h4>
+        </div>
+
+        <div class="block-content">
+            <div class="row">
+
+                @*<div class="col-xs-12 col-sm-12 col-md-6 col-md-offset-3" style="margin-bottom:15px">
+                    <div class="form-material form-material-primary input-group remove-margin-t remove-margin-b">
+                        <input class="form-control" type="text" autocomplete="off" id="txSearch" name="base-material-text" placeholder="Search..">
+                        <span class="input-group-addon"><i class="si si-magnifier"></i></span>
+                    </div>
+                </div>*@
+                <div class="col-md-12">
+                    <div class="panel-body table-responsive">
+
+                        @if (ViewBag.AccountingMonitoring == true)
+                        {
+                            <table class="table table-striped table-borderless text-center js-dataTable-full-pagination">
+                                <thead>
+                                    <tr>
+                                        <th style="font-size:13px;" class="col-xs-2 col-sm-1 text-center">PO No.</th>
+                                        <th style="font-size:13px;" class="col-xs-2 col-sm-2 text-center">Supplier</th>
+                                        <th style="font-size:13px;" class="col-xs-2 col-sm-2 text-center">Client</th>
+                                        <th style="font-size:13px;" class="col-xs-2 col-sm-2 text-center">Overall Amount</th>
+                                        <th style="font-size:13px;" class="col-xs-2 col-sm-1 text-center">Less With Tax</th>
+                                        <th style="font-size:13px;" class="col-xs-2 col-sm-1 text-center">Overall Amount Paid</th>
+                                        <th style="font-size:13px;" class="col-xs-2 col-sm-2 text-center">Outstanding Balance</th>
+                                        <th style="font-size:13px;" class="col-xs-2 col-sm-1 text-center">Status</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    @foreach (var item in Model.PopulateAccountingMonitoring)
+                                    {
+                                        <tr>
+                                            <td style="font-size:13px;" class="col-xs-2 col-sm-1">@Html.DisplayFor(modelitem => item.ACC_PONumber)</td>
+                                            <td style="font-size:13px;" class="col-xs-2 col-sm-2 text-left"><a href="@Url.Action("GETSUPPLIER_MONITORING", "Home", new { @id = item.ACC_PONumber})">@Html.DisplayFor(modelitem => item.ACC_Supplier)</a></td>
+                                            <td style="font-size:13px;" class="col-xs-2 col-sm-2 text-left">@Html.DisplayFor(modelitem => item.ACC_Client)</td>
+                                            <td style="font-size:13px;" class="col-xs-2 col-sm-2">@Html.DisplayFor(modelitem => item.ACC_GrandTotalAmount)</td>
+                                            <td style="font-size:13px;" class="col-xs-2 col-sm-1">@Html.DisplayFor(modelitem => item.ACC_LesswithTax)</td>
+                                            <td style="font-size:13px;" class="col-xs-2 col-sm-1">@Html.DisplayFor(modelitem => item.ACC_GrandTotalAmountPaid)</td>
+                                            <td style="font-size:13px;" class="col-xs-2 col-sm-2">@Html.DisplayFor(modelitem => item.ACC_OutStandingBalance)</td>
+                                            <td style="font-size:13px;" class="col-xs-2 col-sm-1">@Html.DisplayFor(modelitem => item.ACC_Status)</td>
+                                        </tr>
+                                    }
+                                </tbody>
+                            </table>
+                        }
+
+                        @if (ViewBag.AccountingMonitoring == false)
+                        {
+                            <table class="table table-striped table-borderless text-center js-dataTable-full-pagination">
+                                <thead>
+                                    <tr>
+                                        <th style="font-size:13px;" class="col-xs-1 col-sm-1 text-center">P.O. Number</th>
+                                        <th style="font-size:13px;" class="col-xs-2 col-sm-2 text-center">Invoice No.</th>
+                                        <th style="font-size:13px;" class="col-xs-2 col-sm-2 text-left">Particular</th>
+                                        <th style="font-size:13px;" class="col-xs-2 col-sm-2 text-center">Amount Paid</th>
+                                        <th style="font-size:13px;" class="col-xs-1 col-sm-1 text-center">Check Date</th>
+                                        <th style="font-size:13px;" class="col-xs-2 col-sm-2 text-left">Responsible</th>
+                                        <th style="font-size:13px;" class="col-xs-2 col-sm-2 text-left">Remarks</th>
+                                    </tr>
+                                </thead>
+                                    <tbody>
+                                        @foreach (var item in Model.PopulateEditPayables)
+                                        {
+                                            <tr>
+                                                <td style="font-size: 13px;" class="col-xs-1 col-sm-1 text-center">@Html.DisplayFor(Modelitem => item.ACC_PONumber)</td>
+                                                <td style="font-size: 13px;" class="col-xs-2 col-sm-2 text-center">@Html.DisplayFor(Modelitem => item.ACC_InvoiceNo)</td>
+                                                <td style="font-size: 13px;" class="col-xs-2 col-sm-2 text-left">@Html.DisplayFor(Modelitem => item.ACC_Particular)</td>
+                                                <td style="font-size: 13px;" class="col-xs-2 col-sm-2 text-center">@Html.DisplayFor(Modelitem => item.ACC_AmountPaid)</td>
+                                                <td style="font-size: 13px;" class="col-xs-1 col-sm-1 text-center">@Html.DisplayFor(Modelitem => item.ACC_CheckDate)</td>
+                                                <td style="font-size: 13px;" class="col-xs-2 col-sm-2 text-left">@Html.DisplayFor(Modelitem => item.ACC_Responsible)</td>
+                                                <td style="font-size: 13px;" class="col-xs-2 col-sm-2 text-left">@Html.TextAreaFor(Modelitem => item.ACC_Remarks, new { @class = "form-control", @disabled = "disabled", style = "margin: 0px; width: 100%; height: 30px; resize:vertical; border:none;" })</td>
+                                            </tr>
+                                        }
+                                    </tbody>
+
+                            </table>
+                            <div class="form-group">
+                                <div class="col-xs-12">
+                                    <a href="@Url.Action("SUPPLIER_MONITORING","Home")" class="btn btn-danger pull-right">Back</a>
+                                </div>
+                            </div>
+                        }
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

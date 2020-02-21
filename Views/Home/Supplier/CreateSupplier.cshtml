@@ -1,0 +1,430 @@
+﻿@model PO_PurchasingUI.Models.SupplierModel
+@{
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+@{
+    List<SelectListItem> MeasureUnit = new List<SelectListItem>();
+    MeasureUnit.Add(new SelectListItem
+    {
+        Text = "",
+        Value = ""
+    });
+
+    List<SelectListItem> Location = new List<SelectListItem>();
+    MeasureUnit.Add(new SelectListItem
+    {
+        Text = "No Location",
+        Value = ""
+    });
+
+    List<SelectListItem> listItems = new List<SelectListItem>();
+    listItems.Add(new SelectListItem
+    {
+        Text = "",
+        Value = ""
+    });
+}
+
+@{
+    List<SelectListItem> TypeOfVat = new List<SelectListItem>();
+    TypeOfVat.Add(new SelectListItem
+    {
+        Text = "Without VAT",
+        Value = "0",
+    });
+    TypeOfVat.Add(new SelectListItem
+    {
+        Text = "VAT BEFORE DISCOUNT",
+        Value = "1",
+    });
+    TypeOfVat.Add(new SelectListItem
+    {
+
+        Text = "DISCOUNT BEFORE VAT",
+        Value = "2",
+    });
+
+
+}
+<input type="hidden" value="41" id="ModuleAccess" />
+
+<!-- Page Header -->
+<div class="content bg-gray-lighter">
+    <div class="row items-push">
+        <div class="col-sm-7">
+            <h1 class="page-heading">
+                PO TO SUPPLIER <small></small>
+            </h1>
+        </div>
+        <div class="col-sm-5 text-right hidden-xs">
+            <ol class="breadcrumb push-10-t">
+                <li>PO TO SUPPLIER</li>
+                <li><a class="link-effect" href="">CREATE</a></li>
+            </ol>
+        </div>
+    </div>
+</div>
+<!-- END Page Header -->
+<!-- Page Content -->
+<!-- Forms Row -->
+<div class="content">
+
+    @*@if (ViewBag.SupplierMonitoring == true)
+        {
+            <div class="block-content">
+                <div style="overflow-x: auto;">
+                    <div class="col-md-12">
+                        <div class="panel-body table-responsive">
+                            <table class="table table-striped table-borderless text-center js-dataTable-full-pagination">
+                                <thead>
+                                    <tr>
+                                        <th style="font-size: 12px;" class="col-xs-1 col-sm-1 text-center">Create</th>
+                                        <th style="font-size: 12px;" class="col-xs-1 col-sm-2 text-center">PO No.</th>
+                                        <th style="font-size: 12px;" class="col-xs-2 col-sm-2 text-center">Ati Quotation No.</th>
+                                        <th style="font-size: 12px;" class="col-xs-2 col-sm-2 text-left">Client</th>
+                                        <th style="font-size: 12px;" class="col-xs-2 col-sm-2 text-center">Entry Date</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    @foreach (var item in Model.PopulateAllUserClient)
+                                    {
+                                        <tr>
+                                            <td style="font-size: 12px;" class="col-xs-1 col-sm-1 text-center"><a class="btn btn-primary" href="@Url.Action("AddSupplier", "Home", new { @id = item.POCReferenceNo, @id2="21" })"><span class="fa fa-plus"></span></a></td>
+                                            <td style="font-size: 12px;" class="col-xs-1 col-sm-2 text-center">@Html.DisplayFor(Modelitem => item.PONumber)</td>
+                                            <td style="font-size: 12px;" class="col-xs-2 col-sm-2 text-center">@Html.DisplayFor(Modelitem => item.SignProposal)</td>
+                                            <td style="font-size: 12px;" class="col-xs-1 col-sm-2 text-left">@Html.DisplayFor(Modelitem => item.Client)</td>
+                                            <td style="font-size: 12px;" class="col-xs-1 col-sm-2 text-center">@Html.DisplayFor(Modelitem => item.EntryDate)</td>
+                                        </tr>
+                                    }
+                                </tbody>
+
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        }*@
+
+
+    @using (Html.BeginForm("InsertUserSupplierInformation", "Main", FormMethod.Post, new { @id = "SupplierValidation", @class = "js-validation-material form-horizontal push-10-t", role = "form" }))
+    {<div class="block animated fadeIn">
+            <div class="block-header">
+                <ul class="block-options"></ul>
+                <h4 class="block-title">Date : @DateTime.Now.ToShortDateString()</h4>
+            </div>
+
+
+            <div class="block-content block-content-narrow">
+                <input type="text" id="HiddenPreview" style="display:none;" />
+
+                <div class="form-group">
+                    <div class="col-md-6 col-md-offset-3">
+                        <div class="form-material form-material-primary">
+                            @Html.DropDownListFor(client => client.ListClientReferenceNo, Model.ListClientReferenceNo, "", new { @class = "js-select2  form-control", data_placeholder = "Select Client Reference No.", multiple = "multiple", style = "width:100%" })
+                            <label for="ListClientReferenceNo">Client Reference No.</label>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="col-xs-12 col-sm-12 col-md-6 col-lg-6">
+                    <div class="form-group">
+                        <div class="col-sm-12">
+                            <div class="form-material form-material-primary floating">
+                                @Html.TextBoxFor(client => client.POSupplierDate, new { @class = "js-datepicker form-control", autocomplete = "off", maxlength = "10", @readonly = "readonly" })
+                                <label for="POSupplierDate">P.O. Date</label>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <div class="col-sm-12">
+                            <div class="form-material form-material-primary floating">
+                                @Html.TextBoxFor(supplier => supplier.ProjectName, new { @class = "form-control", style = "width:100%;", autocomplete = "off", maxlength = "100" })
+                                <label for="ProjectName">Project Name</label>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <div class="col-sm-12">
+                            <div class="form-material form-material-primary floating">
+                                @Html.DropDownListFor(supplier => supplier.TermsofPayment, Model.ListofPaymentTerms, "", new { @class = "js-select2 form-control", style = "width:100%;", autocomplete = "off" })
+                                <label for="TermsofPayment">Terms of Payment</label>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <div class="col-sm-12">
+                            <div class="form-material form-material-primary floating">
+                                @Html.DropDownListFor(x => x.TypeOfVat, TypeOfVat, "", new { @class = "js-select2 form-control", style = "width:100%;", autocomplete = "off", enabled = "enabled", @onchange = "GetTypeOfVat()" })
+                                <label for="TypeOfVat">Type of VAT</label>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <div class="col-sm-12">
+                            <div class="form-material form-material-primary floating">
+                                @Html.TextBoxFor(supplier => supplier.Discount, new { @class = "form-control", autocomplete = "off", onkeypress = "validate(event)", maxlength = "10" })
+                                <label for="Discount">Less Discount</label>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <div class="col-sm-12">
+                            <div class="form-material form-material-primary floating">
+                                @Html.DropDownListFor(supplier => supplier.PRNumber, Model.ListPRNumber, "", new { @class = "js-select2 form-control", style = "width:100%;" })
+                                <label for="PRNumber">PR Number</label>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="col-xs-12 col-sm-12 col-md-6 col-lg-6">
+                    <div class="form-group">
+                        <div class="col-sm-12">
+                            <div class="form-material form-material-primary input-group">
+                                <span class="input-group-addon" data-toggle="tooltip" data-placement="top" title="Refresh Supplier">
+                                    <a href="#" id="RefreshListSupplier" data-toggle="block-option" data-action="refresh_toggle" style="color:black" data-action-mode="demo"><i class="si si-refresh"></i></a>
+                                </span>
+                                @Html.DropDownListFor(supplier => supplier.SupplierName, Model.SupplierName, "Select Supplier", new { @class = "js-select2 form-control", style = "width:100%;", @onchange = "getSupplierAddress()", autocomplete = "off" })
+                                <label for="SupplierName" style="left: 40px;">Supplier</label>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <div class="col-sm-12">
+                            <div id="DivSupplierAddresss" class="form-material form-material-primary floating">
+                                @Html.TextAreaFor(supplier => supplier.SupplierAddresss, new { @class = "form-control", id = "SupplierAddresss", disabled = "disabled", autocomplete = "off", style = "margin: 0px; width: 100%; resize:vertical; height: 30px;" })
+                                <label for="SupplierAddress">Supplier Address</label>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <div class="col-sm-12">
+                            <div id="DeliveryDiv" class="form-material form-material-primary floating">
+                                @Html.TextAreaFor(supplier => supplier.DeliveryAddress, new { @class = "form-control", id = "DeliveryAddress", autocomplete = "off", style = "margin: 0px; width: 100%; resize:vertical; height: 30px;", maxlength = "234" })
+                                <label for="DeliveryAddress">Shipping Address</label>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <div class="col-sm-12">
+                            <div class="form-material form-material-primary floating">
+                                @Html.TextAreaFor(supplier => supplier.Shippinginstruction, new { @class = "form-control", maxlength = "234", id = "Shippinginstruction", autocomplete = "off", style = "margin: 0px; width: 100%; height: 30px; resize:vertical;" })
+                                <label for="Shippinginstruction">Shipping Instruction</label>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <div class="col-sm-12">
+                            <div class="form-material form-material-primary floating">
+                                @Html.DropDownListFor(supplier => supplier.Endorser, Model.Endorser, "", new { @class = "js-select2 form-control", style = "width:100%;" })
+                                <label for="Endorser">Endorser</label>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <div class="col-sm-12">
+                            <div class="form-material form-material-primary floating">
+                                @Html.DropDownListFor(supplier => supplier.ApproverID, new SelectList(Model.Approver, "Value", "Text", "73"), new { @class = "js-select2 form-control", style = "width:100%;", disabled = "true" })
+                                <label for="Approver">Approver</label>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <div class="col-sm-12">
+
+                    </div>
+                </div>
+            </div>
+            <div class="block-content">
+
+
+                <div class="panel-body table-responsive" style="overflow-x:auto;">
+                    <table id="TableSupplierItemList" class="table table-striped table-borderless" cellpadding="0" cellspacing="0">
+                        <thead>
+                            <tr>
+                                <th style="font-size: 12px;" class="text-center"></th>
+                                <th>
+                                    <ul class="block-options" style="float:left;">
+                                        <li data-toggle="tooltip" data-placement="top" title="Refresh Particular">
+                                            <button type="button" id="RefreshItemContent" data-toggle="block-option" data-action="refresh_toggle" style="color:black" data-action-mode="demo"><i class="si si-refresh"></i></button>
+                                        </li>
+                                    </ul>
+                                </th>
+                                <th style="font-size: 12px;" class="text-center">Particular</th>
+                                <th style="font-size: 12px;" class="text-center">Unit</th>
+                                <th style="font-size: 12px;" class="text-center">Qty</th>
+                                <th style="font-size: 12px;" class="text-center">Unit Cost</th>
+                                <th style="font-size: 12px;" class="text-center">Total Cost</th>
+                                <th style="font-size: 12px;" class="text-center"></th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr id="mainrow" style="background-color:white">
+                                <td>
+                                    <div class="form-material form-material-primary floating">
+                                        @Html.TextBoxFor(client => client.AmountWithoutVAT, new { @class = "form-control", style = "display:none; text-align:right;", onkeypress = "validate(event)" })
+                                    </div>
+                                </td>
+
+                                <td>  <a id="add" value="Add" class="btn btn-success"><span class="fa fa-plus"></span> </a>  <a id="Remove" value="Remove" class="btn btn-danger"><span class="fa fa-close"></span> </a></td>
+
+                                <td class="col-xs-4">
+                                    <div class="form-group">
+                                        <div class="col-sm-12">
+                                            <div class="form-material form-material-primary floating">
+                                                @Html.DropDownListFor(supplier => supplier.ParticularName, Model.Particular, new { @class = "pc js-select2 form-control", style = "width:100%;" })
+                                                <br />
+
+                                                @Html.TextAreaFor(supplier => supplier.itemDescription, new { @class = "form-control", style = "margin:0px; width:100; height: 34px; resize:vertical;" })
+                                            </div>
+                                        </div>
+                                    </div>
+                                </td>
+
+                                <td class="col-xs-1">
+                                    <div class="form-group">
+                                        <div class="col-sm-12">
+                                            <div class="form-material form-material-primary floating">
+                                                @Html.TextBoxFor(supplier => supplier.ItemMeasure, new { @class = "form-control", autocomplete = "off", style = "text-align:center", disabled = "disabled" })
+                                            </div>
+                                        </div>
+                                    </div>
+                                </td>
+
+                                <td class="col-xs-1">
+                                    <div class="form-group">
+                                        <div class="col-sm-12">
+                                            <div class="form-material form-material-primary floating">
+                                                @Html.TextBoxFor(supplier => supplier.Qty, new { @class = "form-control", onkeypress = "validate(event)", autocomplete = "off", style = "text-align:right", maxlength = "10" })
+                                            </div>
+                                        </div>
+                                    </div>
+                                </td>
+
+                                <td class="col-xs-2">
+                                    <div class="form-group">
+                                        <div class="col-sm-12">
+                                            <div class="form-material form-material-primary floating">
+                                                @Html.TextBoxFor(supplier => supplier.Amount, new { @class = "form-control", onkeypress = "validate(event)", autocomplete = "off", style = "text-align:right;", maxlength = "10" })
+                                            </div>
+                                        </div>
+                                    </div>
+                                </td>
+
+                                <td class="col-xs-2">
+                                    <div class="form-material form-material-primary floating">
+                                        @Html.TextBoxFor(supplier => supplier.TotalAmount, new { @class = "form-control", onkeypress = "validate(event)", disabled = "disabled", style = "text-align:right" })
+                                    </div>
+                                </td>
+
+                                <td>
+                                    <div class="form-material form-material-primary floating">
+                                        @Html.TextBoxFor(supplier => supplier.AmountVAT, new { @class = "form-control", style = "display:none; text-align:right;", onkeypress = "validate(event)" })
+                                    </div>
+                                </td>
+
+
+                            </tr>
+                        </tbody>
+                        <tfoot>
+
+                            <tr style="background-color:white">
+                                <td></td>
+                                <td></td>
+                                <td></td>
+                                <td></td>
+                                <td></td>
+                                <td class="text-center" style="font-size:13px"><strong class="text-black-op">Total Cost w/o VAT</strong></td>
+                                <td> @Html.TextBoxFor(client => client.GrandTotalWithoutVat, new { @class = "form-control", disabled = "disabled", style = "border:none; background-color:white; text-align:right;cursor:default", onkeypress = "validate(event)" })</td>
+                            </tr>
+
+                            <tr style="background-color:white">
+                                <td></td>
+                                <td></td>
+                                <td></td>
+                                <td></td>
+                                <td></td>
+                                <td class="text-center" style="font-size:13px"><strong class="text-black-op">Total 12% VAT</strong></td>
+                                <td> @Html.TextBoxFor(client => client.GrandTotalVat, new { @class = "form-control", disabled = "disabled", style = "border:none; background-color:white; text-align:right;cursor:default", onkeypress = "validate(event)" })</td>
+
+                            </tr>
+                            <tr style="background-color:#eeeeee;">
+                                <td></td>
+                                <td></td>
+                                <td></td>
+                                <td></td>
+                                <td></td>
+                                <td class="text-center" style="font-size:13px"><strong class="text-black-op">Overall Total</strong></td>
+                                <td> @Html.TextBoxFor(client => client.GrandTotal, new { @class = "form-control", disabled = "disabled", style = "border:none; background-color:##f5f5f5; text-align:right;cursor:default;font-weight:bold", onkeypress = "validate(event)" })</td>
+                            </tr>
+                        </tfoot>
+                    </table>
+                </div>
+
+                <div class="form-group">
+                    <div class="col-xs-12">
+                        @if (Session["UserRole"].ToString() == "5")
+                        {
+                            <input class="btn btn-sm btn-dark  pull-right" type="submit" id="btnPreviewSupplier" onclick="DoPreview()" value="Preview" />
+
+                        }
+                        else
+                        {
+                            <input class="btn btn-sm btn-primary  pull-right" type="submit" style="margin-left:5px;" id="btnSaveSupplier" onclick="DoSave()" value="Submit" />
+                            <input class="btn btn-sm btn-dark  pull-right" type="submit" id="btnPreviewSupplier" onclick="DoPreview()" value="Preview" />
+                        }
+
+                    </div>
+                </div>
+            </div>
+        </div>
+    }
+
+</div>
+<!-- END Page Content -->
+
+@section scripts {
+
+<script>
+    var DeliveryAddress = $("#DeliveryAddress");
+
+    DeliveryAddress.onpaste = function (e) {
+        //do some IE browser checking for e
+        var max = DeliveryAddress.getAttribute("maxlength");
+        e.clipboardData.getData('text/plain').slice(0, max)
+    };
+
+    var Shippinginstruction = $("#Shippinginstruction");
+
+    Shippinginstruction.onpaste = function (e) {
+        //do some IE browser checking for e
+        var max = Shippinginstruction.getAttribute("maxlength");
+        e.clipboardData.getData('text/plain').slice(0, max)
+    };
+
+    var ProjectName = $("#ProjectName");
+
+    ProjectName.onpaste = function (e) {
+        //do some IE browser checking for e
+        var max = Shippinginstruction.getAttribute("maxlength");
+        e.clipboardData.getData('text/plain').slice(0, max)
+    };
+    </script>
+
+    @Scripts.Render("~/bundles/CreateSupplier")
+
+}
+

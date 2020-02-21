@@ -1,0 +1,192 @@
+﻿@model PO_PurchasingUI.Models.SMTPModel
+@{
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+@{
+    List<SelectListItem> listItems = new List<SelectListItem>();
+    listItems.Add(new SelectListItem
+    {
+        Text = "ENABLED",
+        Value = "1",
+    });
+    listItems.Add(new SelectListItem
+    {
+        Text = "DISABLED",
+        Value = "2",
+    });
+}
+<input type="hidden" value="114" id="ModuleAccess" />
+
+<div class="content bg-gray-lighter">
+    <div class="row items-push">
+        <div class="col-sm-7">
+            <h1 class="page-heading">
+                SMTP <small></small>
+            </h1>
+        </div>
+        <div class="col-sm-5 text-right hidden-xs">
+            <ol class="breadcrumb push-10-t">
+                <li>MAINTENANCE</li>
+                <li>SMTP</li>
+                <li><a class="link-effect" href="">VIEW</a></li>
+            </ol>
+        </div>
+    </div>
+</div>
+<!-- END Page Header -->
+
+
+<div class="content">
+    <div class="block">
+        <div class="block-header">
+            <ul class="block-options">
+                <li>
+                    <div class="form-group">
+                    </div>
+                </li>
+            </ul>
+            <h4 class="block-title">Date : @DateTime.Now.ToShortDateString()</h4>
+
+            @using (Html.BeginForm("UpdateSMTPInformation", "Main", FormMethod.Post, new { @class = "js-validation-material form-horizontal push-10-t", id = "SMTPForm", name = "SMTPForm" }))
+            {
+                @Html.AntiForgeryToken()
+                HtmlHelper.UnobtrusiveJavaScriptEnabled = false;
+
+
+            <div class="block-content block-content-narrow">
+
+                @Html.HiddenFor(m => m.SMTPID)
+                <div class="col-md-6">
+                    <div class="form-group">
+                        <div class="col-md-12">
+                            <div class="form-material form-material-primary floating">
+                                @Html.DropDownListFor(smtp => smtp.SMTP_Status, listItems, "", new { @class = "js-select2 form-control" })
+                                <label for="SMTP_Status">Status</label>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <div class="col-md-12">
+                            <div class="form-material form-material-primary floating">
+                                @Html.TextBoxFor(smtp => smtp.SMTP_Port, new { @class = "form-control", autocomplete = "off" })
+                                <label for="SMTP_Port">Port</label>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <div class="col-md-12">
+                            <div class="form-material form-material-primary floating">
+                                @Html.TextBoxFor(smtp => smtp.SMTP_Password, new { type = "password", @class = "form-control", autocomplete = "off" })
+                                <label for="SMTP_Password">Password</label>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="col-md-6">
+                    <div class="form-group">
+                        <div class="col-md-12">
+                            <div class="form-material form-material-primary floating">
+                                @Html.TextBoxFor(smtp => smtp.SMTP_Server, new { @class = "form-control", autocomplete = "off" })
+                                <label for="SMTP_Server">SMTP Server</label>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <div class="col-md-12">
+                            <div class="form-material form-material-primary floating">
+                                @Html.TextBoxFor(smtp => smtp.SMTP_Email, new { @class = "form-control", autocomplete = "off" })
+                                <label for="SMTP_Email">Email Address</label>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <div class="col-md-12">
+                            <div class="form-material form-material-primary floating">
+                                @Html.TextBoxFor(smtp => smtp.SMTP_ConfirmPassword, new { type="password", @class = "form-control", autocomplete = "off" })
+                                <label for="SMTP_ConfirmPassword">Confirm Password</label>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="col-xs-12">
+                    <div class="form-group">
+                        <button class="btn btn-sm btn-primary pull-right" style="margin-left:10px;" type="submit">Submit</button>
+                        <a class="btn btn-sm btn-success pull-right" href="@Url.Action("TestEmailForm","Home")">Test Email</a>
+                    </div>
+                </div>
+
+            </div>
+            }
+
+        </div>
+    </div>
+</div>
+
+
+
+
+@section scripts {
+    
+    
+<script>
+    $(document).ready(function(){
+
+        $("#SMTPForm").submit(function (event) {
+
+
+            var SMTP_SERVER = $("#SMTP_Server").val();
+            var SMTP_PORT = $("#SMTP_Port").val();
+            var SMTP_EMAIL = $("#SMTP_Email").val();
+            var SMTP_STATUS = $("#SMTP_Status").val();
+            var SMTP_PASSWORD = $("#SMTP_Password").val();
+
+
+
+            var url = $("#SMTPForm").attr("action");
+            event.preventDefault();
+            event.stopImmediatePropagation();
+
+            $.ajax({
+
+                url: url,
+                type: "POST",
+                contentType: "application/json",
+                data: JSON.stringify({
+                    SMTP_Server: SMTP_SERVER,
+                    SMTP_Port: SMTP_PORT,
+                    SMTP_Email: SMTP_EMAIL,
+                    SMTP_Status: SMTP_STATUS,
+                    SMTP_Password: SMTP_PASSWORD,
+                }),
+                dataType: "json",
+                success: function (data) {
+                    if (data == '0') {
+
+                            return false;
+                    }
+                    else {
+                        swal
+                            ({
+                                title: "Congratulation!",
+                                text: "SMTP Successfully Saved.",
+                                type: "success", allowOutsideClick: false
+                            }).then(function () {
+                                // Redirect the user
+                                location.reload();
+                            });
+
+                    }
+                }
+
+            });
+
+        });
+    });
+    </script>
+
+    }

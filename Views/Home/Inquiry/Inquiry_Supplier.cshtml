@@ -1,0 +1,306 @@
+﻿@model PO_PurchasingUI.Models.SupplierModel
+@{
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+@{
+
+
+    List<SelectListItem> ListofPONumber = new List<SelectListItem>();
+    ListofPONumber.Add(new SelectListItem
+    {
+        Text = "",
+        Value = ""
+    });
+
+}
+
+<!-- Page Header -->
+<input type="hidden" value="62" id="ModuleAccess" />
+
+<div class="content bg-gray-lighter">
+    <div class="row items-push">
+        <div class="col-sm-7">
+            <h1 class="page-heading">
+                SUPPLIER INQUIRY
+            </h1>
+        </div>
+        <div class="col-sm-5 text-right hidden-xs">
+            <ol class="breadcrumb push-10-t">
+                <li>INQUIRY</li>
+                <li><a class="link-effect" href="">SUPPLIER</a></li>
+            </ol>
+        </div>
+    </div>
+</div>
+
+<!-- END Page Header -->
+
+<div class="content">
+    <div class="block animated fadeIn">
+        <div class="block-header">
+            <h4 class="block-title">Date : @DateTime.Now.ToShortDateString()</h4>
+        </div>
+        <div class="block-content">
+            <div class="row">
+                <div class="col-md-12">
+                    <div class="panel-body table-responsive">
+                        <table class="InquiryTable table table-striped table-borderless text-center js-dataTable-full-pagination">
+                            <thead>
+                                <tr>
+                                    <th style="font-size: 12px;" class="text-left col-md-1">Tag</th>
+                                    <th style="font-size: 12px;" class="text-left col-md-1">Print</th>
+                                    <th style="font-size: 12px;" class="text-left col-md-1">PO No.</th>
+                                    <th style="font-size: 12px;" class="text-left col-md-3">Supplier</th>
+                                    <th style="font-size: 12px;" class="text-left col-md-3">Project Name</th>
+                                    <th style="font-size: 12px;" class="text-left col-md-1">Status</th>
+                                    <th style="font-size: 12px;" class="text-left hidden-xs col-md-2">Date</th>
+                                </tr>
+                            </thead>
+                            <tbody class="tbsdisplay">
+                                @foreach (var item in Model.PopulateSupplierDetails)
+                                {
+                                <tr>
+                                    <td style="font-size: 12px;" class="text-left"><a class="btn btn-primary" href="#" id="UpdatePOTagging"><span class="fa fa-tags"></span></a></td>
+                                    <td style="font-size: 12px;" class="text-left"><a class="btn btn-default" href="@Url.Action("ApprovedReportSupplier", "Report", new { @id = item.POSReferenceNo })" target="_blank"><span class="fa fa-print"></span></a></td>
+                                    <td style="font-size: 12px;" class="text-left">@Html.DisplayFor(Modelitem => item.POSupplierNumber)</td>
+                                    <td style="font-size: 12px;" class="text-left">@Html.DisplayFor(Modelitem => item.Supplier)</td>
+                                    <td style="font-size: 12px;" class="text-left">@Html.DisplayFor(Modelitem => item.ProjectName)</td>
+
+                                    @if (item.FormStatus == "FOR ENDORSEMENT")
+                                    {
+                                        <td style="font-size: 12px;" class="text-left"><span class="label label-warning">@Html.DisplayFor(Modelitem => item.FormStatus)</span></td>
+
+                                    }
+                                    else if (item.FormStatus == "FOR REVIEW")
+                                    {
+                                        <td style="font-size: 12px;" class="text-left"><span class="label label-default" style="background: #5c90d2">@Html.DisplayFor(Modelitem => item.FormStatus)</span></td>
+                                    }
+                                    else if (item.FormStatus == "FOR APPROVAL")
+                                    {
+                                        <td style="font-size: 12px;" class="text-left"><span class="label label-warning" style="background: #c7b7e4">@Html.DisplayFor(Modelitem => item.FormStatus)</span></td>
+                                    }
+                                    else if (item.FormStatus == "REJECTED")
+                                    {
+                                        <td style="font-size: 12px;" class="text-left"><span class="label label-danger">@Html.DisplayFor(Modelitem => item.FormStatus)</span></td>
+                                    }
+                                    else if (item.FormStatus == "APPROVED")
+                                    {
+                                        <td style="font-size: 12px;" class="text-left "><span class="label label-success">@Html.DisplayFor(Modelitem => item.FormStatus)</span></td>
+                                    }
+                                    else if (item.FormStatus == "CANCELLED")
+                                    {
+                                        <td style="font-size: 12px;" class="text-left "><span class="label label-danger">@Html.DisplayFor(Modelitem => item.FormStatus)</span></td>
+                                    }
+                                        <td style="font-size: 12px;" class="text-left hidden-xs">
+                                            <label>Created Date     &nbsp;&nbsp;&nbsp;:</label> @Html.DisplayFor(Modelitem => item.EntryDate) <br />
+                                            <label>Reviewed Date    :</label> @Html.DisplayFor(Modelitem => item.ReviewedDate) <br />
+                                            <label>Endorsed Date    :</label> @Html.DisplayFor(Modelitem => item.EndorsedDate) <br />
+                                            <label>Approved Date    :</label> @Html.DisplayFor(Modelitem => item.ApprovedDate) <br />
+                                            <label>Rejected Date     &nbsp;&nbsp;:</label> @Html.DisplayFor(Modelitem => item.RejectedDate) <br />
+                                            <label>Cancelled Date    :</label> @Html.DisplayFor(Modelitem => item.CancelledDate) <br />
+                                        </td>
+
+                                    @Html.HiddenFor(Modelitem => item.POSupplierNumber)
+                                </tr>
+                                }
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="modal fade" id="modal-slideright" tabindex="-1" role="dialog" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-popout modal-md">
+
+        @using (Html.BeginForm("UpdatePOTagging", "Main", FormMethod.Post, new { @id = "TaggingForm", @class = "js-validation-material form-horizontal push-10-t", role = "form" }))
+        {
+            <div class="modal-content">
+                <div class="block block-themed block-transparent remove-margin-b">
+                    <div class="block-header bg-primary-dark" style="background-image: url(/assets/img/try.jpg);">
+                        <ul class="block-options">
+                            <li>
+                                <button data-dismiss="modal" type="button"><i class="si si-close"></i></button>
+                            </li>
+                        </ul>
+                        <h3 class="block-title">PO Tagging</h3>
+                    </div>
+                    <div class="block-content">
+                        <div class="row">
+                            <div class="form-group">
+                                <div class="col-md-10 col-md-offset-1">
+                                    <div class="form-material form-material-primary">
+                                        @Html.HiddenFor(a => a.POSupplierNumber)
+                                        @Html.DropDownListFor(client => client.ListClientReferenceNo, ListofPONumber, new { @class = "js-select2 form-control", data_placeholder = "Select Client Reference No.", multiple = "multiple", style = "width:100%" })
+                                        <label for="SupplierPONumberList">Client Reference No.</label>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button class="btn btn-sm btn-danger" type="button" data-dismiss="modal">Close</button>
+                    <button class="btn btn-sm btn-primary" id="UpdateItem" type="submit"><i class="fa fa-check"></i> Confirm</button>
+                </div>
+            </div>
+        }
+    </div>
+</div>
+
+@section scripts{
+
+    <script>
+        $(".InquiryTable").on('click', "#UpdatePOTagging", function () {
+
+            var row = $(this).closest("tr");
+            var SupplierPONumber = $("#item_POSupplierNumber", row).val();
+
+            $("#POSupplierNumber").val(SupplierPONumber);
+
+
+            //fetch ItemCategories form database
+
+            var ItemCategories = [] //SET STRING ARRAY
+
+            function LoadItemCategory(element) {
+                if (ItemCategories.length == 0) {
+                    //ajax function for fetch data
+
+                    $.ajax({
+
+                        type: "GET",
+                        url: '/Home/List_PopulateClientReferenceNo', //REDIRECT TO ACTION RESULT (HOME CONTROLLLER)
+                        success: function (data) { //RETURN DATA GALING SA CONTROLLER
+                            ItemCategories = data; // RENDER DATA TO STRING ARRAY
+
+                            //render item category
+                            renderCategory(element);
+                        }
+                    })
+                }
+                else {
+                    //render catagory to the element
+                    renderCategory(element);
+                }
+            }
+
+
+            function renderCategory(element) {
+                var $ele = $(element);
+                $ele.empty();
+                $ele.append($('<option/>').val('').text(''));
+                $.each(ItemCategories, function (i, val) {
+                    $ele.append($('<option/>').val(this['Value']).html(this['Text']));
+                })
+
+            }
+
+            LoadItemCategory($("#ListClientReferenceNo"))
+
+            $('#modal-slideright').modal({
+                show: 'false',
+                backdrop: 'static',
+            });
+
+   
+
+            var list = [];
+            var PONumber = $("#item_POSupplierNumber", row).val();
+            $.ajax({
+
+                type: "POST",
+                url: '/Home/PopulateListClientReferenceNo',
+                data: JSON.stringify({
+                    PONumber: PONumber,
+                }),
+                contentType: "application/json",
+                dataType: "json",
+                success: function (data) {
+                    list = data;
+                    $("#ListClientReferenceNo").val(list)
+                    $("#ListClientReferenceNo").change()
+
+                }
+            })
+
+        })
+
+    </script>
+
+
+    <script>
+
+        $("#TaggingForm").submit(function (event) {
+
+
+            var ListClientReferenceNo = $("#ListClientReferenceNo").val()
+            var PONumber = $("#POSupplierNumber").val();
+
+            event.preventDefault();
+            event.stopImmediatePropagation();
+
+            swal({
+                title: "Are you sure?",
+                text: "",
+                type: "warning",
+                showCancelButton: true,
+                confirmButtonColor: '#5F69E0',
+                confirmButtonText: 'Yes',
+                cancelButtonText: "No",
+                closeOnConfirm: false, width: 420,
+                closeOnCancel: false,
+                allowOutsideClick: false
+            }).then((isConfirm) => {
+                if (isConfirm) {
+
+                    var action = $("#TaggingForm").attr("action"); 
+                    $.ajax({
+                        url: action,
+                        type: "POST",
+                        contentType: "application/json",
+                        data: JSON.stringify({
+                            PONumber: PONumber,
+                            ListClientReferenceNo: ListClientReferenceNo,
+                        }),
+                        dataType: "json",
+                        success: function (data) { 
+
+                            if (data == 0) {
+                                sweetAlert("Contact our administrator for assistance.", "", "error");
+                                return false;
+                            }
+                            if (data == "empty")
+                            {
+                                swal
+                                    ({
+                                        title: "Success",
+                                        text: "This P.O. is no longer tagged to any project.",
+                                        type: "success", allowOutsideClick: false
+                                    }).then(function () {
+                                        location.reload();
+                                    });
+                            }
+                            else {
+                                swal
+                                    ({
+                                        title: "Success",
+                                        text: data + " Project Successfully Tagged in this P.O.",
+                                        type: "success", allowOutsideClick: false
+                                    }).then(function () {
+                                        location.reload();
+                                    });
+                            }
+                        }
+                    });
+
+                }
+            })
+
+
+        })
+
+    </script>
+}

@@ -1,0 +1,396 @@
+﻿@model PO_PurchasingUI.Models.ClientModel
+
+@{
+    Layout = "~/Views/Shared/_Layout.cshtml";
+
+}
+
+@{
+    List<SelectListItem> listItems = new List<SelectListItem>();
+    listItems.Add(new SelectListItem
+    {
+        Text = "",
+        Value = ""
+    });
+
+
+    List<SelectListItem> Location = new List<SelectListItem>();
+    Location.Add(new SelectListItem
+    {
+        Text = "",
+        Value = ""
+    });
+
+    List<SelectListItem> Vat = new List<SelectListItem>();
+
+
+    Vat.Add(new SelectListItem
+    {
+        Text = "WITH VAT",
+        Value = "1.12"
+    });
+
+    Vat.Add(new SelectListItem
+    {
+        Text = "WITHOUT VAT",
+        Value = "1.00"
+    });
+
+
+}
+
+
+
+<input type="hidden" value="31" id="ModuleAccess" />
+
+<!-- Page Header -->
+<div class="content bg-gray-lighter">
+    <div class="row items-push">
+        <div class="col-sm-7">
+            <h1 class="page-heading">
+                PO FROM CLIENT <small></small>
+            </h1>
+        </div>
+        <div class="col-sm-5 text-right hidden-xs">
+            <ol class="breadcrumb push-10-t">
+                <li>PO FROM CLIENT</li>
+                <li><a class="link-effect" href="">CREATE</a></li>
+            </ol>
+        </div>
+    </div>
+</div>
+<!-- END Page Header -->
+<!-- Page Content -->
+<div class="content">
+    <div class="block animated fadeIn">
+        <div class="block-header">
+            @*<ul class="block-options">
+                <li   data-toggle="tooltip" data-placement="top" title="Reload Particular">
+                    <button type="button" id="RefreshItemContent" data-toggle="block-option" data-action="refresh_toggle" data-action-mode="demo"><i class="si si-refresh"></i></button>
+                </li>
+            </ul>*@
+            <h4 class="block-title">Date : @DateTime.Now.ToShortDateString()</h4>
+        </div>
+        @if (ViewBag.ItemQuotation == true)
+        {
+            <div class="block-content">
+                <!-- Header Tiles -->
+                <div class="row">
+                    <div class="panel-body table-responsive">
+                        <table class="table table-striped table-borderless text-center js-dataTable-full-pagination" id="QuoationItemTable">
+                            <thead>
+                                <tr>
+                                    <th style="font-size: 12px;" class="text-left1">Create</th>
+                                    <th style="font-size: 12px;" class="text-left1">print</th>
+                                    <th style="font-size: 12px;" class="text-left">Control No</th>
+                                    <th style="font-size: 12px;" class="text-left">Client Name</th>
+                                    <th style="font-size: 12px;" class="text-left">Company</th>
+                                    <th style="font-size: 12px;" class="text-left">Location</th>
+                                    <th style="font-size: 12px;" class="text-left">Date Created</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+
+                                @foreach (var item in Model.PopulateAllItem)
+                                {
+                                    <tr>
+                                        <td style="font-size: 12px;" class="text-left"><a class="btn btn-primary" href="@Url.Action("POBYCLIENT", "Home", new { @id = item.Quotation_ControlNo })"><span class="fa fa-edit"></span></a></td>
+                                        <td style="font-size: 12px;" class="text-left"><a class="btn btn-default" href="@Url.Action("ClientQuotationReport", "Report", new { @id = item.Quotation_ControlNo })" target="_blank"><span class="fa fa-print"></span></a></td>
+                                        <td style="font-size: 12px;" class="text-left">@Html.DisplayFor(modelitem => item.Quotation_ControlNo)</td>
+                                        <td style="font-size: 12px;" class="text-left">@Html.DisplayFor(modelitem => item.Quotation_ClientName)</td>
+                                        <td style="font-size: 12px;" class="text-left">@Html.DisplayFor(modelitem => item.Quotation_Company)</td>
+                                        <td style="font-size: 12px;" class="text-left">@Html.DisplayFor(modelitem => item.Quotation_Location)</td>
+                                        <td style="font-size: 12px;" class="text-left">@Html.DisplayFor(modelitem => item.Quotation_EntryDate)</td>
+                                    </tr>
+                                }
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+
+
+        }
+        @if (ViewBag.ItemQuotation == false)
+        {
+            using (Html.BeginForm("InsertUserClientInformation", "Main", FormMethod.Post, new { @id = "ClientValidation", @class = "js-validation-material form-horizontal push-10-t", role = "form" }))
+            {
+
+                <div class="block-content block-content-narrow">
+                    <div class="form-group">
+                        <div class="col-md-6 col-md-offset-3">
+                            <div class="form-material form-material-primary">
+                                @Html.DropDownListFor(client => client.SupplierPONumberList, Model.SupplierPONumberList, new { @class = "js-select2 form-control", data_placeholder = "Select P.O Number.", multiple = "multiple", style = "width:100%" })
+                                <label for="SupplierPONumberList">Supplier PO Number</label>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="col-md-6">
+
+                        <div class="form-group">
+                            <div class="col-sm-12">
+                                <div class="form-material form-material-primary floating">
+                                    @Html.EditorFor(client => client.PODate, new { htmlAttributes = new { @class = "js-datepicker form-control", autocomplete = "off" } })
+                                    <label for="PODate">P.O. Date</label>
+                                </div>
+                            </div>
+                        </div>
+
+
+                        <div class="form-group">
+                            <div class="col-sm-12">
+                                <div class="form-material form-material-primary floating">
+                                    @Html.TextBoxFor(client => client.PONumber, new { @class = "form-control", autocomplete = "off", maxlength = "20" })
+                                    <label for="PONumber">P.O. Number</label>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="form-group">
+                            <div class="col-sm-12">
+                                <div class="form-material form-material-primary floating">
+                                    @Html.TextBoxFor(client => client.SignProposal, new { @class = "form-control", autocomplete = "off", maxlength = "20", disabled = "true" })
+                                    <label for="SignProposal">Signed Proposal (Quotation Number)</label>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="form-group">
+                            <div class="col-sm-12">
+                                <div class="form-material form-material-primary floating">
+                                    @Html.TextBoxFor(client => client.ProjectName, new { @class = "form-control", autocomplete = "off", maxlength = "130", disabled = "true" })
+                                    <label for="ProjectName">Project Name</label>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="form-group">
+                            <div class="col-sm-12">
+                                <div class="form-material form-material-primary floating">
+                                    @Html.TextBoxFor(client => client.SalesPersonnel, new { @class = "form-control", autocomplete = "off", maxlength = "30" })
+                                    <label for="SalesPersonnel">Sales Personnel</label>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="form-group">
+                            <div class="col-md-12">
+                                <div class="form-material form-material-primary floating">
+                                    @Html.DropDownListFor(quotation => quotation.AmountVAT, Vat, new { @class = "js-select2 form-control", style = "width:100%", disabled = "true" })
+                                    <label for="Submittedby_ID">VAT</label>
+                                </div>
+                            </div>
+                        </div>
+
+                    </div>
+
+                    <div class="col-md-6">
+
+                        <div class="form-group">
+                            <div class="col-sm-12">
+                                <div class="form-material form-material-primary floating">
+                                    @Html.DropDownListFor(client => client.ClientID, Model.ClientNameList, "Select Client", new { @class = "js-select2 form-control", style = "width:100%", disabled = "true" })
+                                    <label for="ClientNameList">Client</label>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="form-group">
+                            <div class="col-sm-12">
+                                <div class="form-material form-material-primary floating" id="LocationDiv">
+                                    @Html.DropDownListFor(quotation => quotation.ClientLocation, Model.LocationList, "", new { @class = "js-select2 form-control", style = "width:100%", disabled = "true" })
+                                    <label for="ClientLocation">Location</label>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="form-group">
+                            <div class="col-md-12">
+                                <div class="form-material form-material-primary floating" id="AddressDiv">
+                                    @Html.TextAreaFor(quotation => quotation.ClientAddress, new { @class = "form-control", autocomplete = "off", style = "margin:0px; width: 100%; height: 34px; resize:vertical;", disabled = "true" })
+                                    <label for="ClientAddress">Client Address</label>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="form-group">
+                            <div class="col-sm-12">
+                                <div class="form-material form-material-primary floating">
+                                    @Html.DropDownListFor(supplier => supplier.TermsofPayment, Model.ListofPaymentTerms, "", new { @class = "js-select2 form-control", style = "width:100%;", autocomplete = "off" })
+                                    <label for="TermsofPayment">Terms of Payment</label>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <div class="col-sm-12">
+                                <div class="form-material form-material-primary floating">
+                                    @Html.TextBoxFor(client => client.Discount, new { @class = "form-control", onkeypress = "validate(event)", autocomplete = "off", disabled = "true" })
+                                    <label for="Discount">Discount</label>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                   
+                </div>
+                <div class="block-content">
+                    <div class="col-md-12">
+                        <div class="panel-body table-responsive" style="overflow-x:auto;">
+                            <table id="tableItemLists" class="table table-striped table-borderless" cellpadding="0" cellspacing="0">
+                                <thead>
+                                    <tr>
+                                        <th style="font-size:13px;" class="col-xs-1 col-sm-4 text-center">Particular</th>
+                                        <th style="font-size:13px;" class="col-xs-1 col-sm-1 text-center">Unit</th>
+                                        <th style="font-size:13px;" class="col-xs-1 col-sm-1 text-center">Qty</th>
+                                        <th style="font-size:13px;" class="col-xs-1 col-sm-2 text-center">Unit Cost</th>
+                                        <th style="font-size:13px;" class="col-xs-1 col-sm-2 text-center">Markup %</th>
+                                        <th style="font-size:13px;" class="col-xs-1 col-sm-3 text-center">Total Cost</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    @foreach (var item in Model.PopulateAllItemList)
+                                    {
+                                    <tr id="mainrow" style="background-color:white">
+
+                                        <td class="col-xs-1 col-sm-4">
+                                            <div class="form-group">
+                                                <div class="col-sm-12">
+                                                    <div class="form-material form-material-primary floating">
+                                                        @Html.DropDownListFor(client => item.ItemID, new SelectList(Model.ItemNameList, "Value", "Text", item.ItemID), new { @class = "pc js-select2 form-control", style = "width:100%;  text-overflow: ellipsis;", disabled = "true" })
+                                                        <br />
+                                                        @Html.TextAreaFor(client => item.itemDescription, new { @class = "form-control", style = "margin:0px; width:100%; height: 34px; resize:vertical;", disabled = "true" })
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </td>
+
+                                        <td class="col-xs-1 col-sm-1">
+                                            <div class="form-group">
+                                                <div class="col-sm-12">
+                                                    <div class="form-material form-material-primary floating">
+                                                        @Html.TextBoxFor(client => item.ItemMeasure, new { @class = "form-control", autocomplete = "off", style = "text-align:center", disabled = "disabled" })
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </td>
+                                        <td class="col-xs-1 col-sm-1">
+                                            <div class="form-group">
+                                                <div class="col-sm-12">
+                                                    <div class="form-material form-material-primary floating">
+                                                        @Html.EditorFor(client => item.Qty, new { htmlAttributes = new { @class = "form-control", onkeypress = "validate(event)", style = "text-align:right", autocomplete = "off", maxlength = "10", disabled = "true" } })
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </td>
+                                        <td class="col-xs-1 col-sm-2">
+                                            <div class="form-group">
+                                                <div class="col-sm-12">
+                                                    <div class="form-material form-material-primary floating">
+                                                        @Html.EditorFor(client => item.DisplayAmount, new { htmlAttributes = new { @class = "form-control", value = "0.00", onkeypress = "validate(event)", style = "text-align:right", autocomplete = "off", maxlength = "10", disabled = "true" } })
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </td>
+
+                                        <td class="col-xs-1 col-sm-2">
+                                            <div class="form-group">
+                                                <div class="col-sm-12">
+                                                    <div class="form-material form-material-primary floating">
+                                                        @Html.EditorFor(client => item.Markup, new { htmlAttributes = new { @class = "form-control", value = "", onkeypress = "validate(event)", style = "text-align:right", autocomplete = "off", maxlength = "10", disabled = "true" } })
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </td>
+
+                                        <td class="col-xs-1 col-sm-3">
+                                            <div class="form-material form-material-primary floating">
+                                                @Html.EditorFor(client => item.DisplayTotalAmount, new { htmlAttributes = new { @class = "form-control", value = "0.00", style = "text-align:right", autocomplete = "off", disabled = "true" } })
+                                            </div>
+                                        </td>
+                                    </tr>
+                                    }
+
+                                </tbody>
+                                <tfoot>
+                                    <tr style="background-color:#eeeeee;">
+                                        <td></td>
+                                        <td></td>
+                                        <td></td>
+                                        <td></td>
+                                        <td class="text-center" style="font-size:13px"><strong class="text-black-op">Overall Total</strong></td>
+                                        <td>
+                                            @Html.EditorFor(client => client.DisplayGrandTotal, new { htmlAttributes = new { @class = "form-control", disabled = "true", style = "border:none; background-color:#eeeeee; text-align:right;cursor:default;font-weight:bold", autocomplete = "off" } })
+                                        </td>
+                                    </tr>
+
+                                    <tr style="background-color:#eeeeee;">
+                                        <td></td>
+                                        <td></td>
+                                        <td></td>
+                                        <td></td>
+                                        <td class="text-center" style="font-size:13px"><strong class="text-black-op"><span id="txGrandTotal">Grand Total (VAT Inclusive)</span></strong></td>
+                                        <td>
+                                            <input type="text" id="DisplayGrandTotalWithVat" style="border:none; background-color:#eeeeee;  text-align:right;cursor:default;font-weight:bold" disabled="disabled" class="form-control" value="0.00" name="" />
+                                        </td>
+                                    </tr>
+                                </tfoot>
+                            </table>
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <div class="col-xs-12">
+                            @if (Session["UserRole"].ToString() == "5")
+                            {
+
+                                <a class="btn btn-sm btn-danger  pull-right" href="@Url.Action("POBYCLIENT_QUOTATION", "Home")">Back</a>
+                            }
+                            else
+                            {
+
+                                <input class="btn btn-sm btn-primary  pull-right" type="submit" id="btnSaveClient" value="Submit" style="margin-left:5px" />
+                                <a class="btn btn-sm btn-danger  pull-right" href="@Url.Action("POBYCLIENT_QUOTATION", "Home")">Back</a>
+                            }
+                        </div>
+                    </div>
+                </div>
+            }
+        }
+    </div>
+</div>
+<!-- END Page Content -->
+
+
+@section scripts {
+
+    @Scripts.Render("~/bundles/CreateClient")
+
+
+    <script>
+        $(document).ready(function () {
+            GETTOTAL();
+            document.getElementById("PONumber").tabIndex = 1;
+            document.getElementById("PODate").tabIndex = 2;
+            document.getElementById("SignProposal").tabIndex = 3;
+            document.getElementById("TermsofPayment").tabIndex = 4;
+            document.getElementById("ClientNameList").tabIndex = 5;
+            document.getElementById("ProjectName").tabIndex = 6;
+            document.getElementById("SalesPersonnel").tabIndex = 7;
+            document.getElementById("ItemName").tabIndex = 8;
+            document.getElementById("Qty").tabIndex = 9;
+            document.getElementById("Amount").tabIndex = 10;
+            document.getElementById("btnSaveClient").tabIndex = 11;
+        })
+
+
+
+
+
+
+    </script>
+
+
+
+
+}

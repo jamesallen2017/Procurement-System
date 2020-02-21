@@ -1,0 +1,356 @@
+﻿@model PO_PurchasingUI.Models.LoginModel
+
+@{
+    Layout = null;
+}
+
+<!DOCTYPE html>
+
+<html>
+<head>
+    <meta name="viewport" content="width=device-width" />
+    <META Http-Equiv="Cache-Control" Content="no-cache" />
+    <META Http-Equiv="Pragma" Content="no-cache" />
+    <META Http-Equiv="Expires" Content="0" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+
+    <link rel="icon" type="image/x-icon" href="@Url.Content("~/assets/img/E-P.PNG")">
+    <title> - Procurement System</title>
+
+    <!-- Bootstrap and OneUI CSS framework -->
+    @Styles.Render("~/Content/LoginCss")
+
+    <!-- -------------- CSS - theme -------------- -->
+    <link href="~/assets/skin/default_skin/css/theme.css" rel="stylesheet" />
+
+
+
+    <!-- Icons -->
+    <!-- The following icons can be replaced with your own, they are used by desktop and mobile browsers -->
+    <link rel="shortcut icon" href="assets/img/favicons/favicon.png">
+
+    <link rel="icon" type="image/png" href="assets/img/favicons/favicon-16x16.png" sizes="16x16">
+    <link rel="icon" type="image/png" href="assets/img/favicons/favicon-32x32.png" sizes="32x32">
+    <link rel="icon" type="image/png" href="assets/img/favicons/favicon-96x96.png" sizes="96x96">
+    <link rel="icon" type="image/png" href="assets/img/favicons/favicon-160x160.png" sizes="160x160">
+    <link rel="icon" type="image/png" href="assets/img/favicons/favicon-192x192.png" sizes="192x192">
+
+    <link rel="apple-touch-icon" sizes="57x57" href="assets/img/favicons/apple-touch-icon-57x57.png">
+    <link rel="apple-touch-icon" sizes="60x60" href="assets/img/favicons/apple-touch-icon-60x60.png">
+    <link rel="apple-touch-icon" sizes="72x72" href="assets/img/favicons/apple-touch-icon-72x72.png">
+    <link rel="apple-touch-icon" sizes="76x76" href="assets/img/favicons/apple-touch-icon-76x76.png">
+    <link rel="apple-touch-icon" sizes="114x114" href="assets/img/favicons/apple-touch-icon-114x114.png">
+    <link rel="apple-touch-icon" sizes="120x120" href="assets/img/favicons/apple-touch-icon-120x120.png">
+    <link rel="apple-touch-icon" sizes="144x144" href="assets/img/favicons/apple-touch-icon-144x144.png">
+    <link rel="apple-touch-icon" sizes="152x152" href="assets/img/favicons/apple-touch-icon-152x152.png">
+    <link rel="apple-touch-icon" sizes="180x180" href="assets/img/favicons/apple-touch-icon-180x180.png">
+
+    <!-- You can include a specific file from css/themes/ folder to alter the default color theme of the template. eg: -->
+    <!-- <link rel="stylesheet" id="css-theme" href="assets/css/themes/flat.min.css"> -->
+    <!-- END Stylesheets -->
+
+    <style type="text/css">
+        .bg-image {
+            z-index: -1;
+            -webkit-filter: blur(0px);
+            /* Set rules to fill background */
+            min-height: 100%;
+            min-width: 1024px;
+            /* Set up proportionate scaling */
+            width: 100%;
+            height: auto;
+            /* Set up positioning */
+            background-color: #013070;
+            -webkit-background-size: cover;
+            -moz-background-size: cover;
+            -o-background-size: cover;
+            background-size: cover;
+            position: fixed;
+            top: 0;
+            left: 0;
+        }
+
+        @@media screen and (max-width: 1024px) { /* Specific to this particular image */
+            img.bg {
+                left: 50%;
+                margin-left: -512px; /* 50% */
+            }
+        }
+
+        .LoginForm {
+            margin: 0 auto;
+            max-width: 22%;
+            box-shadow: 0px 20px 18px -16px #000;
+        }
+
+        @@media only screen and (max-width : 1400px) {
+            .LoginForm {
+                margin-top: 10%;
+                margin: 0 auto;
+                max-width: 40%;
+            }
+        }
+
+        @@media only screen and (max-width : 840px) {
+            .LoginForm {
+                margin-top: 10%;
+                margin: 0 auto;
+                max-width: 60%;
+            }
+        }
+
+        @@media only screen and (max-width : 530px) {
+            .LoginForm {
+                margin-top: 10%;
+                margin: 0 auto;
+                max-width: 100%;
+            }
+        }
+    </style>
+</head>
+<body class="utility-page sb-l-c sb-r-c" style="position: fixed;">
+    <div class="bg-image"></div>
+    <div id="canvas-wrapper">
+        <canvas id="demo-canvas"></canvas>
+    </div>
+
+    <div class="content overflow-hidden">
+
+        <div class="row">
+            <div class="col-lg-12">
+
+                <div class="LoginForm">
+
+                    @if (ViewBag.Validator == true)
+                    {
+                        <!-- Danger Alert -->
+                        <div class="alert alert-danger alert-dismissable">
+                            <button type="button" class="close" data-dismiss="alert" aria-hidden="true">&times;</button>
+                            <p>@ViewBag.ValidateError!</p>
+                        </div>
+                        <!-- END Danger Alert -->
+                    }
+
+                    <!------------------------------------------------------------------------- LOGIN FORM ------------------------------------------------------------------>
+
+                    <div class="push-30-t push-50  animated fadeIn" id="borderShadow" style="-webkit-box-shadow: 0px 0px 64px -24px; -moz-box-shadow: 0px 0px 64px -24px; box-shadow: 0px 0px 64px -24px; border-radius: 5px; background-color: #fff; ">
+
+
+                        <!-- Login Title -->
+                        @*<div class="text-center">
+                                <div class="img-responsive"><img src="~/assets/img/E-P.PNG" style="height:150px; margin-top:15px; margin-bottom:-45px" /></div>
+                            </div>*@
+                        <!-- END Login Title -->
+
+                        <div class="block-content block-content-full block-content-narrow">
+                            @using (Html.BeginForm("ServerConfiguration", "Login", FormMethod.Post, new { @id = "ServerForm", @class = "js-validation-login form-horizontal push-30-t push-50", role = "form" }))
+                            {
+
+                                @Html.AntiForgeryToken()
+                                if (ViewBag.AdminPanel == "true")
+                                {
+                                    <div class="form-group">
+                                        <div class="col-xs-12">
+                                            <div class="form-material form-material-primary floating">
+                                                @Html.TextBoxFor(m => m.ServerName, new { @class = "form-control", autocomplete = "off" })
+                                                <label for="login-username">Server Name</label>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="form-group">
+                                        <div class="col-xs-12">
+                                            <div class="form-material form-material-primary floating">
+                                                @Html.TextBoxFor(m => m.ServerUsername, new { @class = "form-control", autocomplete = "off" })
+                                                <label for="login-username">User</label>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="form-group">
+                                        <div class="col-xs-12">
+                                            <div class="form-material input-group form-material-primary floating">
+                                                @Html.PasswordFor(m => m.ServerPassword, new { @class = "form-control", autocomplete = "off" })
+                                                <label for="ServerPassword">Password</label>
+                                                <span toggle="#ServerPassword" id="ToggleServerPassword" class="fa fa-eye input-group-addon toggle-password"></span>
+                                            </div>
+                                        </div>
+                                        <div class="col-xs-12">
+                                            <label id="txLoginCapslock" style="display:none;" class="label label-danger">Capslock On</label>
+                                        </div>
+                                    </div>
+                                }
+                                else
+                                {
+                                    <div class="form-group">
+                                        <div class="col-xs-12">
+                                            <div class="form-material form-material-primary floating">
+                                                @Html.TextBoxFor(m => m.AdminUsername, new { @class = "form-control", autocomplete = "off" })
+                                                <label for="login-username">Admin User</label>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="form-group">
+                                        <div class="col-xs-12">
+                                            <div class="form-material input-group form-material-primary floating">
+                                                @Html.PasswordFor(m => m.AdminPassword, new { @class = "form-control", autocomplete = "off" })
+                                                <label for="AdminPassword">Password</label>
+                                                <span toggle="#AdminPassword" id="ToggleAdminPassword" class="fa fa-eye input-group-addon toggle-password"></span>
+                                            </div>
+                                        </div>
+                                        <div class="col-xs-12">
+                                            <label id="txLoginCapslock" style="display:none;" class="label label-danger">Capslock On</label>
+                                        </div>
+                                    </div>
+                                }
+
+                                <div class="form-group push-30-t">
+                                    <div class="col-md-12">
+                                        <button class="btn btn-block btn-default" id="LoginButton" data-loading-text="<i class='fa fa-spinner fa-spin '></i> Loading..." type="submit">
+                                            CONFIG
+                                        </button>
+                                        <a href="@Url.Action("Index","Login")" class="btn btn-block btn-danger">BACK</a>
+                                    </div>
+                                </div>
+                            }
+                            <!------------------------------------------------------------------------- CHANGE PASSWORD FORM ------------------------------------------------------------------>
+                            <!-- Login Footer -->
+                            <div class="push-10-t text-center animated fadeInUp">
+                                <small class="text-muted font-w600" style="color:#000000; font-size:13px;">
+                                    <span>Powered by </span><img src="~/assets/img/ATILOGO_HORI.png" style="height:40px;" />
+                                </small>
+                            </div>
+                            <!-- END Login Footer -->
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <footer id="page-footer" class="content-mini content-mini-full font-s12 clearfix" style="position:absolute; bottom:0; width:100%">
+        <div style="float:right;">
+            <span class="font-w600">Beta Version 2.0.5</span>
+        </div>
+    </footer>
+    @Scripts.Render("~/bundles/LoginJquery")
+    @Scripts.Render("~/bundles/JSLoginFormValidation")
+
+    <!-- -------------- CanvasBG JS -------------- -->
+    <script src="~/assets/js/plugins/canvasbg/canvasbg.js"></script>
+
+    <!-- -------------- Theme Scripts -------------- -->
+    <script src="~/assets/js/utility/utility.js"></script>
+    <script src="~/assets/js/demo/demo.js"></script>
+    <script src="~/assets/js/main.js"></script>
+</body>
+</html>
+
+@if (ViewBag.HeaderError != null)
+{
+    <script type="text/javascript">
+        window.onload = function () {
+                bootbox.alert({
+                size: "small",
+                title: "@ViewBag.HeaderError",
+                message: "@ViewBag.MessageError",
+                callback: function () { /* your callback code */
+                }
+            })
+            };
+    </script>
+}
+else if (ViewBag.HeaderSuccess != null)
+{
+    <script type="text/javascript">
+        window.onload = function () {
+            bootbox.alert({
+                size: "small",
+                title: "@ViewBag.HeaderSuccess",
+                message: "@ViewBag.MessageSuccess",
+                callback: function () { /* your callback code */
+                }
+            })
+            };
+    </script>
+}
+
+
+<script>
+    var txLoginCapslock = document.getElementById("txLoginCapslock");
+    var txNewPasswordCapslock = document.getElementById("txNewPasswordCapslock");
+
+
+    document.onkeypress = function (e) {
+        e = (e) ? e : window.event;
+
+        var kc = (e.keyCode) ? e.keyCode : e.which; // get keycode
+        var isUp = (kc >= 65 && kc <= 90) ? true : false; // uppercase
+        var isLow = (kc >= 97 && kc <= 122) ? true : false; // lowercase
+        var isShift = (e.shiftKey) ? e.shiftKey : ((kc == 16) ? true : false); // shift is pressed -- works for IE8-
+
+        // uppercase w/out shift or lowercase with shift == caps lock
+        if ((isUp && !isShift) || (isLow && isShift)) {
+
+            txLoginCapslock.style.display = "block";
+            txNewPasswordCapslock.style.display = "block";
+        } else {
+            txLoginCapslock.style.display = "none"
+            txNewPasswordCapslock.style.display = "none"
+        }
+
+    }
+
+
+    $("#ToggleServerPassword").click(function () {
+
+        $(this).toggleClass("fa-eye fa-eye-slash");
+        var input = $($(this).attr("toggle"));
+
+        if (input.attr("type") == "password") {
+
+            input.attr("type", "text");
+
+        } else {
+            input.attr("type", "password");
+        }
+
+
+    });
+
+
+
+    $("#ToggleAdminPassword").click(function () {
+
+        $(this).toggleClass("fa-eye fa-eye-slash");
+        var input = $($(this).attr("toggle"));
+
+        if (input.attr("type") == "password") {
+
+            input.attr("type", "text");
+
+        } else {
+            input.attr("type", "password");
+        }
+    });
+</script>
+
+
+<script type="text/javascript">
+    jQuery(document).ready(function () {
+
+        "use strict";
+
+        // Init Theme Core
+        Core.init();
+
+        // Init Demo JS
+        Demo.init();
+
+        // Init CanvasBG
+        CanvasBG.init({
+            Loc: {
+                x: window.innerWidth / 5,
+                y: window.innerHeight / 10
+            }
+        });
+
+    });
+</script>

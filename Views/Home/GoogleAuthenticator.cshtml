@@ -1,0 +1,386 @@
+﻿@model PO_PurchasingUI.Models.LoginModel
+@{
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+<input type="hidden" value="11" id="ModuleAccess" />
+<!-- Maintenance Content -->
+<!-- Page Header -->
+<div class="content bg-gray-lighter">
+    <div class="row items-push">
+        <div class="col-sm-7">
+            <h1 class="page-heading">
+                GOOGLE AUTHENTICATOR <small></small>
+            </h1>
+        </div>
+        <div class="col-sm-5 text-right hidden-xs">
+            <ol class="breadcrumb push-10-t">
+                <li>AUTHENTICATOR</li>
+                <li><a class="link-effect" href="">MANAGE</a></li>
+            </ol>
+        </div>
+    </div>
+</div>
+<!-- END Page Header -->
+<!-- Page Content -->
+<div class="content">
+    <div class="block animated fadeIn">
+        <div class="block-header">
+            <h4 class="block-title">Date : @DateTime.Now.ToShortDateString()</h4>
+        </div>
+
+        <div class="block-content">
+            <div class="row">
+                <div class="col-md-12">
+                    <div class="form-group">
+                        <label>Step 1: Install Google Authenticator</label> <br /> <span>Please download and install Google Authenticator on your IPhone/IPad/Android device, if already not installed.</span><br />
+                        <label>Step 2: Link your device to your account.</label><br /><span>You have two options to link your device to your account.</span><br />
+                        <label>Using QR Code:&nbsp;</label><span>Select Scan a barcode. If the Authenticator app cannot locate a barcode scanner app on your mobile device, you might be prompted to download and install one. If you want to install a barcode scanner app so you can complete the setup process, select Install, then go through the installation process. Once the app is installed, reopen Google Authenticator, then point your camera at the QR code on your computer screen</span><br />
+                        <label>Using Secret Key: &nbsp; </label><span>Select Enter a provided key, then enter username of your account in the ''Account Name'' box. Next, enter the secret key appear on your computer screen in the ''Your key'' box. Make sure you've chosen to make the key Time based, then select Add.</span><br />
+                    </div>
+                    <div class="col-md-4">
+                        <div class="form-group">
+                            <div class="col-md-12">
+                                <input type="hidden" id="Status" value="@ViewBag.Status" />
+                                <img id="QRCode" src="@ViewBag.ImageUrl" alt="AuthenticatorQRCode" />
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-4">
+                        <div class="form-group">
+                            <div class="col-md-12">
+                                <label>Username:&nbsp;</label><span id="UserName">@ViewBag.Username</span><br />
+                                <label>Secret Key:&nbsp;</label><span id="ManualCode">@ViewBag.ManualCode</span><br />
+                                <input type="button" id="GenerateNewCodes" class="btn btn-primary" value="Generate New Code">
+                                <input type="button" id="b2FA" class="btn btn-warning" value="Back-Up Codes">
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-4">
+                        <div class="form-group">
+                            <div class="col-md-12">
+                                <div class="col-md-12">
+                                    <label class="form-inline">Authentication Key:&nbsp;  @Html.TextBoxFor(x => x.VerificationCode, new { @class = "form-control", placeholder = "Authentication code", autocomplete = "off" })</label><br />
+                                    <label>Status:&nbsp;</label>@if (ViewBag.Status == "1")
+                                    {
+                                        <span class="text-success">[Enabled] &nbsp;&nbsp;&nbsp;</span>
+                                        <button type="button" class="btn btn-primary" id="btnEnable" disabled>Enable</button>
+                                        <button type="button" class="btn btn-danger" id="btnDisable">Disable</button>
+                                    }
+                                    else
+                                    {
+                                        <span class="text-danger">[Disabled] &nbsp;&nbsp;&nbsp;</span>
+                                        <button type="button" class="btn btn-primary" id="btnEnable">Enable</button>
+                                        <button type="button" class="btn btn-danger" id="btnDisable" disabled>Disable</button>
+                                    }
+                                    <br />
+
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+<style>
+    .containersz {
+        width: 250px;
+    }
+
+        .containersz ul {
+            padding: 0;
+            margin: 0;
+            list-style-type: none;
+        }
+
+            .containersz ul li {
+                float: left;
+            }
+</style>
+
+<div class="modal fade" id="apps-Backup2FA" tabindex="-1" role="dialog" aria-hidden="true">
+    <div class="modal-md modal-dialog modal-dialog-top">
+        <div class="modal-content">
+            <!-- Apps Block -->
+            <div class="block block-themed block-transparent">
+                <div class="block-header bg-primary-dark">
+                    <ul class="block-options">
+                        <li>
+                            <button data-dismiss="modal" type="button"><i class="si si-close"></i></button>
+                        </li>
+                    </ul>
+                    <h3 class="block-title">LIST VERIFICATION CODE</h3>
+                </div>
+                <div class="block-content">
+                    <div class="row">
+                        <div class="col-md-12">
+                            <div class="form-group">
+                                <label class="text-danger">Recommendation: You should print or download backup codes.</label>
+                                <ul>
+                                    <li>Put these backup codes in a safe spot but accessable.</li>
+                                    <li>Each code can only used once.</li>
+                                    <li>Only the latest set of codes will work.</li>
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+                    <br />
+                    <div class="row text-center">
+                        <div class="col-xs-7 col-xs-offset-4">
+                            <div class="containersz form-group">
+                                <ul class="nav-header" style="margin-left: 40px;" id="verificationcodeContent"></ul>
+                            </div>
+                        </div>
+                        <div class="col-md-12">
+
+                            <div class="form-group">
+                                <a href="@Url.Action("ReportBackup_VerificationCode","Report")" target="_blank" name="name" value="Print" class="btn btn-default"> Print </a>
+                                <button type="button" name="name" id="GenerateNew" data-loading-text="<i class='fa fa-spinner fa-spin '></i> Loading..." class="btn btn-primary"> Get New Back-Up Codes</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <!-- END Apps Block -->
+        </div>
+    </div>
+</div>
+
+
+@section scripts
+{
+    <script>
+        $("#b2FA").on("click", function () {
+
+            $.ajax({
+                url: '/Home/GenerateVerificationCodeList',
+                method: 'post',
+                contentType: "application/json",
+                data: JSON.stringify({
+                }),
+                dataType: "json",
+                success: function (response) {
+                    $('#verificationcodeContent').empty();
+
+                    $.each(response, function (index, value) {
+                        if (value.VerificationUsed == '0') {
+                            $('#verificationcodeContent').append($('<li><span class="fa fa-times text-danger"></span> ' + value.VerificationCode + '</li>'));
+                        }
+                        else {
+                            $('#verificationcodeContent').append($('<li><span class="fa fa-check text-success"></span> ' + value.VerificationCode + '</li>'));
+                        }
+                    });
+                }
+            })
+
+            $('#apps-Backup2FA').modal({
+                show: 'false',
+                backdrop: 'static',
+            });
+
+        })
+
+        $("#GenerateNew").on("click", function () {
+
+            var $this = $("#GenerateNew");
+            $this.button('loading');
+            setTimeout(function () {
+                $this.button('reset');
+            }, 3000);
+
+            $.ajax({
+                url: '/Home/GenerateNewVerificationCodeList',
+                method: 'post',
+                contentType: "application/json",
+                data: JSON.stringify({
+                }),
+                dataType: "json",
+                success: function (response) {
+                    $('#verificationcodeContent').empty();
+
+                    $.each(response, function (index, value) {
+                        if (value.VerificationUsed == '0') {
+                            $('#verificationcodeContent').append($('<li><span class="fa fa-times text-danger"></span>' + value.VerificationCode + '</li>'));
+                        }
+                        else {
+                            $('#verificationcodeContent').append($('<li><span class="fa fa-check text-success"></span>' + value.VerificationCode + '</li>'));
+                        }
+                    });
+                }
+            })
+
+            $('#apps-Backup2FA').modal({
+                show: 'false',
+                backdrop: 'static',
+            });
+
+        })
+    </script>
+
+    <script>
+        $("#GenerateNewCodes").on('click', function (e) {
+            var UserID = $("#UserName").html();
+            var Status = $("#Status").val();
+
+            e.preventDefault();
+            e.stopImmediatePropagation();
+
+            swal({
+                title: "Are you sure you want to Generate new codes?",
+                text: "",
+                type: "warning",
+                showCancelButton: true,
+                confirmButtonColor: '#5F69E0',
+                confirmButtonText: 'Yes',
+                cancelButtonText: "No",
+                closeOnConfirm: false, width: 420,
+                animation: false,
+                allowOutsideClick: false,
+                closeOnCancel: false
+            }).then((isConfirm) => {
+                if (isConfirm) {
+
+                    $.ajax({
+                        url: "/Home/UpdateAuthenticationNewCodes/",
+                        type: "POST",
+                        contentType: "application/json",
+                        data: JSON.stringify({
+                            UserID: UserID,
+                            Status: Status,
+                        }),
+                        dataType: "json",
+                        success: function (data) {
+
+                            if (data == "1") {
+                                swal
+                                    ({
+                                        title: "Success",
+                                        text: "New Code has been generated, Please Scan your new QR Code.",
+                                        type: "success", allowOutsideClick: false
+                                    }).then(function () {
+                                        window.location.reload();
+                                    });
+                            }
+                        }
+                    });
+                }
+            })
+
+
+
+
+        })
+
+        $("#btnDisable").on('click', function (e) {
+            var VerificationCode = $("#VerificationCode").val().trim();
+            var UserID = $("#UserName").html();
+            if (VerificationCode == "") {
+                sweetAlert("Authentication Code is required.", "", "error");
+                return false;
+            }
+            e.preventDefault();
+            e.stopImmediatePropagation();
+
+            swal({
+                title: "Are you sure you want to Disable?",
+                text: "",
+                type: "warning",
+                showCancelButton: true,
+                confirmButtonColor: '#5F69E0',
+                confirmButtonText: 'Yes',
+                cancelButtonText: "No",
+                closeOnConfirm: false, width: 420,
+                animation: false,
+                allowOutsideClick: false,
+                closeOnCancel: false
+            }).then((isConfirm) => {
+                if (isConfirm) {
+
+                    $.ajax({
+                        url: "/Home/DisableAuthenticator/",
+                        type: "POST",
+                        contentType: "application/json",
+                        data: JSON.stringify({
+                            UserID: UserID
+                        }),
+                        dataType: "json",
+                        success: function (data) {
+
+                            if (data == "1") {
+                                swal
+                                    ({
+                                        title: "Success",
+                                        text: "Google Authenticator has been Disabled.",
+                                        type: "success", allowOutsideClick: false
+                                    }).then(function () {
+                                        window.location.reload();
+                                    });
+                            }
+                        }
+                    });
+                }
+            })
+
+
+        })
+
+        $("#btnEnable").on('click', function (e) {
+            var VerificationCode = $("#VerificationCode").val().trim();
+            var UserID = $("#UserName").html();
+
+            if (VerificationCode == "") {
+                sweetAlert("Authentication Code is required.", "", "error");
+                return false;
+            }
+
+            e.preventDefault();
+            e.stopImmediatePropagation();
+
+            swal({
+                title: "Are you sure you want to Enable?",
+                text: "",
+                type: "warning",
+                showCancelButton: true,
+                confirmButtonColor: '#5F69E0',
+                confirmButtonText: 'Yes',
+                cancelButtonText: "No",
+                closeOnConfirm: false, width: 420,
+                animation: false,
+                allowOutsideClick: false,
+                closeOnCancel: false
+            }).then((isConfirm) => {
+                if (isConfirm) {
+
+                    $.ajax({
+                        url: "/Home/DisableAuthenticator/",
+                        type: "POST",
+                        contentType: "application/json",
+                        data: JSON.stringify({
+                            UserID: UserID
+                        }),
+                        dataType: "json",
+                        success: function (data) {
+
+                            if (data == "1") {
+                                swal
+                                    ({
+                                        title: "Success",
+                                        text: "Google Authenticator has been Enabled.",
+                                        type: "success", allowOutsideClick: false
+                                    }).then(function () {
+                                        window.location.reload();
+                                    });
+                            }
+                        }
+                    });
+                }
+            })
+
+
+        })
+
+    </script>
+}

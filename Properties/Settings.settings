@@ -1,0 +1,38 @@
+﻿<?xml version='1.0' encoding='utf-8'?>
+<SettingsFile xmlns="http://schemas.microsoft.com/VisualStudio/2004/01/settings" CurrentProfile="(Default)" GeneratedClassNamespace="PO_PurchasingUI.Properties" GeneratedClassName="Settings">
+  <Profiles />
+  <Settings>
+    <Setting Name="PO_ACCOUNTINGConnectionString" Type="(Connection string)" Scope="Application">
+      <DesignTimeValue Profile="(Default)">&lt;?xml version="1.0" encoding="utf-16"?&gt;
+&lt;SerializableConnectionString xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema"&gt;
+  &lt;ConnectionString&gt;Data Source=DEV1\SQLEXPRESSDEV1;Initial Catalog=PO_ACCOUNTING;User ID=sa;Password=123Blue*;Network Library=dbmssocn&lt;/ConnectionString&gt;
+  &lt;ProviderName&gt;System.Data.SqlClient&lt;/ProviderName&gt;
+&lt;/SerializableConnectionString&gt;</DesignTimeValue>
+      <Value Profile="(Default)">Data Source=DEV1\SQLEXPRESSDEV1;Initial Catalog=PO_ACCOUNTING;User ID=sa;Password=123Blue*;Network Library=dbmssocn</Value>
+    </Setting>
+    <Setting Name="PO_ACCOUNTINGConnectionString1" Type="(Connection string)" Scope="Application">
+      <DesignTimeValue Profile="(Default)">&lt;?xml version="1.0" encoding="utf-16"?&gt;
+&lt;SerializableConnectionString xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema"&gt;
+  &lt;ConnectionString&gt;Data Source=E-PROCUREMENT\EPROCUREMENT;Initial Catalog=PO_ACCOUNTING;User ID=sa;Password=123Blue*;Network Library=dbmssocn&lt;/ConnectionString&gt;
+  &lt;ProviderName&gt;System.Data.SqlClient&lt;/ProviderName&gt;
+&lt;/SerializableConnectionString&gt;</DesignTimeValue>
+      <Value Profile="(Default)">Data Source=E-PROCUREMENT\EPROCUREMENT;Initial Catalog=PO_ACCOUNTING;User ID=sa;Password=123Blue*;Network Library=dbmssocn</Value>
+    </Setting>
+    <Setting Name="PO_SUPPLIERConnectionString" Type="(Connection string)" Scope="Application">
+      <DesignTimeValue Profile="(Default)">&lt;?xml version="1.0" encoding="utf-16"?&gt;
+&lt;SerializableConnectionString xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema"&gt;
+  &lt;ConnectionString&gt;Data Source=E-PROCUREMENT\EPROCUREMENT;Initial Catalog=PO_SUPPLIER;User ID=sa;Password=123Blue*;Network Library=dbmssocn&lt;/ConnectionString&gt;
+  &lt;ProviderName&gt;System.Data.SqlClient&lt;/ProviderName&gt;
+&lt;/SerializableConnectionString&gt;</DesignTimeValue>
+      <Value Profile="(Default)">Data Source=E-PROCUREMENT\EPROCUREMENT;Initial Catalog=PO_SUPPLIER;User ID=sa;Password=123Blue*;Network Library=dbmssocn</Value>
+    </Setting>
+    <Setting Name="PO_SUPPLIERConnectionString1" Type="(Connection string)" Scope="Application">
+      <DesignTimeValue Profile="(Default)">&lt;?xml version="1.0" encoding="utf-16"?&gt;
+&lt;SerializableConnectionString xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema"&gt;
+  &lt;ConnectionString&gt;Data Source=DEV1\SQLEXPRESSDEV1;Initial Catalog=PO_SUPPLIER;User ID=sa;Password=123Blue*;Network Library=dbmssocn&lt;/ConnectionString&gt;
+  &lt;ProviderName&gt;System.Data.SqlClient&lt;/ProviderName&gt;
+&lt;/SerializableConnectionString&gt;</DesignTimeValue>
+      <Value Profile="(Default)">Data Source=DEV1\SQLEXPRESSDEV1;Initial Catalog=PO_SUPPLIER;User ID=sa;Password=123Blue*;Network Library=dbmssocn</Value>
+    </Setting>
+  </Settings>
+</SettingsFile>

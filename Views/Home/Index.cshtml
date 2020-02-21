@@ -1,0 +1,329 @@
+﻿  <!-- Page Header -->
+@model PO_PurchasingUI.Models.MainModel
+
+<input type="hidden" value="0" id="ModuleAccess" />
+
+<!-- Page Header -->
+<div class="bg-image overflow-hidden" style="background-image: url('../../../assets/img/LongView.jpg');     background-position: 0px 40%">
+    <div class="bg-black-op">
+        <div class="content content-narrow">
+            <div class="block block-transparent">
+                <div class="block-content block-content-full">
+                    <h1 class="h1 font-w300 text-white animated fadeInDown push-50-t push-5">Dashboard</h1>
+                    <h2 class="h4 font-w300 text-white-op animated fadeInUp">Welcome @Session["UserFullName"].ToString()</h2>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<!-- END Page Header -->
+<!-- Stats -->
+<div class="content bg-white border-b">
+    <div class="row items-push text-uppercase">
+        <div class="col-xs-6 col-sm-3">
+            <div class="font-w700 text-gray-darker animated fadeIn">Sales</div>
+            <div class="text-muted animated fadeIn"><small><i class="si si-calendar"></i> This @DateTime.Now.ToString("dddd")</small></div>
+            <span class="h2 font-w300 text-black animated flipInX" id="SALESTODAY"></span>
+
+        </div>
+        <div class="col-xs-6 col-sm-3">
+            <div class="font-w700 text-gray-darker animated fadeIn">Sales</div>
+            <div class="text-muted animated fadeIn"><small><i class="si si-calendar"></i> This @DateTime.Now.ToString("MMMM")</small></div>
+            <span class="h2 font-w300 text-black animated flipInX" id="SALES"></span>
+        </div>
+        <div class="col-xs-6 col-sm-3">
+            <div class="font-w700 text-gray-darker animated fadeIn">Total Earnings</div>
+            <div class="text-muted animated fadeIn"><small><i class="si si-calendar"></i> This Year</small></div>
+            <span class="h2 font-w300 text-black animated flipInX">&#8369;<span id="TOTALEARNINGS"></span></span>
+        </div>
+        <div class="col-xs-6 col-sm-3">
+            <div class="font-w700 text-gray-darker animated fadeIn">Average Monthly Sale</div>
+            <div class="text-muted animated fadeIn"><small><i class="si si-calendar"></i> This Year</small></div>
+            <span class="h2 font-w300 text-black animated flipInX">&#8369;<span id="AVERAGESALES"></span></span>
+        </div>
+    </div>
+</div>
+<!-- END Stats -->
+<!-- Page Content -->
+<div class="content">
+    <div class="row">
+
+        <div class="col-lg-8">
+            <div class="block">
+                <div class="block-header">
+                    <h3 class="block-title text-center" style="font-size:20px"> <span class="si si-bar-chart animated fadeInLeftBig"></span> ORDERS OVERVIEW </h3>
+                    <h3 class="text-muted font-s12 font-w700 text-center">(<span id="ORDERS"></span>)</h3>
+                </div>
+                <div class="block-content block-content-full text-center" style="height:700px">
+                    <canvas style="min-height:650px" class="js-chartjs2-Order"></canvas>
+                </div>
+            </div>
+        </div>
+
+
+        <div class="col-lg-4">
+            <!-- Latest Sales Widget -->
+            <div class="block">
+                <div class="block-header">
+                    <h3 class="block-title">Request for @DateTime.Now.ToString("MMMM")</h3>
+                </div>
+
+                <div class="block-content  block-content-full text-center">
+                    <div class="row">
+                        <div class="col-lg-6">
+                            <a href="#" id="SupplierReviewerClick" class="block block-rounded block-link-hover3" style="    filter: drop-shadow( 0px 2px 0px #5c90d2);">
+                                <div class="block-content block-content-full">
+                                    <div class="font-s12 font-w700">For Review</div>
+                                    <span class="h2 font-w300 text-black animated flipInX" id="FORREVIEW">0</span>
+                                </div>
+                            </a>
+                            <a href="#" id="SupplierEndorserClick" class="block block-rounded block-link-hover3" style="    filter: drop-shadow( 0px 2px 0px #f3b760);">
+                                <div class="block-content block-content-full">
+                                    <div class="font-s12 font-w700">For Endorsement</div>
+                                    <span class="h2 font-w300 text-black animated flipInX" id="FORENDORSEMENT">0</span>
+                                </div>
+                            </a>
+                            <a href="#" id="SupplierApproverClick" class="block block-rounded block-link-hover3" style=" filter: drop-shadow( 0px 2px 0px #c7b7e4);">
+                                <div class="block-content block-content-full">
+                                    <div class="font-s12 font-w700">For Approval</div>
+                                    <span class="h2 font-w300 text-black animated flipInX" id="FORAPPROVAL">0</span>
+                                </div>
+                            </a>
+                        </div>
+                        <div class="col-lg-6">
+                            <a href="#" class="block block-rounded" style="    filter: drop-shadow( 0px 2px 0px #072343); cursor:default">
+                                <div class="block-content block-content-full">
+                                    <div class="font-s12 font-w700">Reviewed</div>
+                                    <span class="h2 font-w300 text-black animated flipInX" id="REVIEWED">0</span>
+                                </div>
+                            </a>
+
+                            <a href="#" class="block block-rounded" style="filter: drop-shadow( 0px 2px 0px #072343); cursor:default">
+                                <div class="block-content block-content-full">
+
+                                    <div class="font-s12 font-w700">Endorsed</div>
+                                    <span class="h2 font-w300 text-black animated flipInX" id="ENDORSED">0</span>
+                                </div>
+                            </a>
+
+                            <a href="#" class="block block-rounded" style="filter: drop-shadow( 0px 2px 0px #072343); cursor:default">
+                                <div class="block-content block-content-full">
+
+                                    <div class="font-s12 font-w700">Approved</div>
+                                    <span class="h2 font-w300 text-black animated flipInX" id="APPROVED">0</span>
+                                </div>
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="block">
+                <div class="block-header">
+                    <h3 class="block-title"></h3>
+                </div>
+
+                <div class="block-content  block-content-full text-center">
+                    <div class="row">
+                        <div class="col-lg-6">
+                            <a href="#" class="block block-rounded" style="    filter: drop-shadow( 0px 2px 0px #072343); cursor:default">
+                                <div class="block-content block-content-full">
+                                    <div class="font-s12 font-w700">On-Going Project</div>
+                                    <span class="h2 font-w300 text-primary" style="color:#072342" id="ONGOING">0</span>
+                                </div>
+                            </a>
+
+                            <a href="#" class="block block-rounded" style="    filter: drop-shadow( 0px 2px 0px #072343); cursor:default">
+                                <div class="block-content block-content-full">
+                                    <div class="font-s12 font-w700">Client</div>
+                                    <span class="h2 font-w300 text-primary" style="color:#072342" id="CLIENT">0</span>
+                                </div>
+                            </a>
+
+                        </div>
+                        <div class="col-lg-6">
+                            <a href="#" class="block block-rounded" style="    filter: drop-shadow( 0px 2px 0px #072343); cursor:default">
+                                <div class="block-content block-content-full">
+                                    <div class="font-s12 font-w700">Completed Project</div>
+                                    <span class="h2 font-w300 text-primary" style="color:#072342" id="CLOSED">0</span>
+                                </div>
+                            </a>
+
+                            <a href="#" class="block block-rounded" style="filter: drop-shadow( 0px 2px 0px #072343); cursor:default">
+                                <div class="block-content block-content-full">
+                                    <div class="font-s12 font-w700">Supplier</div>
+                                    <span class="h2 font-w300 text-primary" style="color:#072342" id="SUPPLIER">0</span>
+                                </div>
+                            </a>
+
+
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <!-- END Latest Sales Widget -->
+        </div>
+
+    </div>
+</div>
+<!-- Page End Content -->
+<!-- Bars Chart -->
+<div class="col-lg-6" hidden>
+    <div class="block">
+        z
+        <div class="block-header">
+            <h3 class="block-title text-center" style="font-size:20px"> <span class="si si-bar-chart animated fadeInLeftBig"></span> SALES OVERVIEW</h3>
+            <h3 class="text-muted font-s12 font-w700 text-center">(<span id="SALES"></span>)</h3>
+        </div>
+        <div class="block-content block-content-full text-center">
+            <!-- Bars Chart Container -->
+            <canvas class="js-chartjs2-bars"></canvas>
+        </div>
+    </div>
+</div>
+<!-- END Bars Chart -->
+<!-- Apps Modal -->
+<!-- Opens from the button in the header -->
+<div class="modal fade" id="apps-modal" tabindex="-1" role="dialog" aria-hidden="true">
+    <div class="modal-sm modal-dialog modal-dialog-top">
+        <div class="modal-content">
+            <!-- Apps Block -->
+            <div class="block block-themed block-transparent">
+                <div class="block-header bg-primary-dark">
+                    <ul class="block-options">
+                        <li>
+                            <button data-dismiss="modal" type="button"><i class="si si-close"></i></button>
+                        </li>
+                    </ul>
+                    <h3 class="block-title">FOR APPROVAL</h3>
+                </div>
+                <div class="block-content">
+                    <div class="row text-center">
+                        <div class="col-xs-4">
+                            <a class="block block-rounded" href="@Url.Action("FORAPPROVAL", "Home")">
+                                <div class="block-content text-white bg-default">
+                                    <i class="si fa-2x" id="txCountPOApproval"></i>
+                                    <div class="font-w600 push-15-t push-15">PO</div>
+                                </div>
+                            </a>
+                        </div>
+
+                        <div class="col-xs-4">
+                            <a class="block block-rounded" href="@Url.Action("PR_FORAPPROVAL","Home")">
+                                <div class="block-content text-white bg-flat">
+                                    <i class="si fa-2x" id="txCountPRApproval"></i>
+                                    <div class="font-w600 push-15-t push-15">PR</div>
+                                </div>
+                            </a>
+                        </div>
+
+                        <div class="col-xs-4">
+                            <a class="block block-rounded" href="@Url.Action("COCFORAPPROVAL","Home")">
+                                <div class="block-content text-white bg-modern">
+                                    <i class="si fa-2x" id="txCountCOCApproval"></i>
+                                    <div class="font-w600 push-15-t push-15">COC</div>
+                                </div>
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <!-- END Apps Block -->
+        </div>
+    </div>
+</div>
+<!-- END Apps Modal -->
+<!-- Apps Modal -->
+<!-- Opens from the button in the header -->
+<div class="modal fade" id="apps-Reviewer" tabindex="-1" role="dialog" aria-hidden="true">
+    <div class="modal-sm modal-dialog modal-dialog-top">
+        <div class="modal-content">
+            <!-- Apps Block -->
+            <div class="block block-themed block-transparent">
+                <div class="block-header bg-primary-dark">
+                    <ul class="block-options">
+                        <li>
+                            <button data-dismiss="modal" type="button"><i class="si si-close"></i></button>
+                        </li>
+                    </ul>
+                    <h3 class="block-title">FOR REVIEW</h3>
+                </div>
+                <div class="block-content">
+                    <div class="row text-center">
+                        <div class="col-xs-6">
+                            <a class="block block-rounded" href="@Url.Action("FORREVIEW", "Home")">
+                                <div class="block-content text-white bg-default">
+                                    <i class="si fa-2x" id="txCountPOReview"></i>
+                                    <div class="font-w600 push-15-t push-15">PO</div>
+                                </div>
+                            </a>
+                        </div>
+                        <div class="col-xs-6">
+                            <a class="block block-rounded" href="@Url.Action("PR_FORREVIEW","Home")">
+                                <div class="block-content text-white bg-flat">
+                                    <i class="si fa-2x" id="txCountPRReview"></i>
+                                    <div class="font-w600 push-15-t push-15">PR</div>
+                                </div>
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <!-- END Apps Block -->
+        </div>
+    </div>
+</div>
+<!-- END Apps Modal -->
+<!-- Apps Modal -->
+<!-- Opens from the button in the header -->
+<div class="modal fade" id="apps-Endorser" tabindex="-1" role="dialog" aria-hidden="true">
+    <div class="modal-sm modal-dialog modal-dialog-top">
+        <div class="modal-content">
+            <!-- Apps Block -->
+            <div class="block block-themed block-transparent">
+                <div class="block-header bg-primary-dark">
+                    <ul class="block-options">
+                        <li>
+                            <button data-dismiss="modal" type="button"><i class="si si-close"></i></button>
+                        </li>
+                    </ul>
+                    <h3 class="block-title">FOR ENDORSEMENT</h3>
+                </div>
+                <div class="block-content">
+                    <div class="row text-center">
+                        <div class="col-xs-6">
+                            <a class="block block-rounded" href="@Url.Action("FORENDORSEMENT", "Home")">
+                                <div class="block-content text-white bg-default">
+                                    <i class="si fa-2x" id="txCountPOEndorsement"></i>
+                                    <div class="font-w600 push-15-t push-15">PO</div>
+                                </div>
+                            </a>
+                        </div>
+                        <div class="col-xs-6">
+                            <a class="block block-rounded" href="@Url.Action("PR_FORENDORSEMENT","Home")">
+                                <div class="block-content text-white bg-flat">
+                                    <i class="si fa-2x" id="txCountPREndorsement"></i>
+                                    <div class="font-w600 push-15-t push-15">PR</div>
+                                </div>
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <!-- END Apps Block -->
+        </div>
+    </div>
+</div>
+<!-- END Apps Modal -->
+
+
+@section scripts {
+
+
+    <script>
+        jQuery(function () {
+            // Init page helpers (Slick Slider plugin)
+            App.initHelpers('slick');
+        });
+    </script>
+}

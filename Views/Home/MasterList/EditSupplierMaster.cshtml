@@ -1,0 +1,211 @@
+﻿@model PO_PurchasingUI.Models.SupplierMaster
+@{
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+@{
+    List<SelectListItem> listItems = new List<SelectListItem>();
+    listItems.Add(new SelectListItem
+    {
+        Text = "Active",
+        Value = "Active",
+    });
+    listItems.Add(new SelectListItem
+    {
+        Text = "Deactivated",
+        Value = "Deactivated",
+    });
+}
+<input type="hidden" value="112" id="ModuleAccess" />
+
+<div class="content bg-gray-lighter">
+    <div class="row items-push">
+        <div class="col-sm-7">
+            <h1 class="page-heading">
+                MASTER LIST <small></small>
+            </h1>
+        </div>
+        <div class="col-sm-5 text-right hidden-xs">
+            <ol class="breadcrumb push-10-t">
+                <li>MAINTENANCE</li>
+                <li>MASTER LIST</li>
+                <li><a class="link-effect" href="">SUPPLIER MASTER</a></li>
+            </ol>
+        </div>
+    </div>
+</div>
+
+<div class="content">
+    <div class="block">
+        <div class="block-header">
+            <ul class="block-options">
+                <li>
+                </li>
+            </ul>
+            <h4 class="block-title">Date : @DateTime.Now.ToShortDateString()</h4>
+
+            @using (Html.BeginForm("UpdateSupplierInformation", "Main", FormMethod.Post, new { @class = "js-validation-material form-horizontal push-10-t", id = "FormUser", name = "FormUser" }))
+            {
+
+
+                <div class="block-content block-content-narrow">
+
+                    @Html.HiddenFor(supplier => supplier.SupplierID)
+                    <div class="col-sm-6">
+                        <div class="form-group">
+                            <div class="col-md-12">
+                                <div class="form-material form-material-primary floating">
+                                    @Html.TextBoxFor(supplier => supplier.Supplier, new { @class = "form-control", @autocomplete = "off" })
+                                    <label for="Supplier">Supplier Name</label>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="form-group">
+                            <div class="col-md-12">
+                                <div class="form-material form-material-primary floating">
+                                    @Html.TextAreaFor(supplier => supplier.SupplierAddress, new { @class = "form-control", autocomplete = "off", style = "margin: 0px; height: 33px; width: 100%;" })
+                                    <label for="SupplierAddress">Company Address</label>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="form-group">
+                            <div class="col-md-12">
+                                <div class="form-material form-material-primary floating">
+                                    @Html.TextBoxFor(supplier => supplier.EmailAddress, new { @class = "form-control", @autocomplete = "off" })
+                                    <label for="EmailAddress">Email Address</label>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="form-group">
+                            <div class="col-md-12">
+                                <div class="form-material form-material-primary floating">
+                                    @Html.TextBoxFor(supplier => supplier.Location, new { @class = "form-control", @autocomplete = "off" })
+                                    <label for="Location">Location</label>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="col-sm-6">
+                        <div class="form-group">
+                            <div class="col-md-12">
+                                <div class="form-material form-material-primary floating">
+                                    @Html.TextBoxFor(supplier => supplier.ContactNo, new { @class = "form-control", onkeypress = "validatePhone(event)", @autocomplete = "off" })
+                                    <label for="ContactNo">Contact No.</label>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="form-group">
+                            <div class="col-md-12">
+                                <div class="form-material form-material-primary floating">
+                                    @Html.TextBoxFor(supplier => supplier.ContactPerson, new { @class = "form-control", @autocomplete = "off" })
+                                    <label for="ContactPerson">Contact Person</label>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="form-group">
+                            <div class="col-md-12">
+                                <div class="form-material form-material-primary floating">
+                                    @Html.DropDownListFor(x => x.SupplierStatus, listItems, "", new { @class = "js-select2 form-control", style = "width:100%" })
+                                    <label for="SupplierStatus">Status</label>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <div class="col-xs-12">
+                            <a class="btn btn-sm btn-danger pull-right" href="@Url.Action("SupplierMaster","Home")">Back</a>
+                            <button class="btn btn-sm btn-primary pull-right" style="margin-right:5px;" type="submit">Submit</button>
+                        </div>
+                    </div>
+                </div>
+            }
+        </div>
+    </div>
+</div>
+
+
+@section scripts{
+
+    <script>
+        $(document).ready(function () {
+
+
+            $("#FormUser").submit(function (event) {
+
+                var SupplierID = $("#SupplierID").val();
+                var Supplier = $("#Supplier").val();
+                var SupplierAddress = $("#SupplierAddress").val();
+                var EmailAddress = $("#EmailAddress").val();
+                var ContactNo = $("#ContactNo").val();
+                var ContactPerson = $("#ContactPerson").val();
+                var SupplierStatus = $("#SupplierStatus").val();
+                var Location = $("#Location").val();
+
+
+                var action = $("#FormUser").attr("action");
+                event.preventDefault();
+                event.stopImmediatePropagation();
+
+                swal({
+                    title: "Are you sure?",
+                    text: "",
+                    type: "warning",
+                    showCancelButton: true,
+                    confirmButtonColor: '#5F69E0',
+                    confirmButtonText: 'Yes',
+                    cancelButtonText: "No",
+                    closeOnConfirm: false, width: 420,
+                    closeOnCancel: false,
+                    allowOutsideClick: false
+                }).then((isConfirm) => {
+                    if (isConfirm) {
+                        $.ajax({
+                            url: action,
+                            type: "POST",
+                            contentType: "application/json",
+                            data: JSON.stringify({
+                                SupplierID: SupplierID,
+                                Supplier: Supplier,
+                                SupplierAddress: SupplierAddress,
+                                ContactNo: ContactNo,
+                                EmailAddress: EmailAddress,
+                                ContactPerson: ContactPerson,
+                                SupplierStatus: SupplierStatus,
+                                Location: Location,
+                            }),
+                            dataType: "json",
+                            success: function (data) {
+                                if (data == 'ERROR1') {
+                                    sweetAlert("Required field shouldn't be empty!!", "Please fill out", "error");
+                                    //alert("File Shouldn't Be Empty!!");
+                                    return false;
+                                }
+                                else {
+                                    swal
+                                        ({
+                                             title: "Success",
+                                            text: "" + Supplier + " has been successfully Updated.",
+                                            type: "success", allowOutsideClick: false
+                                        }).then(function () {
+                                            // Redirect the user
+                                            window.location.href = '/Home/SupplierMaster/';
+                                        });
+
+                                }
+                            }
+                        });
+                    }
+                })
+               
+            }); //end .submit()
+
+
+        })
+    </script>
+}

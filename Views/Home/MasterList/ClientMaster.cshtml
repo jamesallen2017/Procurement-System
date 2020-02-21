@@ -1,0 +1,314 @@
+﻿@model PO_PurchasingUI.Models.ClientMaster
+
+@{
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+
+<input type="hidden" value="112" id="ModuleAccess" />
+
+<div class="content bg-gray-lighter">
+    <div class="row items-push">
+        <div class="col-sm-7">
+            <h1 class="page-heading">
+                MASTER LIST <small></small>
+            </h1>
+        </div>
+        <div class="col-sm-5 text-right hidden-xs">
+            <ol class="breadcrumb push-10-t">
+                <li>MAINTENANCE</li>
+                <li>MASTER LIST</li>
+                <li><a class="link-effect" href="">CLIENT MASTER</a></li>
+            </ol>
+        </div>
+    </div>
+</div>
+<!-- END Page Header -->
+<div class="content">
+    <div class="block">
+        <div class="block-header">
+            <h4 class="block-title">Date : @DateTime.Now.ToShortDateString()</h4>
+
+            @if (ViewBag.ClientMonitoring == true)
+            {
+                <div class="block-content">
+
+                    <div class="row">
+                        <div class="col-sm-6 col-md-4">
+                            <a class="block block-link-hover3 text-center" href="@Url.Action("CreateClientMaster","Home")">
+                                <div class="block-content block-content-full">
+                                    <div class="h1 font-w700 text-success"><i class="fa fa-plus"></i></div>
+                                </div>
+                                <div class="block-content block-content-full block-content-mini bg-gray-lighter text-success font-w600">Add New Client</div>
+                            </a>
+                        </div>
+                        <div class="col-sm-6 col-md-4">
+                            <a class="block block-link-hover3 text-center" href="javascript:void(0)">
+                                <div class="block-content block-content-full">
+                                    <div class="h1 font-w700" data-toggle="countTo" data-to="@Model.CountActive"></div>
+                                </div>
+                                <div class="block-content block-content-full block-content-mini bg-gray-lighter text-muted font-w600">Active Client</div>
+                            </a>
+                        </div>
+                        <div class="col-sm-6 col-md-4">
+                            <a class="block block-link-hover3 text-center" href="javascript:void(0)">
+                                <div class="block-content block-content-full">
+                                    <div class="h1 font-w700" data-toggle="countTo" data-to="@Model.PopulateAllClients.Count()"></div>
+                                </div>
+                                <div class="block-content block-content-full block-content-mini bg-gray-lighter text-muted font-w600">All Client</div>
+                            </a>
+                        </div>
+                    </div>
+
+                        <div class="col-md-12">
+                            <div class="panel-body table-responsive">
+                                <table class="table table-inverse  text-center js-dataTable-full-pagination">
+                                    <thead>
+                                        <tr>
+                                            <th style="font-size: 12px;" class="text-left">Edit</th>
+                                            <th style="font-size: 12px;" class="text-left">Client</th>
+                                            <th style="font-size: 12px;" class="text-left">Email Address</th>
+                                            <th style="font-size: 12px;" class="text-center">Contact No.</th>
+                                            <th style="font-size: 12px;" class="text-left">Contact Person</th>
+                                            <th style="font-size: 12px;" class="text-center">Status</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        @foreach (var item in Model.PopulateAllClients)
+                                        {
+                                        <tr>
+                                            <td style="font-size: 12px;" class="text-center"><a class="btn btn-primary" href="@Url.Action("EditClientMaster","Home", new { @id = item.ClientID})"><span class="fa fa-edit"></span></a></td>
+                                            <td style="font-size: 12px;" class="text-left">@Html.DisplayFor(Modelitem => item.Client)</td>
+                                            <td style="font-size: 12px;" class="text-left">@Html.DisplayFor(Modelitem => item.EmailAddress)</td>
+                                            <td style="font-size: 12px;" class="text-center">@Html.DisplayFor(Modelitem => item.ContactNo)</td>
+                                            <td style="font-size: 12px;" class="text-left">@Html.DisplayFor(Modelitem => item.ContactPerson)</td>
+                                            <td style="font-size: 12px;" class="text-center">@Html.DisplayFor(Modelitem => item.ClientStatus)</td>
+
+                                        </tr>
+                                        }
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                </div>
+            }
+
+            @if (ViewBag.ClientForm == true)
+            {
+
+                using (Html.BeginForm("InsertClientInformation", "Main", FormMethod.Post, new { @class = "js-validation-material form-horizontal push-10-t", id = "FormUser", name = "FormUser" }))
+                {
+
+
+                <div class="block-content block-content-narrow">
+
+                    @if (ViewBag.SuccessInserted == true)
+                    {
+
+                        <div class="alert alert-success alert-dismissable">
+                            <button type="button" class="close" data-dismiss="alert" aria-hidden="true">&times;</button>
+                            <h3 class="font-w300 push-15">Success</h3>
+                            <p>The <a class="alert-link" href="javascript:void(0)">Client</a> Information is Successfully Inserted!</p>
+                        </div>
+
+                    }
+                    <div class="col-sm-6">
+                        <div class="form-group">
+                            <div class="col-md-12">
+                                <div class="form-material form-material-primary floating">
+                                    @Html.TextBoxFor(client => client.Client, new { @class = "form-control", autocomplete = "off" })
+                                    <label for="Client">Company Name</label>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <div class="col-md-12">
+                                <div class="form-material form-material-primary floating">
+                                    @Html.TextBoxFor(client => client.ContactPerson, new { @class = "form-control", autocomplete = "off" })
+                                    <label for="ContactPerson">Contact Person</label>
+                                </div>
+                            </div>
+                        </div>
+
+                    </div>
+
+                    <div class="col-sm-6">
+
+                        <div class="form-group">
+                            <div class="col-md-12">
+                                <div class="form-material form-material-primary floating">
+                                    @Html.TextBoxFor(client => client.EmailAddress, new { @class = "form-control", autocomplete = "off" })
+                                    <label for="EmailAddress">Email Address</label>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="form-group">
+                            <div class="col-md-12">
+                                <div class="form-material form-material-primary floating">
+                                    @Html.TextBoxFor(client => client.ContactNo, new { @class = "form-control", onkeypress = "validatePhone(event)", autocomplete = "off" })
+                                    <label for="ContactNo">Contact No.</label>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <table id="tableAddress" class="table" cellpadding="0" cellspacing="0" style="margin-bottom:100px;">
+                        <thead>
+                            <tr>
+                                <th></th>
+                                <th class="text-center">Location</th>
+                                <th class="text-center">Office Address</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr id="mainrow">
+                                <td>  <a id="add" value="Add" class="btn btn-success"><span class="fa fa-plus"></span> </a>  <a id="Remove" value="Remove" class="btn btn-danger"><span class="fa fa-close"></span> </a></td>
+                                <td><div class="form-material form-material-primary floating">@Html.TextBoxFor(item => item.Location, new { @class = "form-control" })</div></td>
+                                <td><div class="form-material form-material-primary floating">@Html.TextAreaFor(item => item.ClientAddress, new { @class = "form-control", style = "margin: 0px; width:100%; resize:vertical; height: 33px;", maxlength="100" })</div></td>
+                            </tr>
+                        </tbody>
+                    </table>
+
+                    <div class="col-xs-12">
+                        <div class="form-group">
+                            <a class="btn btn-sm btn-danger pull-right" href="@Url.Action("ClientMaster","Home")">Back</a>
+                            <button class="btn btn-sm btn-primary pull-right" style="margin-right:5px;" type="submit">Submit</button>
+                        </div>
+                    </div>
+                </div>
+
+                }
+            }
+        </div>
+    </div>
+</div>
+
+@section scripts {
+
+
+    <script>
+        $(document).ready(function () {
+            //add button click event
+
+            var Location = $("#item_Location").val();
+            var ClientAddress = $("#item_ClientAddress").val();
+
+
+            $("body").on("click", "#add", function () {
+
+
+
+                if (ClientAddress == "" || Location == "") {
+                    sweetAlert("Required field Shouldn't Be Empty!!", "Please fill out", "error");
+                    //alert("File Shouldn't Be Empty!!");
+                    return false;
+                }
+
+                var $newRow = $('#mainrow').clone(true).appendTo('#tableAddress');
+                //remove id attribute from new clone row
+                $('#item_Location,#item_ClientAddress', $newRow);
+
+
+                //clear select data
+                $('#Location').val('');
+                $('#item_ClientAddress').val('');
+            })
+
+            //remove button click event
+            $('#tableAddress').on('click', '#Remove', function () {
+
+                var trIndex = $(this).closest("tr").index();
+                var count = $('#tableAddress tbody tr').length;
+
+                if (count > 1) {
+                    $(this).closest("tr").remove();
+
+
+
+                } else {
+                    sweetAlert("Sorry!! Can't remove first row!", "", "error");
+                    //alert("File Shouldn't Be Empty!!");
+                    return false;
+                }
+            });
+
+
+            $("#FormUser").submit(function (event) {
+                //Loop through the Table rows and build a JSON array.
+                var ClientDetails = new Array();
+                $("#tableAddress TBODY TR").each(function () {
+
+                    var row = $(this);
+                    var customer = {};
+
+                    customer.Location = $("#Location", row).val();
+                    customer.ClientAddress = $("#ClientAddress", row).val();
+                    ClientDetails.push(customer);
+
+                });
+
+
+                var Client = $("#Client").val();
+                var ContactPerson = $("#ContactPerson").val();
+                var ContactNo = $("#ContactNo").val();
+                var EmailAddress = $("#EmailAddress").val();
+
+
+                var action = $("#FormUser").attr("action");
+                event.preventDefault();
+                event.stopImmediatePropagation();
+                $.ajax({
+                    url: action,
+                    type: "POST",
+                    contentType: "application/json",
+                    data: JSON.stringify({
+                        value: ClientDetails,
+                        Client: Client,
+                        ContactPerson: ContactPerson,
+                        ContactNo: ContactNo,
+                        EmailAddress: EmailAddress,
+                    }),
+                    dataType: "json",
+                    success: function (data) {
+                        if (data == 'ERROR1') {
+                            sweetAlert("Required field shouldn't be empty!!", "Please fill out", "error");
+                            //alert("File Shouldn't Be Empty!!");
+                            return false;
+                        }
+                        else if (data == "ERROR2")
+                        {
+                            sweetAlert("field shouldn't be empty.", "Please fill out.", "error");
+                            //alert("File Shouldn't Be Empty!!");
+                            return false;
+                        }
+                        else if (data == "ERROR3") {
+                            sweetAlert("Client's already exist.", "Please try again.", "error");
+                            //alert("File Shouldn't Be Empty!!");
+                            return false;
+                        }
+                        else {
+                            swal
+                                ({
+                                     title: "Success",
+                                    text: ""+ Client + " has been successfully Added.",
+                                    type: "success", allowOutsideClick: false
+                                }).then(function () {
+                                    // Redirect the user
+                                    window.location.href = '/Home/ClientMaster/';
+                                });
+
+                        }
+                    }
+                });
+            }); //end .submit()
+
+        })
+
+                  //LoadItemCategory($('#Particular'));
+
+    </script>
+
+}
+
+
